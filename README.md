@@ -12,6 +12,15 @@ yarn dev
 pnpm dev
 ```
 
+## Folder Description
+- `app/assets` contains static assests used in project
+- `app/components` contains reusable components separated in subfolder 
+- `app/hooks` contains hooks used on different page, also separated into folders 
+- `app/layouts` contains Landing page, marketplace, and other layouts 
+- `app/lib` contains server (models, controller), utils and types reference in client  
+- `app/styles` contains frontend css 
+- `app/utils` frontend utilities. Some functions are imported from `app/utils` 
+
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
