@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model, models, type Model } from 'mongoose';
 import { dbCollections } from '../app.config';
 import { MARKET_PERMIT_TYPES, MARKET_SALE_TYPES, MARKET_STATUS_TYPES } from '../types/common';
 import type MarketOrderType from '../types/market';
@@ -32,4 +32,10 @@ const MarketOrderSchema = new Schema<MarketOrderType>({
     timestamps: true
 });
 
-export default model<MarketOrderType>(marketOrders, MarketOrderSchema);
+MarketOrderSchema.set('toObject', {
+    flattenMaps: true, 
+    flattenObjectIds: true,
+    versionKey: false
+})
+
+export default (models[marketOrders] as Model<MarketOrderType>) || model<MarketOrderType>(marketOrders, MarketOrderSchema);

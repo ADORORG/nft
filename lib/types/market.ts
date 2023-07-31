@@ -1,11 +1,11 @@
-import { Types } from 'mongoose';
+import { Types, Document } from 'mongoose';
 import type { EthereumAddress } from "./common"
 import type { MarketSaleType, MarketPermitType, MarketStatusType } from './common';
 import type { CryptocurrencyType } from './currency';
 import type AccountType from './account';
-import type NftTokenType from './token';
+import type { default as NftTokenType, PopulatedNftTokenType } from './token';
 
-export default interface MarketOrderType {
+export default interface MarketOrderType extends Document {
     _id?: Types.ObjectId | String;
     token: Types.ObjectId | String | NftTokenType;
     /**
@@ -61,4 +61,10 @@ export default interface MarketOrderType {
     version: string;
     createdAt?: number | Date;
     updatedAt?: number | Date;
+}
+
+export interface PopulatedMarketOrderType extends MarketOrderType {
+    token: PopulatedNftTokenType
+    seller: AccountType
+    buyer?: AccountType
 }

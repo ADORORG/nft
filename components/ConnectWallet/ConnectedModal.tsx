@@ -1,9 +1,10 @@
 import Modal from "@/components/Modal"
 import { toast } from "react-hot-toast"
 import { CopyToClipboard } from "react-copy-to-clipboard";
-import { useAccount, useBalance, useDisconnect } from "wagmi"
+import { useAccount, useBalance } from "wagmi"
 import { CopyIcon, SignoutIcon } from "./Icons"
 import { cutAddress, imageData } from "./utils"
+import { useAuthStatus } from "@/hooks/account"
 
 type ConnectedWalletModalProps = {   
     show: boolean;
@@ -15,14 +16,17 @@ export default function ConnectedWalletModal(props: ConnectedWalletModalProps) {
     const { show, onHide, backdrop } = props
     const { connector: activeConnector, address } = useAccount()
     const { data: balance } = useBalance({address})
-    const { disconnect } = useDisconnect({ 
-        onSuccess() {
+    const { requestSignOut } = useAuthStatus()
+
+    const handleDisconnect = async () => {
+        try {
+            await requestSignOut()
             onHide()
             toast.success("Wallet disconnected")
-        } })
-
-    const handleDisconnect = () => {
-        disconnect()
+        } catch (error) {
+            console.log(error)
+        }
+        
     }
 
     return (

@@ -12,3 +12,8 @@ export default interface MarketBidType {
     createdAt?: number | Date;
     updatedAt?: number | Date;
 }
+
+export interface PopulatedMarketBidType extends MarketBidType {
+    marketOrder: MarketOrderType
+    bidder: AccountType
+}

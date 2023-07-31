@@ -1,4 +1,4 @@
-import type { Types } from 'mongoose'
+import type { Types, PopulateOptions } from 'mongoose'
 import type { AnyBulkWriteOperation } from 'mongodb'
 import type { EthereumAddress } from '../types/common'
 import NftTokenType from '../types/token'
@@ -19,18 +19,22 @@ export function bulkWriteToken(bulkTokenOperation: AnyBulkWriteOperation[]) {
  * @returns -  a populated newly created token
  */
 export async function createToken(token: NftTokenType) {
+    const leanOption = {lean: true}
     const populate = [
         {
             path: 'contract',
+            options: leanOption
         },
         {
             path: 'xcollection',
+            options: leanOption
         },
         {
             path: 'owner',
-            select: '-email -roles -emailVerified -__v'
+            select: '-email -roles -emailVerified -__v',
+            options: leanOption
         }
-    ]
+    ] satisfies PopulateOptions[]
 
     return new TokenModel(token).save()
     .then( newToken => newToken.populate(populate))
@@ -43,18 +47,22 @@ export async function createToken(token: NftTokenType) {
  * @returns an array of tokens owned by ownerId
  */
 export function getTokensByOwner(ownerId: EthereumAddress, skip: number = 0) {
+    const leanOption = {lean: true}
     const populate = [
         {
             path: 'contract',
+            options: leanOption
         },
         {
             path: 'xcollection',
+            options: leanOption
         },
         {
             path: 'owner',
-            select: '-email -roles -emailVerified -__v'
+            select: '-email -roles -emailVerified -__v',
+            options: leanOption
         }
-    ]
+    ] satisfies PopulateOptions[]
 
     return TokenModel.find({
         owner: ownerId
@@ -73,18 +81,22 @@ export function getTokensByOwner(ownerId: EthereumAddress, skip: number = 0) {
  * @returns a array of tokens matching the collection id
  */
 export function getTokensByCollection(collectionId: Types.ObjectId | string, skip: number = 0) {
+    const leanOption = {lean: true}
     const populate = [
         {
             path: 'contract',
+            options: leanOption
         },
         {
             path: 'xcollection',
+            options: leanOption
         },
         {
             path: 'owner',
-            select: '-email -roles -emailVerified -__v'
+            select: '-email -roles -emailVerified -__v',
+            options: leanOption
         }
-    ]
+    ] satisfies PopulateOptions[]
 
     return TokenModel.find({
         xcollection: collectionId
@@ -104,18 +116,22 @@ export function getTokensByCollection(collectionId: Types.ObjectId | string, ski
  * @returns a array of tokens matching the contract id
  */
 export function getTokensByContract(contractId: Types.ObjectId  | string, skip: number = 0) {
+    const leanOption = {lean: true}
     const populate = [
         {
             path: 'contract',
+            options: leanOption
         },
         {
             path: 'xcollection',
+            options: leanOption
         },
         {
             path: 'owner',
-            select: '-email -roles -emailVerified -__v'
+            select: '-email -roles -emailVerified -__v',
+            options: leanOption
         }
-    ]
+    ] satisfies PopulateOptions[]
 
     return TokenModel.find({
         contract: contractId
@@ -149,18 +165,22 @@ export function getTokensByQuery(
         select = ''
     } = options
     
+    const leanOption = {lean: true}
     const populate = [
         {
             path: 'contract',
+            options: leanOption
         },
         {
             path: 'xcollection',
+            options: leanOption
         },
         {
             path: 'owner',
-            select: '-email -roles -emailVerified -__v'
+            select: '-email -roles -emailVerified -__v',
+            options: leanOption
         }
-    ]
+    ] satisfies PopulateOptions[]
 
     return TokenModel.find({
         ...query
@@ -181,18 +201,22 @@ export function getTokensByQuery(
  * @returns a populated token with the new owner
  */
 export function setTokenOwner(_id: Types.ObjectId | string, newOwnerId: EthereumAddress) {
+    const leanOption = {lean: true}
     const populate = [
         {
             path: 'contract',
+            options: leanOption
         },
         {
             path: 'xcollection',
+            options: leanOption
         },
         {
             path: 'owner',
-            select: '-email -roles -emailVerified -__v'
+            select: '-email -roles -emailVerified -__v',
+            options: leanOption
         }
-    ]
+    ] satisfies PopulateOptions[]
 
     return TokenModel.findByIdAndUpdate(_id, {
         owner: newOwnerId

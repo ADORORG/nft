@@ -15,3 +15,7 @@ export default interface ContractType {
     createdAt?: number | Date;
     updatedAt?: number | Date;
 }
+
+export interface PopulatedContractType extends ContractType {
+    owner: AccountType
+}

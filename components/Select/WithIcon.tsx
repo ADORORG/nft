@@ -4,7 +4,7 @@ interface SelectWithIconInterface {
     options: {
         value: string | number, 
         label: string, 
-        icon?: React.ReactElement<SVGElement>
+        icon?: React.ReactElement
     }[]
     defaultValue: string | number
     onChange: (value: string | number) => void

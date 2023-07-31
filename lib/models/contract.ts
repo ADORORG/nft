@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model, models, type Model } from 'mongoose';
 import { dbCollections } from '../app.config';
 import type ContractType from '../types/contract';
 
@@ -21,5 +21,10 @@ const ContractSchema = new Schema<ContractType>({
     timestamps: true
 });
 
+ContractSchema.set('toObject', {
+    flattenMaps: true, 
+    flattenObjectIds: true,
+    versionKey: false
+})
 
-export default model<ContractType>(contracts, ContractSchema);
+export default (models[contracts] as Model<ContractType>) || model<ContractType>(contracts, ContractSchema);

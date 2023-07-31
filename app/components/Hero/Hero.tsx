@@ -1,51 +1,26 @@
 import HeroText from "./HeroText"
 import { MarketListingCard } from "@/components/Card"
+import type MarketOrderType from "@/lib/types/market"
 
-export default function HeroSection() {
-    const marketOrder = {
-        token: {
-            tokenId: "1",
-            supply: 1,
-            imported: false,
-            contract: "no-contract",
-            name: "NFT Name",
-            image: "http://localhost:3000/test-images/image5.png",
-            createdAt: 1635724800000,
-            updatedAt: 1635724800000,
-            owner: {
-                address: "0x1234567890123456789012345678901234567890",
-                image: "http://localhost:3000/test-images/image2.png",
-                createdAt: 1635724800000,
-                updatedAt: 1635724800000,
-            },
-        },
-        price: "0.1",
-        currency: {
-            cid: "ethereum",
-            chainId: 1,
-            name: "ETH",
-            symbol: "ETH",
-            decimals: 18,
-            address: "0x000000",
-            logoURI: "http://localhost:3000/coin/eth.png",
-        },
-        saleType: "fixed",
-        quantity: 1,
-        status: "active",
-        endsAt: 1688338800000,
-        permitType: "offchain",
-        version: 1,
-        createdAt: 1635724800000,
-        updatedAt: 1635724800000,
-    } as const
+type HeroSectionProps = {
+    marketOrders: MarketOrderType[]
+}
 
+export default function HeroSection({marketOrders}: HeroSectionProps) {
     return (
         <div className="bg-white dark:bg-gray-950 p-4 lg:p-12">
             <div className="container px-6 py-16 mx-auto">
                 <div className="items-center lg:flex justify-around">
+
                     <HeroText />
-                    <div className="origin-top-left lg:rotate-[1deg] flex justify-center">
-                        <MarketListingCard marketOrder={marketOrder} />
+
+                    <div className="flex flex-col md:flex-row justify-center gap-6 py-3 ">
+                        <div className="origin-bottom-right md:rotate-[350deg] flex justify-center hover:z-10">
+                            <MarketListingCard marketOrder={marketOrders[0]} size="md" />
+                        </div>
+                        <div className="origin-top-left md:rotate-[10deg] flex justify-center hover:z-10">
+                            <MarketListingCard marketOrder={marketOrders[1]} size="md" />
+                        </div>
                     </div>
                 </div>
             </div>

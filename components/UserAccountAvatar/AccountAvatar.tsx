@@ -2,18 +2,26 @@ import type AccountType from "@/lib/types/account"
 import Image from "@/components/Image"
 
 interface AccountAvatarProps {
-    account: AccountType
+    account: AccountType,
+    width?: number,
+    height?: number
 }
-const UserAccountAvatar: React.FC<AccountAvatarProps> = ({account}) => {
-    const { image } = account
+
+const UserAccountAvatar: React.FC<AccountAvatarProps> = ({account, width = 10, height = 10}) => {
+    if (!account) {
+        account = {
+            address: "0x0"
+        }
+    }
+    const { image = "" } = account
 
     return (
         <Image 
-            className="w-10 lg:w-14 rounded-full" 
+            className={`w-${width} rounded`} 
             src={image} 
             alt=""
-            width={500}
-            height={500}
+            width={width}
+            height={height}
         />
     )
 }

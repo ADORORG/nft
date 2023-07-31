@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model, models, type Model } from 'mongoose';
 import { dbCollections, collectionCategories } from '../app.config';
 import { onlyAlphaNumeric } from '../utils/main'
 import type CollectionType from '../types/collection';
@@ -6,12 +6,12 @@ import type CollectionType from '../types/collection';
 const { collections: xcollections, accounts } = dbCollections;
 
 const CollectionSchema = new Schema<CollectionType>({
-    name: {type: String, required: true, maxlength: 20, minlength: 3},
+    name: {type: String, required: true, maxlength: 24, minlength: 3},
     slug: {type: String, required: true, index: true, unique: true, lowercase: true},
     description: {type: String, required: true},
     image: {type: String, required: true}, // ipfs hash
     banner: {type: String, required: true}, // ipfs hash
-    tags: {type: [String], required: true, index: true},
+    tags: {type: String, required: true, index: true},
     category: {
         type: String, 
         required: true,
@@ -29,6 +29,12 @@ const CollectionSchema = new Schema<CollectionType>({
     timestamps: true
 });
 
+CollectionSchema.set('toObject', {
+    flattenMaps: true, 
+    flattenObjectIds: true,
+    versionKey: false
+})
+
 CollectionSchema.pre('save', function(next) {
     // Rewrite collection slug to be only alphanumeric characters
     if(!this.slug) {
@@ -40,4 +46,4 @@ CollectionSchema.pre('save', function(next) {
     next()
 })
 
-export default model<CollectionType>(xcollections, CollectionSchema);
+export default (models[xcollections] as Model<CollectionType>) || model<CollectionType>(xcollections, CollectionSchema);

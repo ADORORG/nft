@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model, models, type Model } from 'mongoose';
 import { dbCollections } from '../app.config';
 import type MarketBidType from '../types/bid';
 
@@ -21,5 +21,11 @@ const MarketBidSchema = new Schema<MarketBidType>({
     timestamps: true
 });
 
-export default model<MarketBidType>(bids, MarketBidSchema);
+MarketBidSchema.set('toObject', {
+    flattenMaps: true, 
+    flattenObjectIds: true,
+    versionKey: false
+})
+
+export default (models[bids] as Model<MarketBidType>) || model<MarketBidType>(bids, MarketBidSchema);
 

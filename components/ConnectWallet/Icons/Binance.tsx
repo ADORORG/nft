@@ -3,14 +3,13 @@ import { SVGProps } from "react"
 export default function BinanceIcon(props: SVGProps<SVGSVGElement>) {
     return (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" {...props}>
-            <style>{".st1{fill:#fff}"}</style>
             <g id="Icon">
             <circle
                 cx={512}
                 cy={512}
                 r={512}
                 style={{
-                fill: "#f3ba2f",
+                    fill: "#f3ba2f",
                 }}
             />
             <path

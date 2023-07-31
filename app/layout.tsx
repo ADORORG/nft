@@ -1,7 +1,7 @@
 import "@/globals.css"
 import Navbar from "@/components/Navbar"
 import Footer from "@/components/Footer"
-import AuthWrapper from "@/components/AuthWrapper"
+import WalletAuthWrapper from "@/components/AuthWrapper"
 import NextAuthSessionProvider from "@/components/NextAuthSession"
 import myWagmiConfig from "@/web3.config"
 import { Toaster } from "react-hot-toast"
@@ -95,7 +95,7 @@ export const topNav = {
     },
     {
       name: "Create",
-      href: "#"
+      href: "/create"
     },
   ]
 }
@@ -118,11 +118,11 @@ export default function RootLayout({
         <WagmiConfig config={myWagmiConfig}>
           <NextAuthSessionProvider>
             <ConnectWalletContextWrapper>
-              <AuthWrapper>
+              <WalletAuthWrapper>
                 <Navbar topNav={topNav} />
                 {children}
                 <Footer footerNav={footerNav} />
-              </AuthWrapper>
+              </WalletAuthWrapper>
             </ConnectWalletContextWrapper>
           </NextAuthSessionProvider>
         </WagmiConfig>

@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model, models, type Model } from 'mongoose';
 import { dbCollections/* , fiatCurrencies */ } from '../app.config';
 import type { CryptocurrencyType, CryptocurrencyMarketDataType } from '../types/currency';
 
@@ -46,4 +46,10 @@ const CurrencySchema = new Schema<CryptocurrencyType>({
     timestamps: true
 });
 
-export default model<CryptocurrencyType>(currencies, CurrencySchema);
+CurrencySchema.set('toObject', {
+    flattenMaps: true, 
+    flattenObjectIds: true,
+    versionKey: false
+})
+
+export default (models[currencies] as Model<CryptocurrencyType>) || model<CryptocurrencyType>(currencies, CurrencySchema);

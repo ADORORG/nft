@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model, models, type Model } from 'mongoose';
 import { dbCollections } from '../app.config';
 import { isEthereumAddress } from '../utils/main';
 import { invalidAccountAddress } from '../error/message';
@@ -24,6 +24,7 @@ const AccountSchema = new Schema<AccountType>({
     twitter: String,
     discord: String,
     telegram: String,
+    roles: [String], // a quick hack added to allow admin add currencies
     createdAt: {type: Date, get: (v: Date) => v.getTime()},
     updatedAt: {type: Date, get: (v: Date) => v.getTime()}
 }, {
@@ -31,6 +32,12 @@ const AccountSchema = new Schema<AccountType>({
     timestamps: true,
     _id: false,
 });
+
+AccountSchema.set('toObject', {
+    flattenMaps: true, 
+    flattenObjectIds: true,
+    versionKey: false
+})
 
 /**
  * Ensure that the 'address' is a valid format ETH address
@@ -76,4 +83,4 @@ function _idAndAddressUpdateMerging(next: (arg?: Error) => void) {
 AccountSchema.pre('save', requireValidAccountAddress);
 AccountSchema.pre(['findOneAndUpdate', 'updateOne'], _idAndAddressUpdateMerging);
 
-export default model<AccountType>(accounts, AccountSchema);
+export default (models[accounts] as Model<AccountType>) || model<AccountType>(accounts, AccountSchema);

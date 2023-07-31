@@ -1,14 +1,17 @@
 "use client"
 import { useState, useRef, useEffect } from "react"
 import type AccountType from "@/lib/types/account"
-import type { CryptocurrencyType } from "@/lib/types/currency"
 import Image from "@/components/Image"
-import CurrencyDisplay from "@/components/Currency"
 import { cutAddress } from "@/utils/main"
 
-export default function CreatorCard({creatorAccount, currency}: {creatorAccount: AccountType, currency: CryptocurrencyType}) {
-    const [showDropdown, setShowDropdown] = useState(false)
-    const { address, image, /* name, */ value = 0 } = creatorAccount
+type CreatorCardProps = {
+    creatorAccount: AccountType, 
+    currencyNode: React.ReactNode
+}
+
+export default function CreatorCard({creatorAccount, currencyNode}: CreatorCardProps) {
+    const [showDropdown, setShowDropdown] = useState<boolean>(false)
+    const { address = "0x0", image = "" } = creatorAccount || {}
     const dropdownRef = useRef<HTMLDivElement>(null)
 
     const handleClickOutside = (event: MouseEvent) => {
@@ -40,10 +43,7 @@ export default function CreatorCard({creatorAccount, currency}: {creatorAccount:
             <div className="w-full flex flex-col justify-center items-center py-2">
                 <p className="text-gray-950 dark:text-white text-xl lg:text-2xl tracking-wide subpixel-antialiased">{cutAddress(address)}</p>
                 <div className="text-lg font-normal my-3">
-                    <CurrencyDisplay
-                        currency={currency as CryptocurrencyType}
-                        amount={value.toString()}
-                    />
+                    {currencyNode}
                 </div>
             </div>
 

@@ -8,6 +8,7 @@ export default interface AccountType {
     emailVerified?: boolean;
     image?: string; // ipfs hash
     banner?: string; // ipfs hash
+    roles?: string[];
     twitter?: string;
     discord?: string;
     telegram?: string;

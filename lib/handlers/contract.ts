@@ -1,4 +1,4 @@
-import type { Types } from 'mongoose'
+import type { Types, PopulateOptions } from 'mongoose'
 import type { EthereumAddress } from '../types/common'
 import type ContractType from '../types/contract'
 import ContractModel from '../models/contract'
@@ -9,12 +9,14 @@ import ContractModel from '../models/contract'
  * @returns an `owner` account populated newly created contract or `null`
  */
 export async function createContract(contract: ContractType) {
+    const leanOption = {lean: true}
     const populate = [
         {
             path: 'owner',
-            select: '-email -roles -emailVerified -__v'
+            select: '-email -roles -emailVerified -__v',
+            options: leanOption
         }
-    ]
+    ] satisfies PopulateOptions[]
 
     return new ContractModel(
         contract
@@ -28,12 +30,14 @@ export async function createContract(contract: ContractType) {
  * @returns an `owner` account populated contract data
  */
 export function getContractByAddress(contractAddress: EthereumAddress) {
+    const leanOption = {lean: true}
     const populate = [
         {
             path: 'owner',
-            select: '-email -roles -emailVerified -__v'
+            select: '-email -roles -emailVerified -__v',
+            options: leanOption
         }
-    ]
+    ] satisfies PopulateOptions[]
 
     return ContractModel.findOne({
         contractAddress
@@ -49,12 +53,14 @@ export function getContractByAddress(contractAddress: EthereumAddress) {
  * @returns an array of `owner` account populated contract
  */
 export function getContractsByOwner(ownerId: EthereumAddress) {
+    const leanOption = {lean: true}
     const populate = [
         {
             path: 'owner',
-            select: '-email -roles -emailVerified -__v'
+            select: '-email -roles -emailVerified -__v',
+            options: leanOption
         }
-    ]
+    ] satisfies PopulateOptions[]
 
     return ContractModel.find({
         owner: ownerId
@@ -69,12 +75,14 @@ export function getContractsByOwner(ownerId: EthereumAddress) {
  * @returns an `owner` account populated contract data
  */
 export function getContractById(_id: Types.ObjectId | string) {
+    const leanOption = {lean: true}
     const populate = [
         {
             path: 'owner',
-            select: '-email -roles -emailVerified -__v'
+            select: '-email -roles -emailVerified -__v',
+            options: leanOption
         }
-    ]
+    ] satisfies PopulateOptions[]
 
     return ContractModel.findById(_id)
     .populate(populate)
@@ -89,12 +97,14 @@ export function getContractById(_id: Types.ObjectId | string) {
  * @returns - an updated contract or a newly created contract
  */
 export async function getOrCreateContractByQuery(query: Partial<Record<keyof ContractType, unknown>>, update: Partial<Record<keyof ContractType, unknown>>) {
+    const leanOption = {lean: true}
     const populate = [
         {
             path: 'owner',
-            select: '-email -roles -emailVerified -__v'
+            select: '-email -roles -emailVerified -__v',
+            options: leanOption
         }
-    ];
+    ] satisfies PopulateOptions[]
 
     /**
      * Mongoose only provide option to validate each field in an update

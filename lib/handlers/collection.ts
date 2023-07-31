@@ -1,6 +1,17 @@
+import type { PopulateOptions } from 'mongoose'
 import type { EthereumAddress } from '../types/common'
 import type CollectionType from '../types/collection'
 import CollectionModel from '../models/collection'
+
+export async function validateCollection(document: any) {
+    try {
+        await CollectionModel.validate(document)
+        return true
+    } catch(error) {
+        console.log(error)
+        return false
+    }
+}
 
 /**
  * Create a new collection
@@ -8,12 +19,14 @@ import CollectionModel from '../models/collection'
  * @returns an `owner` account populated collection
  */
 export async function createCollection(collection: CollectionType) {
+    const leanOption = {lean: true}
     const populate = [
         {
             path: 'owner',
-            select: '-email -roles -emailVerified -__v'
+            select: '-email -roles -emailVerified -__v',
+            options: leanOption
         }
-    ];
+    ] satisfies PopulateOptions[]
 
     return new CollectionModel(collection).save()
     .then(newCollection => newCollection.populate(populate))
@@ -26,12 +39,14 @@ export async function createCollection(collection: CollectionType) {
  * @returns an array of `owner' account populated collections
  */
 export function getCollectionsByOwner(ownerId: EthereumAddress, skip: number = 0) {
+    const leanOption = {lean: true}
     const populate = [
         {
             path: 'owner',
-            select: '-email -roles -emailVerified -__v'
+            select: '-email -roles -emailVerified -__v',
+            options: leanOption
         }
-    ]
+    ] satisfies PopulateOptions[]
 
     return CollectionModel.find({
         owner: ownerId
@@ -49,12 +64,14 @@ export function getCollectionsByOwner(ownerId: EthereumAddress, skip: number = 0
  * @returns an `owner' account populated collection or `null`
  */
 export function getCollectionBySlug(slug: string) {
+    const leanOption = {lean: true}
     const populate = [
         {
             path: 'owner',
-            select: '-email -roles -emailVerified -__v'
+            select: '-email -roles -emailVerified -__v',
+            options: leanOption
         }
-    ]
+    ] satisfies PopulateOptions[]
 
     return CollectionModel.findOne({
         slug
@@ -71,12 +88,14 @@ export function getCollectionBySlug(slug: string) {
  * @returns a maximum of 100 `owner` account populated collections
  */
 export function getCollectionsByQuery(query: Partial<Record<keyof CollectionType, unknown>>, skip: number = 0) {
+    const leanOption = {lean: true}
     const populate = [
         {
             path: 'owner',
-            select: '-email -roles -emailVerified -__v'
+            select: '-email -roles -emailVerified -__v',
+            options: leanOption
         }
-    ]
+    ] satisfies PopulateOptions[]
 
     return CollectionModel.find({...query})
     .skip(skip)
@@ -86,7 +105,6 @@ export function getCollectionsByQuery(query: Partial<Record<keyof CollectionType
     .lean()
     .exec()
 }
-
 
 /**
  * Count collection by query filter

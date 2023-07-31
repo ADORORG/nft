@@ -1,4 +1,4 @@
-import type { Types } from 'mongoose'
+import type { Types, PopulateOptions } from 'mongoose'
 import type { EthereumAddress } from '../types/common'
 import type MarketBidType from '../types/bid'
 import type AccountType from '../types/account'
@@ -13,15 +13,18 @@ type MarketBidTypePopulated = MarketBidType & {bidder: AccountType, marketOrder:
  * @returns A populated bid with the market and bidder
  */
 export async function createBid(bid: MarketBidType): Promise<MarketBidTypePopulated> {
+    const leanOption = {lean: true}
     const populate = [
         {
             path: 'bidder',
-            select: '-email -roles -emailVerified -__v'
+            select: '-email -roles -emailVerified -__v',
+            options: leanOption
         },
         {
-            path: 'marketOrder'
+            path: 'marketOrder',
+            options: leanOption
         }
-    ]
+    ] satisfies PopulateOptions[]
 
     return new MarketBidModel(
         bid
@@ -35,15 +38,18 @@ export async function createBid(bid: MarketBidType): Promise<MarketBidTypePopula
  * @returns - The bid item or null
  */
 export function getBidById(_id: Types.ObjectId | string) {
+    const leanOption = {lean: true}
     const populate = [
         {
             path: 'bidder',
-            select: '-email -roles -emailVerified -__v'
+            select: '-email -roles -emailVerified -__v',
+            options: leanOption
         },
         {
-            path: 'marketOrder'
+            path: 'marketOrder',
+            options: leanOption
         }
-    ]
+    ] satisfies PopulateOptions[]
     
     return MarketBidModel.findById(_id).populate(populate).lean().exec()
 }
@@ -55,15 +61,18 @@ export function getBidById(_id: Types.ObjectId | string) {
  * @returns - an array of bids (100 bid maximum on every request)
  */
 export function getBidsByMarketOrderId(marketOrderId: Types.ObjectId | string, skip: number = 0) {
+    const leanOption = {lean: true}
     const populate = [
         {
             path: 'bidder',
-            select: '-email -roles -emailVerified -__v'
+            select: '-email -roles -emailVerified -__v',
+            options: leanOption
         },
         {
-            path: 'marketOrder'
+            path: 'marketOrder',
+            options: leanOption
         }
-    ]
+    ] satisfies PopulateOptions[]
 
     return MarketBidModel.find({
         marketOrder: marketOrderId
@@ -83,15 +92,18 @@ export function getBidsByMarketOrderId(marketOrderId: Types.ObjectId | string, s
  * @returns an array of bids (100 bid maximum on every request)
  */
 export function getBidsByBidder(bidderId: EthereumAddress, skip: number = 0) {
+    const leanOption = {lean: true}
     const populate = [
         {
             path: 'bidder',
-            select: '-email -roles -emailVerified -__v'
+            select: '-email -roles -emailVerified -__v',
+            options: leanOption
         },
         {
-            path: 'marketOrder'
+            path: 'marketOrder',
+            options: leanOption
         }
-    ]
+    ] satisfies PopulateOptions[]
 
     return MarketBidModel.find({
         bidder: bidderId

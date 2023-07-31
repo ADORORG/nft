@@ -4,7 +4,11 @@ import { showWalletConnectModal } from "./store"
 import ConnectedWalletButton from "./ConnectedButton"
 import Button from "@/components/Button"
 
-export default function ConnectWalletButton() {
+interface ConnectWalletButtonProps {
+    text?: string
+}
+
+export default function ConnectWalletButton(props: ConnectWalletButtonProps) {
     const [showModal, setShowModal] = useAtom(showWalletConnectModal)
     const { isConnected } = useAccount()
 
@@ -19,7 +23,7 @@ export default function ConnectWalletButton() {
                 onClick={() => setShowModal(true)}
                 disabled={showModal}
             >
-                Sign in
+                {props.text || "Sign in"}
         </Button>
     )
 }

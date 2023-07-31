@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model, models, type Model } from 'mongoose';
 import { dbCollections } from '../app.config';
 import type NftTokenType from '../types/token';
 
@@ -17,7 +17,7 @@ const TokenSchema = new Schema<NftTokenType>({
     redeemable: Boolean,
     redeemableContent: String,
     attributes: {type: Array, default: []},
-    tags: [String],
+    tags: String,
     views: Number,
     royalty: Number,
     xcollection: {type: Schema.Types.ObjectId, ref: xcollections, index: true}, // 'collection' is a reserved keyword in Mongoose
@@ -30,4 +30,10 @@ const TokenSchema = new Schema<NftTokenType>({
     timestamps: true
 });
 
-export default model<NftTokenType>(tokens, TokenSchema);
+TokenSchema.set('toObject', {
+    flattenMaps: true, 
+    flattenObjectIds: true,
+    versionKey: false
+})
+
+export default (models[tokens] as Model<NftTokenType>) || model<NftTokenType>(tokens, TokenSchema);

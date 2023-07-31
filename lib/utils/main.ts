@@ -1,4 +1,12 @@
-
+/**
+ * Check that 
+ * @param obj 
+ * @param prop 
+ * @returns 
+ */
+export function typeGuarded<T>(obj: any, prop: string): obj is T {
+	return typeof obj === 'object' && obj.hasOwnProperty(prop);
+}
 
 /** 
 * Check for a valid format of an ethereum address. It does not check for checksum address
@@ -117,4 +125,39 @@ export function serializeData(data: any[] | {[key: string]: any}): any[] | {[key
 
 export function onlyAlphaNumeric(str: string) {
 	return str.replace(/[^a-zA-Z0-9]/g, '');
+}
+
+/**
+ * Format a number to
+ * @param value The number to format
+ * @param options Intl.NumberFormat options
+ * @returns 
+ */
+export function formatNumber(value: number | bigint | string, options: Record<string, any>  = {}): string {
+	if (typeof value === 'string') value = Number(value)
+	
+	const {
+		locale = 'en-US',
+		style = 'currency',
+		currency = 'USD',
+		currencyDisplay = 'symbol',
+		maximumFractionDigits = 2,
+	} = options
+
+	return new Intl.NumberFormat(locale, {
+		style, 
+		currency, 
+		currencyDisplay,
+		maximumFractionDigits,
+	}).format(value)
+}
+
+/**
+ * Split a string at comma or whitespace. 
+ * @param str - A string to split
+ * @returns an Array of string
+ */
+export function splitAtWhiteSpaceOrComma(str: string): Array<string> {
+	if (!str || typeof str !== 'string') return [];
+	return str.trim().split(/[,\s]+/).filter(Boolean); // split at comma or space
 }

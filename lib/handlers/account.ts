@@ -50,7 +50,9 @@ export function setAccountEmailVerified(_id: EthereumAddress, email: string) {
  * @returns An array of account matching the provided email address
  */
 export function getAccountsByEmail(email: string | string[]): Promise<AccountType[]> {
-    return AccountModel.find({email}).lean().exec()
+    return AccountModel
+    .find({email})
+    .lean().exec()
 }
 
 /**

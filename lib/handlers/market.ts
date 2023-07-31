@@ -1,7 +1,11 @@
-import type { Types } from 'mongoose'
+import type { Types, PipelineStage, PopulateOptions } from 'mongoose'
 import type { EthereumAddress } from '../types/common'
 import type MarketOrderType from '../types/market'
+import type { TopTraderAccountType, TotalMarketValueByCryptoCurrencyType, TotalMarketValueInDollarType } from '../types/common'
 import MarketOrderModel from '../models/market'
+import { dbCollections } from '../app.config';
+
+
 
 /**
  * Create a new market order
@@ -9,30 +13,34 @@ import MarketOrderModel from '../models/market'
  * @returns a populated newly created market order
  */
 export async function createMarketOrder(marketOrder: MarketOrderType) {
+    const leanOption = {lean: true}
     const populate = [
         {
             path: 'seller',
-            select: '-email -roles -emailVerified -__v'
+            select: '-email -roles -emailVerified -__v',
+            options: leanOption
         },
         {
             path: 'buyer',
-            select: '-email -roles -emailVerified -__v'
+            select: '-email -roles -emailVerified -__v',
+            options: leanOption
         },
         {
             path: 'token',
             populate: {
                 path: 'xcollection contract owner',
-            }
+                options: leanOption
+            },
+            options: leanOption
         },
         {
             path: 'currency',
+            options: leanOption
         }
-    ]
+    ] satisfies PopulateOptions[]
 
-    const createdDocument = await  new MarketOrderModel(marketOrder).save()
-    .then( newMarketOrder => newMarketOrder.populate(populate))
-
-    return createdDocument.toObject()
+    return new MarketOrderModel(marketOrder).save()
+    .then(newDoc => newDoc.populate(populate))
 }
 
 /**
@@ -41,26 +49,32 @@ export async function createMarketOrder(marketOrder: MarketOrderType) {
  * @param select - Fields to select or deselect
  * @returns a market order document
  */
-export function getMarketOrderByQuery(query: Partial<Record<keyof MarketOrderType, unknown>>, select: string = '') {
+export function getMarketOrderByQuery(query: Record<string, unknown>, select: string = '') {
+    const leanOption = {lean: true}
     const populate = [
         {
             path: 'seller',
-            select: '-email -roles -emailVerified -__v'
+            select: '-email -roles -emailVerified -__v',
+            options: leanOption
         },
         {
             path: 'buyer',
-            select: '-email -roles -emailVerified -__v'
+            select: '-email -roles -emailVerified -__v',
+            options: leanOption
         },
         {
             path: 'token',
             populate: {
                 path: 'xcollection contract owner',
-            }
+                options: leanOption
+            },
+            options: leanOption
         },
         {
             path: 'currency',
+            options: leanOption
         }
-    ]
+    ] satisfies PopulateOptions[]
 
     return MarketOrderModel.findOne({
         ...query
@@ -68,8 +82,7 @@ export function getMarketOrderByQuery(query: Partial<Record<keyof MarketOrderTyp
     .select(select)
     .populate(populate)
     .lean()
-    .exec();
-
+    .exec()
 }
 
 /**
@@ -79,7 +92,7 @@ export function getMarketOrderByQuery(query: Partial<Record<keyof MarketOrderTyp
  * @returns 
  */
 export function getMarketOrdersByQuery(
-    query: Partial<Record<keyof MarketOrderType, unknown>>, 
+    query: Record<string, unknown>, 
     options: {
         limit?: number,
         skip?: number,
@@ -93,25 +106,31 @@ export function getMarketOrdersByQuery(
         select = ''
     } = options
 
+    const leanOption = {lean: true}
     const populate = [
         {
             path: 'seller',
-            select: '-email -roles -emailVerified -__v'
+            select: '-email -roles -emailVerified -__v',
+            options: leanOption
         },
         {
             path: 'buyer',
-            select: '-email -roles -emailVerified -__v'
+            select: '-email -roles -emailVerified -__v',
+            options: leanOption
         },
         {
             path: 'token',
+            options: leanOption,
             populate: {
                 path: 'xcollection contract owner',
+                options: leanOption
             }
         },
         {
             path: 'currency',
+            options: leanOption
         }
-    ]
+    ] satisfies PopulateOptions[]
 
     return MarketOrderModel.find({
         ...query
@@ -122,8 +141,188 @@ export function getMarketOrdersByQuery(
     .select(select)
     .populate(populate)
     .lean()
-    .exec();
+    .exec()
 }
+
+/**
+ * Get the market value for account. 
+ * Passing an empty value returns top 8 account with the highest trade
+ * @param query Query object filter
+ * @param limit Number of Account to return
+ * @returns 
+ * @example getTraderAccountMarketValue({seller: '0x0...'}) returns the seller market value
+ * @example getTraderAccountMarketValue({}, 4) returns top 4 account with highest trade
+ */
+export function getTraderAccountMarketValue(query: Record<string, unknown> = {}, limit = 8) {
+    const { currencies, accounts } = dbCollections;
+
+    const aggregateQuery = [
+        {
+          // match the orders
+          $match: query
+        },
+        {
+          // populate the currency
+          $lookup: {
+            from: currencies,
+            localField: 'currency',
+            foreignField: '_id',
+            as: 'currency'
+          }
+        },
+        {
+          // Unwind the populated currency
+          $unwind: {
+            path: '$currency',
+            includeArrayIndex: '__i',
+            preserveNullAndEmptyArrays: false
+          }
+        },
+        {
+          // calculate each order value in dollar as dollarValue
+          $set: {
+            dollarValue: {$multiply: [{$toDouble: '$price'}, {$toDouble: '$currency.price.usd'}]}
+          }
+        },
+        {
+          // group by seller field
+          $group: {
+            _id: '$seller',
+            dollarValue: {$sum: '$dollarValue'}
+          }
+        },
+        
+        // $sort and $limit have no effect if get trade value for a single account
+        {
+          $sort: {
+            dollarValue: -1
+          }
+        },
+      
+        {
+          $limit: limit
+        },
+      
+        {
+          // populate each seller account as owner
+          $lookup: {
+            from: accounts,
+            localField: '_id',
+            foreignField: '_id',
+            as: 'owner'
+          }
+        },
+      
+        {
+          // Unwind owner to object
+          $unwind: {
+            path: '$owner',
+            includeArrayIndex: '__i',
+            preserveNullAndEmptyArrays: true
+          }
+        }
+      ] satisfies PipelineStage[]
+
+    return MarketOrderModel.aggregate<TopTraderAccountType>(aggregateQuery).exec()
+}
+
+/**
+ * Get total market value, grouped by cryptocurrencies used in market
+ * @param query Query object filter
+ * return Array of market value by cryptocurrency
+ */
+export function getTotalMarketValueByCryptoCurrency(query: Record<string, unknown>) {
+    const aggregateQuery = [
+        {
+          $match: query
+        }, {
+          $group: {
+            // group by currency _id
+            _id: '$currency', 
+            // sum each market order price based on currency
+            amount: {
+              $sum: {
+                $toDouble: '$price'
+              }
+            },
+            // count the number of market order
+            orderCount: {
+                $sum: 1
+            }
+          }
+        }
+    ] satisfies PipelineStage[]
+
+    return MarketOrderModel.aggregate<TotalMarketValueByCryptoCurrencyType>(aggregateQuery).exec()
+}
+
+/**
+ * Get total market value in US dollar
+ * @param query Query object filter
+ * return an object with dollarValue and orderCount
+ */
+export function getTotalMarketValueInDollar(query: Record<string, unknown>) {
+    const { currencies } = dbCollections;
+
+    const aggregateQuery = [
+        {
+          $match: query,
+        },
+        {
+          $group: {
+            // group by currency _id
+            _id: '$currency',
+            // sum each market order price based on currency
+            amount: {
+              $sum: {
+                $toDouble: '$price',
+              },
+            },
+            // count the number of market order
+            count: {
+              $sum: 1,
+            },
+          },
+        },
+      
+        {
+          // lookup currencies
+          $lookup: {
+            from: currencies,
+            localField: '_id',
+            foreignField: '_id',
+            as: 'currency',
+          },
+        },
+        {
+          // unwind
+          $unwind: {
+            path: '$currency',
+            includeArrayIndex: 'string',
+            preserveNullAndEmptyArrays: false,
+          },
+        },
+        {
+          // calculate total value in dollar & sum order count
+          $group: {
+            _id: null,
+            dollarValue: {
+              $sum: {
+                $multiply: [
+                  { $toDouble: '$currency.price.usd' },
+                  '$amount',
+                ],
+              },
+            },
+            orderCount: { $sum: '$count' },
+          },
+        },
+        
+      ] satisfies PipelineStage[]
+
+    return MarketOrderModel.aggregate<TotalMarketValueInDollarType>(aggregateQuery).exec()
+}
+
 
 /**
  * Set market order status to `cancelled`
@@ -132,25 +331,31 @@ export function getMarketOrdersByQuery(
  * @returns - an updated market order
  */
 export function setMarketOrderStatusToCancelled(marketOrderId: Types.ObjectId | string, cancelTxHash?: string) {
+    const leanOption = {lean: true}
     const populate = [
         {
             path: 'seller',
-            select: '-email -roles -emailVerified -__v'
+            select: '-email -roles -emailVerified -__v',
+            options: leanOption
         },
         {
             path: 'buyer',
-            select: '-email -roles -emailVerified -__v'
+            select: '-email -roles -emailVerified -__v',
+            options: leanOption
         },
         {
             path: 'token',
             populate: {
-                path: 'xcollection contract',
-            }
+                path: 'xcollection contract owner',
+                options: leanOption
+            },
+            options: leanOption
         },
         {
             path: 'currency',
+            options: leanOption
         }
-    ]
+    ] satisfies PopulateOptions[]
 
     return MarketOrderModel.findByIdAndUpdate({
         _id: marketOrderId,
@@ -188,25 +393,31 @@ export function setMarketOrderStatusToSold(
         soldPrice
     } = params
 
+    const leanOption = {lean: true}
     const populate = [
         {
             path: 'seller',
-            select: '-email -roles -emailVerified -__v'
+            select: '-email -roles -emailVerified -__v',
+            options: leanOption
         },
         {
             path: 'buyer',
-            select: '-email -roles -emailVerified -__v'
+            select: '-email -roles -emailVerified -__v',
+            options: leanOption
         },
         {
             path: 'token',
             populate: {
                 path: 'xcollection contract owner',
-            }
+                options: leanOption
+            },
+            options: leanOption
         },
         {
             path: 'currency',
+            options: leanOption
         }
-    ]
+    ] satisfies PopulateOptions[]
 
     return MarketOrderModel.findOneAndUpdate({
         _id: marketOrderId,
@@ -232,7 +443,7 @@ export function setMarketOrderStatusToSold(
  * @param query - a filter object
  * @returns a document count
  */
-export function countMarketOrderByQuery(query: Partial<Record<keyof MarketOrderType, unknown>>) {
+export function countMarketOrderByQuery(query: Record<string, unknown>) {
     return MarketOrderModel.countDocuments({
         ...query
     })
@@ -244,7 +455,7 @@ export function countMarketOrderByQuery(query: Partial<Record<keyof MarketOrderT
  * @param query - a filter object
  * @returns a document count
  */
-export function estimateMarketOrderByQuery(query: Partial<Record<keyof MarketOrderType, unknown>>) {
+export function estimateMarketOrderByQuery(query: Record<string, unknown>) {
     return MarketOrderModel.estimatedDocumentCount({
         ...query
     })
