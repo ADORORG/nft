@@ -1,20 +1,20 @@
 import React, { useEffect } from "react"
 
-type ModalChildren = {
+interface ModalChildren {
     children: React.ReactNode
     className?: string
     onHide?: () => void
 }
 
-type ModalProps = {
-    children: React.ReactNode
+export interface ModalProps {
+    children?: React.ReactNode
     className?: string
-    onHide: () => void
+    onHide: (...args: any[]) => any
     show: boolean
     backdrop?: boolean
 };
 
-type ModalComponent = React.FC<ModalProps> & {
+interface ModalComponent extends React.FC<ModalProps>  {
     Header: React.FC<ModalChildren>;
     Body: React.FC<ModalChildren>;
     Footer: React.FC<ModalChildren>;
@@ -90,7 +90,9 @@ const ModalHeader: React.FC<ModalChildren> = (props) => {
                 </svg>
                 <span className="sr-only">Close modal</span>
             </button>
-            {children}
+            <div className="pr-6">
+                {children}
+            </div>
         </div>
     )
 }

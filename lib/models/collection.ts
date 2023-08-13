@@ -22,18 +22,12 @@ const CollectionSchema = new Schema<CollectionType>({
     twitter: String,
     discord: String,
     owner: {type: String, ref: accounts, required: true, index: true},
-    createdAt: {type: Date, get: (v: Date) => v.getTime()},
-    updatedAt: {type: Date, get: (v: Date) => v.getTime()}
+    createdAt: {type: Date},
+    updatedAt: {type: Date}
 }, {
     collection: xcollections,
     timestamps: true
 });
-
-CollectionSchema.set('toObject', {
-    flattenMaps: true, 
-    flattenObjectIds: true,
-    versionKey: false
-})
 
 CollectionSchema.pre('save', function(next) {
     // Rewrite collection slug to be only alphanumeric characters
@@ -44,6 +38,16 @@ CollectionSchema.pre('save', function(next) {
     }
 
     next()
+})
+
+CollectionSchema.post('find', function(docs: CollectionType[]) {
+    docs.forEach(function(doc) {
+        doc?.toObject?.({
+            flattenMaps: true,
+            flattenObjectIds: true,
+            versionKey: false
+        })
+    })
 })
 
 export default (models[xcollections] as Model<CollectionType>) || model<CollectionType>(xcollections, CollectionSchema);

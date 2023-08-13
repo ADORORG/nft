@@ -59,6 +59,11 @@ function getErrorMessage(error: any) {
     return errorMessage
 }
 
+/**
+ * Error Wrapper helper that automatically catch error originating from request & response function handler
+ * @param func - The original request & response handler function
+ * @returns 
+ */
 export default function withRequestErrorr<T extends Function>(func: T) {
 
     return function withErrorhandler(...restParams: any[]) {

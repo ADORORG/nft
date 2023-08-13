@@ -12,3 +12,8 @@ export async function fetcher<R=AppRouterApiResponseType>(url: URL | string, opt
 
     return data
 }
+
+export function getFetcherErrorMessage(error: any): string {
+    const message = error.body && error.body.message ? error.body.message : error.message
+    return message
+}

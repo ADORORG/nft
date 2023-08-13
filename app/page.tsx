@@ -1,10 +1,11 @@
-import HeroSection from "./components/Hero/Hero"
-import MarketValueSummary from "./components/MarketValue"
-import SupportedBlockchainNetwork from "./components/SupportedNetwork"
-import TopCreator from "./components/TopCreator"
-import StepsToBeACreator from "./components/StepToCreate"
-import JoinOurCommunity from "./components/JoinCommunity"
-import { TrendingAuction, TrendingFixedOrder } from "./components/TrendingItem"
+import HeroSection from "../components/LandingPage/Hero/Hero"
+import MarketValueSummary from "../components/LandingPage/MarketValue"
+import SupportedBlockchainNetwork from "../components/LandingPage/SupportedNetwork"
+import TopCreator from "../components/LandingPage/TopCreator"
+import StepsToBeACreator from "../components/LandingPage/StepToCreate"
+import JoinOurCommunity from "../components/LandingPage/JoinCommunity"
+import { TrendingAuction, TrendingFixedOrder } from "../components/LandingPage/TrendingItem"
+import { getSettledPromiseValue } from "@/utils/main"
 // server side
 import mongoooseConnectionPromise from '@/wrapper/mongoose_connect'
 import { 
@@ -33,18 +34,17 @@ async function getServerSideData() {
 
   const [marketOrders, topTraders, marketValue] = await Promise.allSettled([marketOrdersPromise, topTradersPromise, marketValuePromise])
 
-  const getPromiseValue = (settledPromised: any, altValue = []) => settledPromised.status === "fulfilled" ? settledPromised.value : altValue
-
   return {
-    marketOrders: getPromiseValue(marketOrders),
-    topTraders: getPromiseValue(topTraders),
-    marketValue: getPromiseValue(marketValue)
+    marketOrders: getSettledPromiseValue(marketOrders, []),
+    topTraders: getSettledPromiseValue(topTraders, []),
+    marketValue: getSettledPromiseValue(marketValue, [])
   }
 }
 
 
 export default async function LandingPage() {
   const {marketOrders, topTraders, marketValue} = await getServerSideData()
+
   return (
     <div className="">
       <HeroSection marketOrders={marketOrders} />

@@ -1,13 +1,13 @@
-import type { Types } from 'mongoose';
+import type { Types, Document } from 'mongoose';
 import type { EthereumAddress } from "./common"
 import type { AttributeType } from './common';
 import type AccountType from './account';
 import type CollectionType from './collection';
 import type ContractType from './contract';
 
-export default interface NftTokenType {
+export default interface NftTokenType extends Partial<Document> {
     /** The document objectId */
-    _id?: Types.ObjectId | String;
+    _id?: Types.ObjectId;
     /** NFT token id */
     tokenId: string;
     /** Token supply. Always 1 for erc721 */
@@ -48,16 +48,16 @@ export default interface NftTokenType {
      * The collection to which this token belongs.
      * 'collection' is a reserved keyword in Mongoose, hence, 'xcollection' is used
      */
-    xcollection?: Types.ObjectId | String | CollectionType; 
+    xcollection?: Types.ObjectId | CollectionType; 
     /** The contract to which this token belongs */
-    contract: Types.ObjectId | String | ContractType;
+    contract: Types.ObjectId | ContractType;
     /** The current owner of this token */
     owner: EthereumAddress | AccountType; 
     /**
      * For tokens that are minted elsewhere and imported to this app
      */
-    createdAt?: number | Date;
-    updatedAt?: number | Date;
+    createdAt?: Date;
+    updatedAt?: Date;
 }
 
 export interface PopulatedNftTokenType extends NftTokenType {

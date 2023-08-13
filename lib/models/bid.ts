@@ -14,17 +14,21 @@ const MarketBidSchema = new Schema<MarketBidType>({
     bidder: {type: String, ref: accounts, required: true, index: true},
     price: {type: String, required: true},
     txHash: {type: String, required: true},
-    createdAt: {type: Date, get: (v: Date) => v.getTime()},
-    updatedAt: {type: Date, get: (v: Date) => v.getTime()}
+    createdAt: {type: Date},
+    updatedAt: {type: Date}
 }, {
     collection: bids,
     timestamps: true
 });
 
-MarketBidSchema.set('toObject', {
-    flattenMaps: true, 
-    flattenObjectIds: true,
-    versionKey: false
+MarketBidSchema.post('find', function(docs: MarketBidType[]) {
+    docs.forEach(function(doc) {
+        doc?.toObject?.({
+            flattenMaps: true,
+            flattenObjectIds: true,
+            versionKey: false
+        })
+    })
 })
 
 export default (models[bids] as Model<MarketBidType>) || model<MarketBidType>(bids, MarketBidSchema);

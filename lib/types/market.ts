@@ -5,9 +5,11 @@ import type { CryptocurrencyType } from './currency';
 import type AccountType from './account';
 import type { default as NftTokenType, PopulatedNftTokenType } from './token';
 
-export default interface MarketOrderType extends Document {
-    _id?: Types.ObjectId | String;
-    token: Types.ObjectId | String | NftTokenType;
+export default interface MarketOrderType extends Partial<Document> {
+    /** Market order document _id */
+    _id?: Types.ObjectId;
+    /** Populated token or token document _id */
+    token: Types.ObjectId | NftTokenType;
     /**
      * The price for fixed sale, starting price for auctions or offer price for an offer
      */
@@ -20,17 +22,24 @@ export default interface MarketOrderType extends Document {
      * Sold price for an item that was sold
      */
     soldPrice?: string;
+    /** Type of sale, one of 'fixed', 'auction' 'offer' */
     saleType: MarketSaleType;
+    /** The amount being sold */
     quantity: number;
+    /** A populated seller account or seller document _id */
     seller: EthereumAddress | AccountType;
+    /** A populated buyer account or buyer document _id */
     buyer?: EthereumAddress | AccountType;
+    /** 'Offchain' for off chain transaction and 'onchain' for on-chain transaction */
     permitType: MarketPermitType;
+    /** Status of this order, 'active', 'sold', 'cancelled' */
     status: MarketStatusType;
     /**
      * Date and time when an auction will end
      */
-    endsAt?: Date | number;
-    currency: Types.ObjectId | string | CryptocurrencyType;
+    endsAt?: Date;
+    /** A populated currency object for this order or the currency document _id */
+    currency: Types.ObjectId | CryptocurrencyType;
     /**
      * Transaction hash from market listing. It's not available for an offchain listing
      */
@@ -56,15 +65,16 @@ export default interface MarketOrderType extends Document {
      */
     orderDeadline?: string;
     /**
-     * The version of marketplace contract for this order
+     * The version of marketplace contract for which this order is listed
      */
     version: string;
-    createdAt?: number | Date;
-    updatedAt?: number | Date;
+    createdAt?: Date;
+    updatedAt?: Date;
 }
 
 export interface PopulatedMarketOrderType extends MarketOrderType {
     token: PopulatedNftTokenType
     seller: AccountType
     buyer?: AccountType
+    currency: CryptocurrencyType
 }

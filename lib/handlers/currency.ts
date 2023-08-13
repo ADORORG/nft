@@ -2,6 +2,17 @@ import { Types } from 'mongoose';
 import type { CryptocurrencyType } from '../types/currency'
 import CurrencyModel from '../models/currency'
 
+
+export async function validateCurrency(document: any) {
+    try {
+        await CurrencyModel.validate(document)
+        return true
+    } catch(error) {
+        // console.log(error)
+        return false
+    }
+}
+
 /**
  * Add a new cryptocurrency to the data
  * @param currency 
@@ -55,6 +66,17 @@ export function getCurrenciesByChainId(chainId: number) {
     return CurrencyModel.find({
         chainId
     })
+    .lean()
+    .exec();
+}
+
+
+/**
+ * Get all the cryptocurrencies
+ * @returns all cryptocurrencies
+ */
+export function getAllCurrencies() {
+    return CurrencyModel.find()
     .lean()
     .exec();
 }

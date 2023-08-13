@@ -112,20 +112,62 @@ export async function getOrCreateContractByQuery(query: Partial<Record<keyof Con
      * To validate, we merge the query and update then validate
      * If validation is passed, we can upsert otherwise, we'll attempt to perform only update
      */
-    let isValidateDocToUpsert = true;
+    let isValidatedDocToUpsert = true;
 
     try {
         await ContractModel.validate({...query, ...update});
     } catch(error) {
-        isValidateDocToUpsert = false
+        isValidatedDocToUpsert = false
     }
 
     return ContractModel.findOneAndUpdate(
         {...query}, 
         {...update}, {
         new: true,
-        upsert: isValidateDocToUpsert,
+        upsert: isValidatedDocToUpsert,
     })
+    .populate(populate)
+    .lean()
+    .exec()
+}
+
+/**
+ * Get a contract
+ * @param query - Filter object
+ * @returns - an array of populated contract
+ */
+export async function getContractsByQuery(
+    query: Partial<Record<keyof ContractType, unknown>>,
+    options: {
+        limit?: number,
+        skip?: number,
+        sort?: Record<string, any>,
+        select?: string
+    }) {
+    const {
+        limit = 100,
+        skip = 0,
+        sort = {createdAt: -1},
+        select = ''
+    } = options
+
+    const leanOption = {lean: true}
+    const populate = [
+        {
+            path: 'owner',
+            select: '-email -roles -emailVerified -__v',
+            options: leanOption
+        }
+    ] satisfies PopulateOptions[]
+
+   
+    return ContractModel.find({
+        ...query
+    })
+    .sort(sort)
+    .skip(skip)
+    .limit(limit)
+    .select(select)
     .populate(populate)
     .lean()
     .exec()

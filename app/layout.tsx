@@ -3,11 +3,11 @@ import Navbar from "@/components/Navbar"
 import Footer from "@/components/Footer"
 import WalletAuthWrapper from "@/components/AuthWrapper"
 import NextAuthSessionProvider from "@/components/NextAuthSession"
-import myWagmiConfig from "@/web3.config"
+import SWRProvider from "@/components/SWRProvider"
+import WagmiProvider from "@/components/WagmiProvider"
+import { AppInfo } from "@/lib/app.config"
 import { Toaster } from "react-hot-toast"
 import { Changa/* , Inconsolata */ } from "next/font/google"
-import { AppInfo } from "@/lib/app.config"
-import { WagmiConfig } from "wagmi"
 import { ConnectWalletContextWrapper } from "@/components/ConnectWallet"
 
 const changa = Changa(
@@ -115,7 +115,8 @@ export default function RootLayout({
             className: "bg-gray-900 text-gray-100 dark:bg-gray-100 dark:text-gray-900",
           }}
         />
-        <WagmiConfig config={myWagmiConfig}>
+        <SWRProvider>
+          <WagmiProvider>
           <NextAuthSessionProvider>
             <ConnectWalletContextWrapper>
               <WalletAuthWrapper>
@@ -125,7 +126,8 @@ export default function RootLayout({
               </WalletAuthWrapper>
             </ConnectWalletContextWrapper>
           </NextAuthSessionProvider>
-        </WagmiConfig>
+        </WagmiProvider>
+        </SWRProvider>
       </body>
     </html>
   )

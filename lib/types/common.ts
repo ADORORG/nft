@@ -9,10 +9,12 @@ export interface AttributeType {
 export const MARKET_SALE_TYPES = ['fixed', 'auction', 'offer'] as const
 export const MARKET_PERMIT_TYPES = ['onchain', 'offchain'] as const
 export const MARKET_STATUS_TYPES = ['active', 'sold', 'cancelled'] as const
+export const NFT_CONTRACT_SCHEMA = ['erc721', 'erc1155'] as const
 
 export type MarketSaleType = typeof MARKET_SALE_TYPES[number];
 export type MarketPermitType = typeof MARKET_PERMIT_TYPES[number]
 export type MarketStatusType = typeof MARKET_STATUS_TYPES[number]
+export type NftContractSchemaType = typeof NFT_CONTRACT_SCHEMA[number]
 
 export type EthereumAddress = `0x${string}` | string // Needs to implement ETH address type
 
@@ -25,7 +27,7 @@ export type TopTraderAccountType = {
 
 export type TotalMarketValueByCryptoCurrencyType = {
     /** Currency object _id */
-    _id: Types.ObjectId | string,
+    _id: Types.ObjectId,
     /** Amount in cryptocurrency */
     amount: number,
     /** Number of market orders for this currency */
@@ -36,12 +38,12 @@ export type TotalMarketValueInDollarType = {
     /** Value in dollar (usd) */
     dollarValue: number,
     /** Number of market orders */
-    orderCount: number
+    orderCount?: number
 }
 
-export type AppRouterApiResponseType = {
+export type AppRouterApiResponseType<T=any> = {
     success: boolean,
-    data: Array<Record<string, any>> | Record<string, any> | null,
+    data: T,
     message: string,
     code: string | number
 }

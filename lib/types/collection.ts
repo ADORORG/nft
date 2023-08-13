@@ -1,10 +1,10 @@
-import type { Types } from 'mongoose'
+import type { Types, Document } from 'mongoose'
 import type { EthereumAddress } from './common'
 import type AccountType from './account';
 
-export default interface CollectionType {
+export default interface CollectionType extends Partial<Document> {
     /** The document objectId */
-    _id?: Types.ObjectId | String;
+    _id?: Types.ObjectId;
     /** Name of the collection */
     name: string;
     /** A unique slug for this collection */
@@ -28,9 +28,9 @@ export default interface CollectionType {
     /** Collection owner Account document or the Account document _id */
     owner: EthereumAddress | AccountType;
     /** Creation date */
-    createdAt?: number | Date;
+    createdAt?: Date;
     /** Updated date */
-    updatedAt?: number | Date;
+    updatedAt?: Date;
 }
 
 export interface PopulatedCollectionType extends CollectionType {

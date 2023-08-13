@@ -1,3 +1,4 @@
+"use client"
 import React from "react"
 import { useAtom } from "jotai"
 import { showWalletConnectModal, showConnectedWalletModal } from "./store"

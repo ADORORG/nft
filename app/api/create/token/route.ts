@@ -1,0 +1,93 @@
+import type AccountType from '@/lib/types/account'
+import mongooseConnectPromise from '@/wrapper/mongoose_connect'
+import { CustomRequestError } from '@/lib/error/request'
+import { validateToken, createToken, setAccountDetails } from '@/lib/handlers'
+import { withRequestError, withSession } from '@/wrapper'
+import { dataUrlToReadableStream } from '@/lib/utils/file'
+import { uploadMediaToIPFS } from '@/lib/utils/pinata'
+import { type NextRequest, NextResponse } from 'next/server'
+
+async function createNewToken(request: NextRequest, _: any, { user }: {user: AccountType}) {
+    const formData = await request.formData()
+    
+    // Build the token data
+    const data: any = {
+        owner: user.address
+    }
+
+    for (const key of formData.keys()) {
+        data[key] = formData.get(key) || ""
+    }
+
+    data.attributes = JSON.parse(data.attributes)
+    data.redeemable = Boolean(data.redeemable)
+    data.royalty = Number(data.royalty) || 0 // handle case 'undefined' for royalty
+    data.supply = Number(data.supply) || 1 // handle case 'undefined' for royalty
+    // validate the token data
+    const isValidToken = await validateToken(data)
+    if (!isValidToken) {
+        throw new CustomRequestError('Token data is invalid', 400)
+    }
+
+    /** 
+     * Ensure that image is a dataURI
+     * @todo Implement a more strict check for media dataURI  
+    */
+    if (
+        (!data.image && !data.image.startsWith('data:image'))
+    ) throw new CustomRequestError('Please provide a valid token image', 400)
+    
+    // Convert dataURI to readable stream
+    const imageId = `${data.contract}#${data.tokenId}-image`
+    const imageStream = dataUrlToReadableStream(data.image, imageId)
+    
+    const mediaToUpload = [
+        uploadMediaToIPFS(imageStream, imageId)
+    ]
+
+    if (data.media) {
+        const mediaId = `${data.contract}#${data.tokenId}-media`
+        const mediaStream = dataUrlToReadableStream(data.media, mediaId)
+        mediaToUpload.push(uploadMediaToIPFS(mediaStream, mediaId))
+    }
+    // Upload readable stream to ipfs through pinata
+    const [imageHash, mediaHash] = await Promise.all(mediaToUpload)
+
+    await mongooseConnectPromise
+    // Get the user session account
+    const account = await setAccountDetails(user.address, {address: user.address})
+    // create the new token
+    const newToken = await createToken({
+        image: imageHash,
+        media: mediaHash || "",
+        mediaType: data.mediaType,
+        tokenId: data.tokenId,
+        supply: data.supply,
+        royalty: data.royalty,
+        name: data.name,
+        description: data.description,
+        tags: data.tags,
+        attributes: data.attributes,
+        redeemable: data.redeemable,
+        redeemableContent: data.redeemableContent,
+        externalUrl: data.externalUrl,
+        backgroundColor: data.backgroundColor,
+        owner: account._id,
+        xcollection: data.xcollection,
+        contract: data.contract,
+
+    })
+    
+    // send the new token in response
+    return NextResponse.json({
+        success: true,
+        message: 'Operation completed successfully',
+        data: newToken,
+        code: 201
+    }, {status: 201})
+}
+
+// wrap error and session handler
+const wrappedPost = withRequestError(withSession(createNewToken))
+
+export { wrappedPost as POST}

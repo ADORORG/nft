@@ -1,18 +1,19 @@
 "use client"
 import Image from "next/image"
 import Link from "next/link"
+import ThemeSwitcher from "@/components/ThemeSwitcher"
 import { ConnectWalletButton, NetworkChainSelect } from "@/components/ConnectWallet"
 import { useState } from "react"
 import { Bars3BottomRightIcon, XMarkIcon, MagnifyingGlassIcon as SearchIcon } from "@heroicons/react/24/outline"
 
 type NavigationType = {name: string, href: string}
-interface TopNavType {
+interface TopNavProps {
     name: string,
     logoUrl: string,
     navLink: NavigationType[]
 }
 
-export default function Navbar({ topNav }:{ topNav: TopNavType }) {
+export default function Navbar({ topNav }:{ topNav: TopNavProps }) {
   const [isOpen, setIsOpen] = useState(false)
   const {name, logoUrl, navLink} = topNav
 
@@ -69,6 +70,9 @@ export default function Navbar({ topNav }:{ topNav: TopNavType }) {
                           </Link>
                         ))
                       }
+                  </div>
+                  <div>
+                    <ThemeSwitcher />
                   </div>
                   <div className="lg:ml-4 mt-4 lg:mt-0">
                     <NetworkChainSelect />

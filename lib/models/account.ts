@@ -25,19 +25,13 @@ const AccountSchema = new Schema<AccountType>({
     discord: String,
     telegram: String,
     roles: [String], // a quick hack added to allow admin add currencies
-    createdAt: {type: Date, get: (v: Date) => v.getTime()},
-    updatedAt: {type: Date, get: (v: Date) => v.getTime()}
+    createdAt: {type: Date},
+    updatedAt: {type: Date}
 }, {
     collection: accounts,
     timestamps: true,
     _id: false,
 });
-
-AccountSchema.set('toObject', {
-    flattenMaps: true, 
-    flattenObjectIds: true,
-    versionKey: false
-})
 
 /**
  * Ensure that the 'address' is a valid format ETH address
@@ -82,5 +76,14 @@ function _idAndAddressUpdateMerging(next: (arg?: Error) => void) {
 
 AccountSchema.pre('save', requireValidAccountAddress);
 AccountSchema.pre(['findOneAndUpdate', 'updateOne'], _idAndAddressUpdateMerging);
+AccountSchema.post('find', function(docs: AccountType[]) {
+    docs.forEach(function(doc) {
+        doc?.toObject?.({
+            flattenMaps: true,
+            flattenObjectIds: true,
+            versionKey: false
+        })
+    })
+})
 
 export default (models[accounts] as Model<AccountType>) || model<AccountType>(accounts, AccountSchema);

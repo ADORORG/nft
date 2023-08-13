@@ -5,7 +5,7 @@ import { CustomRequestError } from '@/lib/error/request'
 /**
  * Session checker and wrapper for request that requires authentication
  * App router exported function takes (request, context) as argument.
- * We are passing 'session' as the last argument
+ * We are passing 'session' as the last argument to request&response function handler
  * @param func - app router req handler function
  * @returns 
  */

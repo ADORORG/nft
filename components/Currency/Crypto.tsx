@@ -1,14 +1,14 @@
 import Image from "next/image"
 import type { CryptocurrencyType } from "@/lib/types/currency"
 
-type CurrencyDisplayProps = {
+interface CurrencyDisplayProps extends React.HTMLAttributes<HTMLImageElement> {
     currency: CryptocurrencyType
     amount: string
     width?: number
     height?: number
 }
 
-export default function CryptoCurrencyDisplay({currency, amount, width = 10, height = 10}: CurrencyDisplayProps) {
+export default function CryptoCurrencyDisplay({currency, amount, width = 10, height = 10, className}: CurrencyDisplayProps) {
     const { symbol, logoURI, /* price */ } = currency
     
     return (
@@ -17,13 +17,13 @@ export default function CryptoCurrencyDisplay({currency, amount, width = 10, hei
             title={`${amount} ${symbol}`}
         >
             <Image 
-                className={`w-[${width}px] mr-2`}
+                className={`mr-2 ${className}`}
                 src={logoURI}
                 alt={symbol}
                 width={width}
                 height={height}
             />
-            <span className="text-gray-900 dark:text-white tracking-wide">{amount} {symbol}</span>
+            <span className={`text-gray-900 dark:text-white tracking-wide`}>{amount} {symbol}</span>
         </div>
     )
 }

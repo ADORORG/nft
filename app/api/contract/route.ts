@@ -1,20 +1,13 @@
 import type { NextRequest, NextResponse } from 'next/server'
-import databaseWrapper from '@/wrapper/database.wrapper'
-import requestErrorWrapper from '@/wrapper/error.wrapper'
-
-async function createContract(request: NextRequest, response: NextResponse) {
-
-}
+import { withRequestError } from '@/wrapper'
 
 async function getContracts(request: NextRequest, response: NextResponse) {
 
 }
 
 
-const wrappedGet = databaseWrapper(requestErrorWrapper(getContracts))
-const wrappedPost = databaseWrapper(requestErrorWrapper(createContract))
+const wrappedGet = withRequestError(getContracts)
 
 export {
-    wrappedPost as POST,
     wrappedGet as GET
 }

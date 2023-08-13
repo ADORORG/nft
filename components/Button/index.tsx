@@ -33,7 +33,11 @@ export default function Button({
 
     const btnClass = inversed ? inverse[variant] : variants[variant]
     return (
-        <button className={`p-2 ${btnClass} ${rounded && "rounded"} ${disabled && "bg-opacity-70 opacity-70"} ${className}`} {...props}>
+        <button 
+            className={`p-2 ${btnClass} ${rounded && "rounded"} ${disabled && "bg-opacity-70 opacity-70"} ${className}`}
+            disabled={disabled}
+            {...props}
+        >
             {
                 loading && 
                 <svg aria-hidden="true" role="status" className="inline w-4 h-4 mr-3 text-white animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">

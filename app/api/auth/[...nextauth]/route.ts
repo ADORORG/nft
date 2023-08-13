@@ -8,7 +8,7 @@ import { setAccountDetails } from '@/lib/handlers'
 import { getCsrfToken } from 'next-auth/react'
 import { SiweMessage } from 'siwe'
 
-export const nextAuthOptions = (req: NextApiRequest): NextAuthOptions => {
+export const nextAuthOptions = (req?: NextApiRequest): NextAuthOptions => {
   const providers = [
     CredentialsProvider({
       name: 'Ethereum',
@@ -88,7 +88,7 @@ function authHandler(req: NextApiRequest, res: NextApiResponse) {
 }
 
 // get session on the server
-export function getAccountSession(req: NextApiRequest) {
+export function getAccountSession(req?: NextApiRequest) {
   return getServerSession(nextAuthOptions(req))
 }
 

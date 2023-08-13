@@ -11,7 +11,13 @@ export default function useAuthStatus() {
     const { address, isConnected } = useAccount()
     const { disconnect } = useDisconnect()
     const { data, status } = useSession()
-    const session = data as Session & {user: AccountType} | null
+    /**
+     * We could have a valid session while wallet is not Connected
+     * This could happen if session have not expired and user close 
+     * the website.
+     * Thus, we want to ensure that the session returns `null` if wallet is not connected even if there's an active session
+     */
+    const session = (isConnected ? data : null) as Session & {user: AccountType} | null
 
     const handleLogin = async () => {
       const callbackUrl = window.location.href
@@ -45,6 +51,7 @@ export default function useAuthStatus() {
     return {
         session,
         isConnected,
+        address,
         addressChanged: isConnected && session?.user?.address.toLowerCase() !== address?.toLowerCase(),
         authenticated: status === "authenticated",
         unauthenticated: status === "unauthenticated",

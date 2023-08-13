@@ -5,13 +5,14 @@ interface SelectWithIconInterface {
         value: string | number, 
         label: string, 
         icon?: React.ReactElement
-    }[]
-    defaultValue: string | number
+    }[],
+    defaultValue: string | number,
+    buttonClassName?: string,
     onChange: (value: string | number) => void
 }
 
 export default function SelectWithIcon(props: SelectWithIconInterface) {
-    const { options, defaultValue, onChange } = props
+    const { options, defaultValue, onChange, buttonClassName } = props
     const [ isOpen, setIsOpen ] = useState(false)
     const dropdownRef = useRef<HTMLDivElement>(null)
 
@@ -46,11 +47,11 @@ export default function SelectWithIcon(props: SelectWithIconInterface) {
     return (
         <div className="relative" ref={dropdownRef}>
             <button 
-                className="w-44 flex-shrink-0 z-10 flex justify-between items-center py-2.5 px-4 text-sm font-semibold text-gray-500 bg-gray-100 border border-gray-300 rounded hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600" 
+                className={`w-44 flex-shrink-0 z-10 flex justify-between items-center py-2.5 px-4 text-sm font-semibold text-gray-500 bg-gray-100 border border-gray-300 rounded hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600 ${buttonClassName}`} 
                 type="button"
                 onClick={handleDropdown}
             >
-                <span className="flex">
+                <span className="flex items-center">
                     {/* Option icon if supplied */}
                     {
                         selectedOptionIcon &&
@@ -68,7 +69,7 @@ export default function SelectWithIcon(props: SelectWithIconInterface) {
 
             {
                 isOpen &&
-                <div className="absolute origin-top-left left-0 z-10 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700">
+                <div className="absolute origin-top-left left-0 z-10 bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700">
                     <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdown-list">
                         {
                             options.map(({value, label, icon}, index) =>{
@@ -80,9 +81,9 @@ export default function SelectWithIcon(props: SelectWithIconInterface) {
                                         <button
                                             onClick={() => handleSelect(value)} 
                                             type="button" 
-                                            className="w-44 inline-flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white">
+                                            className={`w-44 flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white ${buttonClassName}`}>
 
-                                            <span className="inline-flex items-center">
+                                            <span className="flex items-center">
                                                 {/* Option icon if supplied */}
                                                 {
                                                     icon &&

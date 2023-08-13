@@ -35,21 +35,27 @@ const PriceSchema = new Schema<CryptocurrencyMarketDataType>({
 const CurrencySchema = new Schema<CryptocurrencyType>({
     name: {type: String, required: true},
     cid: {type: String, required: true},
+    uid: {type: String, unique: true, default: function() { return (this as any).cid + '#' + (this as any).chainId}},
     symbol: {type: String, required: true},
     decimals: {type: Number, required: true},
     chainId: {type: Number, required: true},
     address: {type: String, required: true},
     logoURI: {type: String, required: true},
     price: PriceSchema,
+    marketId: String
 }, {
     collection: currencies,
     timestamps: true
 });
 
-CurrencySchema.set('toObject', {
-    flattenMaps: true, 
-    flattenObjectIds: true,
-    versionKey: false
+CurrencySchema.post('find', function(docs: CryptocurrencyType[]) {
+    docs.forEach(function(doc) {
+        doc?.toObject?.({
+            flattenMaps: true,
+            flattenObjectIds: true,
+            versionKey: false
+        })
+    })
 })
 
 export default (models[currencies] as Model<CryptocurrencyType>) || model<CryptocurrencyType>(currencies, CurrencySchema);

@@ -5,7 +5,7 @@ import type NftTokenType from '../types/token';
 const { collections: xcollections, tokens, contracts, accounts } = dbCollections;
 
 const TokenSchema = new Schema<NftTokenType>({
-    tokenId: {type: String, required: true},
+    tokenId: {type: String, required: true, minlength: 1},
     supply: Number,
     name: String,
     description: String,
@@ -15,7 +15,7 @@ const TokenSchema = new Schema<NftTokenType>({
     externalUrl: String,
     backgroundColor: String,
     redeemable: Boolean,
-    redeemableContent: String,
+    redeemableContent: {type: String, required: function() { return (this as any).redeemable }},
     attributes: {type: Array, default: []},
     tags: String,
     views: Number,
@@ -23,17 +23,21 @@ const TokenSchema = new Schema<NftTokenType>({
     xcollection: {type: Schema.Types.ObjectId, ref: xcollections, index: true}, // 'collection' is a reserved keyword in Mongoose
     contract: {type: Schema.Types.ObjectId, ref: contracts, required: true, index: true},
     owner: {type: String, ref: accounts, required: true, index: true},    
-    createdAt: {type: Date, get: (v: Date) => v.getTime()},
-    updatedAt: {type: Date, get: (v: Date) => v.getTime()}
+    createdAt: {type: Date},
+    updatedAt: {type: Date}
 }, {
     collection: tokens,
     timestamps: true
 });
 
-TokenSchema.set('toObject', {
-    flattenMaps: true, 
-    flattenObjectIds: true,
-    versionKey: false
+TokenSchema.post('find', function(docs: NftTokenType[]) {
+    docs.forEach(function(doc) {
+        doc?.toObject?.({
+            flattenMaps: true,
+            flattenObjectIds: true,
+            versionKey: false
+        })
+    })
 })
 
 export default (models[tokens] as Model<NftTokenType>) || model<NftTokenType>(tokens, TokenSchema);

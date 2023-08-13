@@ -5,7 +5,15 @@ import type { TopTraderAccountType, TotalMarketValueByCryptoCurrencyType, TotalM
 import MarketOrderModel from '../models/market'
 import { dbCollections } from '../app.config';
 
-
+export async function validateMarket(document: any) {
+  try {
+      await MarketOrderModel.validate(document)
+      return true
+  } catch(error) {
+      // console.log(error)
+      return false
+  }
+}
 
 /**
  * Create a new market order
@@ -98,7 +106,7 @@ export function getMarketOrdersByQuery(
         skip?: number,
         sort?: Record<string, any>,
         select?: string
-    }) {
+    }): Promise<MarketOrderType[]> {
     const {
         limit = 100,
         skip = 0,

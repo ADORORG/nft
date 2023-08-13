@@ -1,3 +1,21 @@
+
+
+/**
+ * Get a settled promise value from Promise.allSettled
+ * @param settledPromised - A promise result from Promise.allSettled
+ * @param altValue - value to return if promise is not fulfilled
+ * @returns a settled promise value or alternative value supplied
+ */
+export function getSettledPromiseValue(settledPromised: any, altValue = []) {
+	return (
+		settledPromised?.status === "fulfilled" 
+		? 
+		settledPromised.value
+		: 
+		altValue
+	)
+}
+
 /**
  * Check that 
  * @param obj 
@@ -160,4 +178,29 @@ export function formatNumber(value: number | bigint | string, options: Record<st
 export function splitAtWhiteSpaceOrComma(str: string): Array<string> {
 	if (!str || typeof str !== 'string') return [];
 	return str.trim().split(/[,\s]+/).filter(Boolean); // split at comma or space
+}
+
+/**
+ * Clone an object
+ * @param obj Array or Object to clone
+ * @returns 
+ */
+export function deepClone(obj: any): any {
+	if (Array.isArray(obj)) {
+		var arr = []
+		for (var i = 0; i < obj.length; i++) {
+			arr[i] = deepClone(obj[i]);
+		}
+
+		return arr;
+	}
+
+	if (typeof(obj) === 'object'){
+		var cloned: any = {};
+		for(let key in obj){
+			cloned[key] = deepClone(obj[key])
+		}
+		return cloned;	
+	}
+	return obj;
 }

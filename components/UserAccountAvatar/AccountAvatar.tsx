@@ -1,29 +1,28 @@
 import type AccountType from "@/lib/types/account"
 import Image from "@/components/Image"
 
-interface AccountAvatarProps {
-    account: AccountType,
-    width?: number,
-    height?: number
+interface AccountAvatarProps extends React.ImgHTMLAttributes<HTMLImageElement> {
+    account?: AccountType,
+    alt?: string
 }
 
-const UserAccountAvatar: React.FC<AccountAvatarProps> = ({account, width = 10, height = 10}) => {
+export default function AccountAvatar(props: AccountAvatarProps) {
+    let { account, className, alt = "", ...otherProps } = props
+
     if (!account) {
         account = {
             address: "0x0"
         }
     }
-    const { image = "" } = account
+    const { image = "", address } = account
 
     return (
         <Image 
-            className={`w-${width} rounded`} 
-            src={image} 
-            alt=""
-            width={width}
-            height={height}
+            data={address}
+            className={`rounded ${className}`} 
+            src={image}
+            alt={alt}
+            {...otherProps}
         />
     )
 }
-
-export default UserAccountAvatar

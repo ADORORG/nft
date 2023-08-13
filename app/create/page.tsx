@@ -1,4 +1,4 @@
-import RenderCreateOption from "./component/RenderCreateOption"
+import { RenderCreateOption } from "@/components/CreateForm"
 
 export default function Page() {
     return <RenderCreateOption />

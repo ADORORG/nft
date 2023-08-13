@@ -1,4 +1,3 @@
-import type CollectionType from '@/lib/types/collection'
 import type AccountType from '@/lib/types/account'
 import mongooseConnectPromise from '@/wrapper/mongoose_connect'
 import { CustomRequestError } from '@/lib/error/request'
@@ -6,7 +5,7 @@ import { validateCollection, createCollection, setAccountDetails } from '@/lib/h
 import { withRequestError, withSession } from '@/wrapper'
 import { onlyAlphaNumeric } from '@/lib/utils/main'
 import { dataUrlToReadableStream } from '@/lib/utils/file'
-import { uploadImageToIPFS } from '@/lib/utils/pinata'
+import { uploadMediaToIPFS } from '@/lib/utils/pinata'
 import { type NextRequest, NextResponse } from 'next/server'
 
 async function createNewCollection(request: NextRequest, _: any, { user }: {user: AccountType}) {
@@ -46,8 +45,8 @@ async function createNewCollection(request: NextRequest, _: any, { user }: {user
     
     // Upload readable stream to ipfs through pinata
     const [imageHash, bannerHash] = await Promise.all([
-        uploadImageToIPFS(imageStream, bannerId),
-        uploadImageToIPFS(bannerStream, bannerId)
+        uploadMediaToIPFS(imageStream, imageId),
+        uploadMediaToIPFS(bannerStream, bannerId)
     ])
 
     // Get the user session account
@@ -62,8 +61,8 @@ async function createNewCollection(request: NextRequest, _: any, { user }: {user
         tags: data.tags,
         category: data.category,
         externalUrl: data.externalUrl,
-        twitter: data.twitter,
-        discord: data.discord,
+        twitter: data.twitter || "",
+        discord: data.discord || "",
         owner: account._id
     })
     
