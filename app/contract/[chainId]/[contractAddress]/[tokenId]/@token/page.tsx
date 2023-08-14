@@ -44,7 +44,7 @@ export default async function Page({params}: {params: PageProps}) {
     } = await getServerSideData(params)
     
     return (
-        <div className="flex flex-col md:flex-row gap-4 justify-center">
+        <div className="flex flex-col lg:flex-row gap-4 justify-center items-center lg:items-stretch h-max">
             <div className="border-2 border-gray-100 dark:border-gray-800 rounded px-4 shadow-xl">
                 <SingleTokenPage token={token as any} />
             </div>

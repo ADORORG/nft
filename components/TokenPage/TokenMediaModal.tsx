@@ -35,7 +35,8 @@ export default function TokenMediaModal(props: TokenPageProps) {
                 // MediaPreview props
                 src={media}
                 type={mediaType}
-                previewClassName="md:w-[480px] w-[320px]"
+                previewClassName="lg:w-[480px] w-[320px] flex flex-col justify-center"
+                modalBodyClassName="lg:w-[410px] w-[310px]"
                 loadingComponent={<MediaSkeleton />}
             />
         </>

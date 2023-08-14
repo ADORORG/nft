@@ -32,7 +32,7 @@ export default function Footer({footerNav}: {footerNav: FooterType}) {
                                 width={100}
                                 height={100}
                             />
-                            <span className="text-3xl font-semibold dark:text-white">
+                            <span className="text-3xl font-semibold text-gray-950 dark:text-white">
                                 { name }
                             </span>
                         </a>

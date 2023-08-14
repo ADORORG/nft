@@ -18,7 +18,7 @@ export default function MarketOrderPage(props: MarketOrdersProp & TokenPageProps
   
     return (
         <div className="w-[320px] md:w-[420px] text-gray-900 dark:text-white">
-            <div className="flex flex-col">
+            <div className="flex flex-col justify-between h-max">
                 {
                     activeOrder ?
                     <ShowActiveOrder 

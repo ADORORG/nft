@@ -16,7 +16,7 @@ export default function ErrorPage(props: ErrorPageProp) {
     }, [error])
 
     return (
-        <div className="min-h-screen bg-gray-100 dark:bg-gray-950 flex flex-col items-center justify-center">
+        <div className="min-h-screen bg-white dark:bg-gray-950 flex flex-col items-center justify-center">
             <h1 className="text-3xl pb-6 text-gray-900 dark:text-white">Something went wrong!</h1>
             {/* <p className="text-xl text-gray-600">Oops! Page not found.</p> */}
 

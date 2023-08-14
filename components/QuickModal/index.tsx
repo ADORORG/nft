@@ -3,6 +3,7 @@ import Modal, { type ModalProps } from "@/components/Modal"
 interface QuickModalProps extends ModalProps {
     modalTitle: React.ReactNode,
     modalBody: React.FC<any>,
+    modalBodyClassName?: string
     [otherProps: string]: any
 }
 
@@ -17,6 +18,7 @@ export default function QuickModal(props: QuickModalProps) {
         onHide, 
         backdrop, 
         className,
+        modalBodyClassName,
         modalBody: ModalBody,
         modalTitle: ModaTitle,
         ...modalBodyProps
@@ -35,7 +37,7 @@ export default function QuickModal(props: QuickModalProps) {
                 </h3>
 			</Modal.Header>
 			<Modal.Body>
-				<ModalBody {...modalBodyProps} />
+				<ModalBody className={modalBodyClassName} {...modalBodyProps} />
 			</Modal.Body>
 			
 		</Modal>
