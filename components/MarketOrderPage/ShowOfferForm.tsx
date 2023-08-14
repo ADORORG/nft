@@ -80,7 +80,7 @@ export default function ShowOfferForm(props: MarketOrdersProp & TokenPageProps) 
                 throw new Error(`Not enough ${currency.symbol} balance`)
             }
 
-            const isErc721 = props.token.contract.schema.toLowerCase() === "erc721"
+            const isErc721 = props.token.contract.nftSchema.toLowerCase() === "erc721"
             const tokenContractChainId = props.token.contract.chainId
             const tokenId = props.token.tokenId
             const tokenContractAddress = props.token.contract.contractAddress

@@ -2,7 +2,8 @@
 
 export { default as CreateCollectionForm } from "./Collection/CreateCollectionForm"
 export { default as CreateTokenForm } from "./Token/CreateTokenForm"
-export { default as CreateContractForm } from "./Contract/CreateContractForm"
+export { default as CreateERC721ContractForm } from "./Contract/CreateERC721ContractForm"
+export { default as CreateERC1155ContractForm } from "./Contract/CreateERC1155ContractForm"
 
 import { useRouter } from "next/navigation"
 import { CodeBracketIcon, FolderPlusIcon, DocumentPlusIcon } from "@heroicons/react/24/outline"

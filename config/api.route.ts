@@ -1,8 +1,27 @@
 
+/**
+ * Get the base URI for erc721 and erc1155
+ * @param chainId 
+ * @returns string uri
+ */
+export function getNftContractBaseURI(chainId: number) {
+    /**
+     * For the current contract,
+     * The contract address will be appended to this uri in the deployed contract
+     * @example 
+     * chainId = 5
+     * contractAddress = '0x'
+     * uri = 'https://api.adors.org/contract/5/0x'
+     */
+    return `https://api.adors.org/contract/${chainId}/`
+}
+
 /** Backend api routes */
 const apiRoutes = {
     /** Create a new collection */
     createCollection: "/api/create/collection",
+    /** Create a new contract */
+    createContract: "/api/create/contract",
     /** Create a new token */
     createToken: "/api/create/token",
     /** Create market order */

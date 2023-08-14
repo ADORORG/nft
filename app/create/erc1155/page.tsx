@@ -1,9 +1,8 @@
+import { CreateERC1155ContractForm } from "@/components/CreateForm"
 
 export default function Page() {
 
     return (
-        <div>
-            <h1>Create erc1155</h1>
-        </div>
+        <CreateERC1155ContractForm />
     )
 }

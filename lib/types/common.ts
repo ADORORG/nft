@@ -42,8 +42,12 @@ export type TotalMarketValueInDollarType = {
 }
 
 export type AppRouterApiResponseType<T=any> = {
+    /** Status of the api response */
     success: boolean,
+    /** Data returned from the request */
     data: T,
+    /** Message describing the status of the action */
     message: string,
+    /** Http code */
     code: string | number
 }

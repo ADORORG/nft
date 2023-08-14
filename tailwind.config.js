@@ -1,4 +1,6 @@
 /** @type {import('tailwindcss').Config} */
+const colors = require('tailwindcss/colors')
+
 module.exports = {
   darkMode: 'class',
   content: [
@@ -13,9 +15,9 @@ module.exports = {
         mono: ['var(--font-inconsolata)']
       },
       colors: {
-        'primary': '#eee',
-        'secondary': '#fff',
-        'tertiary': '#bbb'
+        primary: colors.rose,
+        secondary: colors.purple,
+        tertiary: colors.cyan
       },
     },
   },

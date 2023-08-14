@@ -181,7 +181,7 @@ export function getTokensByContract(contractId: Types.ObjectId | string, skip: n
  * @returns a token populated document or `null`
  */
 export function getTokenByQuery(
-    query: Partial<Record<keyof NftTokenType, unknown>>, 
+    query: Record<string, unknown>, 
     select: string = ''
     ) {
     
@@ -224,7 +224,7 @@ export function getTokenByQuery(
  * @returns 
  */
 export function getTokensByQuery(
-    query: Partial<Record<keyof NftTokenType, unknown>>, 
+    query: Record<string, unknown>, 
     options: {
         limit?: number,
         skip?: number,
@@ -308,7 +308,7 @@ export function setTokenOwner(_id: Types.ObjectId | string, newOwnerId: Ethereum
  * @param query a filter object
  * @returns a document count
  */
-export function countTokenByQuery(query: Partial<Record<keyof NftTokenType, unknown>>) {
+export function countTokenByQuery(query: Record<string, unknown>) {
     return TokenModel.countDocuments({
         ...query
     })
@@ -320,7 +320,7 @@ export function countTokenByQuery(query: Partial<Record<keyof NftTokenType, unkn
  * @param query a filter object
  * @returns a document count
  */
-export function estimateTokenByQuery(query: Partial<Record<keyof NftTokenType, unknown>>) {
+export function estimateTokenByQuery(query: Record<string, unknown>) {
     return TokenModel.estimatedDocumentCount({
         ...query
     })

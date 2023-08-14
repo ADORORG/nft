@@ -27,7 +27,7 @@ describe('Contract handler functions', () => {
         contractAddress: '0xA58950F05FeA2277d2608748412bf9F802eA4901',
         chainId: 1,
         royalty: 0,
-        schema: 'ERC1155',
+        nftSchema: 'ERC1155',
         version: '1',
         owner: '0xfc3ab3cb662da997592ceb18d357a07fc898cb2e'
     } as const
@@ -39,7 +39,7 @@ describe('Contract handler functions', () => {
         expect(newContract).toBeDefined()
         expect(typeof newContract.createdAt).toBe('number')
         expect(typeof newContract.owner === 'object' && newContract.owner.address).toBe(testContract.owner)
-        expect(newContract.schema).toBe('erc1155')
+        expect(newContract.nftSchema).toBe('erc1155')
     })
 
     it('should get contract by contract address', async () => {
@@ -47,7 +47,7 @@ describe('Contract handler functions', () => {
 
         expect(contract).toBeDefined()
         expect(typeof contract?.owner === 'object' && contract.owner.address).toBe(testContract.owner)
-        expect(contract?.schema).toBe('erc1155')
+        expect(contract?.nftSchema).toBe('erc1155')
 
         await expect(getContractById(contract?._id as string)).resolves.toBeDefined()
     })
@@ -61,7 +61,7 @@ describe('Contract handler functions', () => {
         expect(contracts.length).toBe(2)
         expect(contract).toBeDefined()
         expect(typeof contract?.owner === 'object' && contract.owner.address).toBe(testContract.owner)
-        expect(contract?.schema).toBe('erc1155')
+        expect(contract?.nftSchema).toBe('erc1155')
     })
 
     it('should return or create a new contract if passed validation', async () => {
@@ -72,7 +72,7 @@ describe('Contract handler functions', () => {
             contractAddress: '0x35Bec6549FEc50B70486ab30459bfF322c2Fb953',
             owner: testContract.owner,
         }, {
-            schema: 'ERC1155'
+            nftSchema: 'ERC1155'
         })
 
         expect(nullContract).toBeNull()

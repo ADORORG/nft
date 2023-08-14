@@ -1,5 +1,5 @@
 
-type ButtonVariants = "primary" | "secondary" | "tertiary";
+type ButtonVariants = "primary" | "secondary" | "tertiary" | "gradient"
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     children: React.ReactNode
@@ -19,22 +19,25 @@ export default function Button({
     disabled = false,
     loading = false,
     ...props}: ButtonProps) {
+    
     const variants: {[key in ButtonVariants]: string} = {
-        primary: "bg-rose-700 text-white",
-        secondary: "bg-gradient-to-r from-purple-800 to-indigo-900 text-white",
-        tertiary: "bg-gradient-to-r from-rose-500 to-rose-600",
+        primary: "bg-primary-900 hover:bg-opacity-90 text-white",
+        secondary: "bg-secondary-900 hover:bg-opacity-90 text-white",
+        tertiary: "bg-tertiary-900 hover:bg-opacity-90 text-white",
+        gradient: "bg-gradient-to-r from-primary-900 via-secondary-900 to-tertiary-900 text-white"
     }
 
     const inverse = {
-        primary: "border border-rose-700 text-gray-900 hover:text-gray-100 dark:text-gray-100 bg-transparent transition hover:bg-rose-700",
-        secondary: "border border-purple-800 text-gray-900 hover:text-gray-100 dark:text-gray-100 bg-transparent transition hover:bg-purple-900",
-        tertiary: "bg-gradient-to-r from-rose-600 to-rose-500",
+        primary: "border border-primary-900 text-gray-900 dark:text-gray-100 bg-transparent hover:text-white hover:bg-primary-900 transition",
+        secondary: "border border-secondary-900 text-gray-900 dark:text-gray-100 bg-transparent hover:text-white hover:bg-secondary-900 transition",
+        tertiary: "border border-tertiary-900 text-gray-900 dark:text-gray-100 bg-transparent hover:text-white hover:bg-tertiary-900 transition",
+        gradient: "border-r border-r-secondary-900 border-l border-l-primary-900 border-b border-b-tertiary-900 border-t border-t-primary-900 text-gray-900 dark:text-gray-100 bg-transparent hover:bg-gradient-to-r hover:from-primary-900 hover:via-secondary-900 hover:to-tertiary-900 hover:text-white"
     }
 
     const btnClass = inversed ? inverse[variant] : variants[variant]
     return (
         <button 
-            className={`p-2 ${btnClass} ${rounded && "rounded"} ${disabled && "bg-opacity-70 opacity-70"} ${className}`}
+            className={`p-2 ${btnClass} ${rounded && "rounded"} ${disabled && "bg-opacity-60 opacity-60"} ${className}`}
             disabled={disabled}
             {...props}
         >

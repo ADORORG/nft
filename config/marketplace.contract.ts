@@ -53,8 +53,8 @@ export function getMarketplaceContract(token: PopulatedNftTokenType, version: nu
     try {
         /** Get the contract chainId */
         const tokenContractChainId = token.contract.chainId
-         /** Get the contract schema */
-         const tokenContractSchema = token.contract.schema.toLowerCase()
+         /** Get the contract nftSchema */
+         const tokenContractSchema = token.contract.nftSchema.toLowerCase()
         /** Get the marketplace contract by chainId */
         const marketplaceContractByChain = marketplaceContractAddresses[tokenContractChainId]
 
@@ -62,7 +62,7 @@ export function getMarketplaceContract(token: PopulatedNftTokenType, version: nu
             throw new Error(`Marketplace contract for chain ${tokenContractChainId} not found`)
         }
 
-        /** Get the marketplace contract by schema */
+        /** Get the marketplace contract by nftSchema */
         const marketplaceContractBySchema = tokenContractSchema === "erc721" ? marketplaceContractByChain.erc721 : marketplaceContractByChain.erc1155
         const marketplaceContractAddress = marketplaceContractBySchema[version]
 

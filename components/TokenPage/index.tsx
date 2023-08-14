@@ -10,9 +10,9 @@ import { useAuthStatus } from "@/hooks/account"
 
 export default function SingleTokenPage(props: TokenPageProps) {
     const { session } = useAuthStatus()
-
+    
     return (
-        <div className="min-w-[320px] md:min-w-[480px] text-gray-900 dark:text-white">
+        <div className="w-[320px] md:w-[480px] text-gray-900 dark:text-white">
             <TokenImage token={props.token} />
             <TokenMediaModal token={props.token} />
             <TokenTextContent token={props.token} />

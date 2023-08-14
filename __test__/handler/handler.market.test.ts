@@ -70,7 +70,7 @@ describe('Market and bid handler functions', () => {
         contractAddress: '0xA58950F05FeA2277d2608748412bf9F802eA4901',
         chainId: 1,
         royalty: 0,
-        schema: 'ERC1155',
+        nftSchema: 'ERC1155',
         version: '1',
         owner: testAccountA.address
     } as const

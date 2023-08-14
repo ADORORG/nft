@@ -7,7 +7,7 @@ const appRoutes = {
     /** Explore list of collections */
     collections: "/collection",
     /** Explore a contract */
-    contract: "/contract/:chainId/:contractAddress/",
+    viewContract: "/contract/:chainId/:contractAddress/",
     /** Create token route */
     createToken: "/create/token",
     /** View a token and market data */

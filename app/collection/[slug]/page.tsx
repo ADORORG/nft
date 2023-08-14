@@ -1,34 +1,44 @@
 import { FiatCurrencyDisplay } from "@/components/Currency"
+import type { PopulatedNftTokenType } from "@/lib/types/token"
 import Banner from "@/components/Banner"
 import Image from "@/components/Image"
 import TagList from "@/components/TagList"
 import Tag from "@/components/Tag"
 import SocialIcon from "@/components/SocialIcon"
 import AccountAvatar from "@/components/UserAccountAvatar"
+import { NftTokenCard } from "@/components/Card"
 import Link from "next/link"
 import appRoute from "@/config/app.route"
 import type AccountType from "@/lib/types/account"
-import { getSettledPromiseValue } from "@/utils/main"
 
 // Server
 import mongoooseConnectionPromise from '@/wrapper/mongoose_connect'
-import { getCollectionBySlug, getCollectionValueInDollar } from "@/lib/handlers"
+import { getCollectionBySlug, getCollectionValueInDollar, getTokensByQuery } from "@/lib/handlers"
 
 async function getServerSideData(slug: string) {
     await mongoooseConnectionPromise
-    const [collection, collectionValueInDollar] = await Promise.allSettled([
+    const [collection, collectionValueInDollar] = await Promise.all([
         getCollectionBySlug(slug),
         getCollectionValueInDollar({slug: slug.toLowerCase()})
     ])
-    
+
+    let collectionTokens;
+
+    if (collection) {
+        collectionTokens = await getTokensByQuery({
+            xcollection: collection._id}, {}
+        ) as PopulatedNftTokenType[]
+    }
+   
     return {
-        collection: getSettledPromiseValue(collection, []),
-        collectionValueInDollar: getSettledPromiseValue(collectionValueInDollar, [])
+        collection,
+        collectionValueInDollar,
+        collectionTokens
     }
 }
 
 export default async function Page({params: {slug}}: {params: {slug: string}}) {
-    const {collection, collectionValueInDollar } = await getServerSideData(slug)
+    const {collection, collectionValueInDollar, collectionTokens } = await getServerSideData(slug)
     const owner = collection?.owner as AccountType
 
     const {
@@ -51,6 +61,7 @@ export default async function Page({params: {slug}}: {params: {slug: string}}) {
                         <Image 
                             src={image}
                             alt=""
+                            width={200}
                         />
                     </Banner.Image>
                     
@@ -65,7 +76,7 @@ export default async function Page({params: {slug}}: {params: {slug: string}}) {
                         <div className="flex flex-col gap-4 pb-4">
                             <div className="flex flex-row items-center">
                                 <span>Owner: &nbsp;</span>
-                                <Link title={owner?.address} href={appRoute.account.replace(":address", owner?.address)}>
+                                <Link title={owner?.address} href={appRoute.viewAccount.replace(":address", owner?.address)}>
                                     <AccountAvatar 
                                         account={owner} 
                                         width={32} 
@@ -79,7 +90,7 @@ export default async function Page({params: {slug}}: {params: {slug: string}}) {
                                     amount={
                                         collectionValueInDollar.length
                                         ?
-                                        collectionValueInDollar[0].amount
+                                        collectionValueInDollar[0].dollarValue
                                         :
                                         0
                                     } 
@@ -112,7 +123,21 @@ export default async function Page({params: {slug}}: {params: {slug: string}}) {
                     </Banner.Links>
                 </Banner>
 
-                {/* Collection items */}
+                {/* Collection tokens */}
+                <div className="flex flex-row flex-wrap gap-4 my-4 pt-8">
+                    {   
+                        collectionTokens &&
+                        collectionTokens.length ?
+                        collectionTokens.map(token => (
+                            <NftTokenCard
+                                key={token?._id?.toString()}
+                                token={token}
+                            />
+                        ))
+                        :
+                        <p className="text-center">Nothing&apos;s here</p>
+                    }
+                </div>
 
 
             </div>

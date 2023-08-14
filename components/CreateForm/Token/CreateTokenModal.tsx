@@ -75,10 +75,10 @@ export default function CreateTokenModal({contract}: CreateTokenModalProps) {
                 <ul className="mb-4">
                     <li className="py-1">Name: {nftTokenData?.name}</li>
                     <li className="py-1">Contract: {contract.label}</li>
-                    <li className="py-1">Schema: {contract.schema}</li>
+                    <li className="py-1">Schema: {contract.nftSchema}</li>
                     <li className="py-1">
                         Supply: {
-                            contract.schema.toLowerCase() === "erc721" 
+                            contract.nftSchema.toLowerCase() === "erc721" 
                             ? 
                             1 
                             : 
@@ -96,7 +96,7 @@ export default function CreateTokenModal({contract}: CreateTokenModalProps) {
 
 
 function MintToken({contract}: CreateTokenModalProps) {
-    const schema = contract.schema.toLowerCase()
+    const nftSchema = contract.nftSchema.toLowerCase()
     const [minting, setMinting] = useState(false)
     const [nftTokenCreated, setNftTokenCreated] = useAtom(nftTokenCreatedStore)
     const [nftTokenData, setNftTokenData] = useAtom(nftTokenDataStore)
@@ -130,7 +130,7 @@ function MintToken({contract}: CreateTokenModalProps) {
         }
     } as const
 
-    const { config } = usePrepareContractWrite(writeArgs[schema])
+    const { config } = usePrepareContractWrite(writeArgs[nftSchema])
     const { isLoading, writeAsync } = useContractWrite(config)
     const publcClient = usePublicClient({ chainId: contract.chainId })
 
@@ -143,7 +143,7 @@ function MintToken({contract}: CreateTokenModalProps) {
             const txReceipt = await publcClient.waitForTransactionReceipt(mintTransaction as any)
             /** Decode the transaction logs to extract the tokenId */
             const mintLog = decodeEventLog({
-                abi: writeArgs[schema].abi,
+                abi: writeArgs[nftSchema].abi,
                 data: txReceipt.logs[0].data,
                 topics: txReceipt.logs[0].topics
             })
@@ -151,7 +151,7 @@ function MintToken({contract}: CreateTokenModalProps) {
             let tokenId
 
             /** Get the tokenId */
-            switch(schema) {
+            switch(nftSchema) {
                 case "erc721":
                     tokenId = (mintLog.args as any)?.tokenId?.toString()
                     break

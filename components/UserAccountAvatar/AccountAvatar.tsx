@@ -19,7 +19,7 @@ export default function AccountAvatar(props: AccountAvatarProps) {
     return (
         <Image 
             data={address}
-            className={`rounded ${className}`} 
+            className={`rounded border border-gray-200 dark:border-gray-800 ${className}`} 
             src={image}
             alt={alt}
             {...otherProps}

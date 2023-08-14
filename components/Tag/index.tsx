@@ -9,11 +9,11 @@ export default function Tag(props: TagProps) {
 
     if (children) {
         return (
-            <span className={`bg-indigo-800 px-3 rounded text-white ${className}`}>{children}</span>
+            <span className={`bg-tertiary-900 px-3 rounded text-white ${className}`}>{children}</span>
         )
     }
     
     return (
-        <span className={`bg-indigo-800 px-3 rounded text-white ${className}`}>{text}</span>
+        <span className={`bg-tertiary-900 px-3 rounded text-white ${className}`}>{text}</span>
     )
 }

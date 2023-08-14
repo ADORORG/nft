@@ -59,6 +59,7 @@ export default function NetworkChainSelect() {
             options={selectOptions}
             defaultValue={chainId}
             onChange={handleChainChange}
+            buttonClassName="w-44"
         />
     )
 }

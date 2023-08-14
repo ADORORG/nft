@@ -88,7 +88,7 @@ export function getCollectionBySlug(slug: string): Promise<CollectionType | null
  * @param skip - Collections to skip in find query
  * @returns a maximum of 100 `owner` account populated collections
  */
-export function getCollectionsByQuery(query: Partial<Record<keyof CollectionType, unknown>>, skip: number = 0) {
+export function getCollectionsByQuery(query: Record<string, unknown>, skip: number = 0) {
     const leanOption = {lean: true}
     const populate = [
         {
@@ -230,7 +230,7 @@ export function getCollectionValueInDollar(query: Record<string, unknown>) {
  * @param query - a filter object
  * @returns a document count
  */
-export function countCollectionByQuery(query: Partial<Record<keyof CollectionType, unknown>>) {
+export function countCollectionByQuery(query: Record<string, unknown>) {
     return CollectionModel.countDocuments({
         ...query
     })
@@ -242,7 +242,7 @@ export function countCollectionByQuery(query: Partial<Record<keyof CollectionTyp
  * @param query - a filter object
  * @returns a document count
  */
-export function estimateCollectionByQuery(query: Partial<Record<keyof CollectionType, unknown>>) {
+export function estimateCollectionByQuery(query: Record<string, unknown>) {
     return CollectionModel.estimatedDocumentCount({
         ...query
     })

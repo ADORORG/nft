@@ -9,7 +9,7 @@ const ContractSchema = new Schema<ContractType>({
     contractAddress: {type: String, required: true, index: true},
     chainId: {type: Number, required: true},
     royalty: {type: Number, default: 0},
-    schema: {type: String, required: true, enum: NFT_CONTRACT_SCHEMA, lowercase: true},
+    nftSchema: {type: String, required: true, enum: NFT_CONTRACT_SCHEMA, lowercase: true},
      // only require if not an imported contract
     version: {type: String, required: function() { return !(this as any).imported }},
     imported: {type: Boolean, default: false},
@@ -24,7 +24,7 @@ const ContractSchema = new Schema<ContractType>({
 
 ContractSchema.post('find', function(docs: ContractType[]) {
     docs.forEach(function(doc) {
-        (doc as any)?.toObject?.({
+        doc.toObject?.({
             flattenMaps: true,
             flattenObjectIds: true,
             versionKey: false

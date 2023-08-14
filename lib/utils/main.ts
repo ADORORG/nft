@@ -6,7 +6,7 @@
  * @param altValue - value to return if promise is not fulfilled
  * @returns a settled promise value or alternative value supplied
  */
-export function getSettledPromiseValue(settledPromised: any, altValue = []) {
+export function getSettledPromiseValue(settledPromised: any, altValue: any = []) {
 	return (
 		settledPromised?.status === "fulfilled" 
 		? 
@@ -204,3 +204,23 @@ export function deepClone(obj: any): any {
 	}
 	return obj;
 }
+
+/**
+ * Replace params in url template
+ * @param urlTemplate 
+ * @param params 
+ * @returns 
+ * @example
+ * replaceUrlParams("/url/location/:a/:b/c", {a: "1", b: "2"}) returns "/url/location/1/2/c"
+ */
+export function replaceUrlParams(urlTemplate: string, params: Record<string, string>) {
+	// Iterate over the keys in the params object
+	for (const key in params) {
+	  // Create a regular expression to match the placeholder
+	  const regex = new RegExp(`:${key}`, "g");
+	  // Replace the placeholder with the corresponding value
+	  urlTemplate = urlTemplate.replace(regex, params[key]);
+	}
+	return urlTemplate;
+}
+  

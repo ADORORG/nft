@@ -1,5 +1,5 @@
 import type TokenPageProps from "./types"
-import CollectionAvatar from "@/components/CollectionAvatar"
+import { CollectionAvatarWithLInk } from "@/components/CollectionAvatar"
 import ContractAvatar from "@/components/ContractAvatar"
 import { UserAccountAvatarWithLink } from "@/components/UserAccountAvatar"
 import { BoxArrowUpRight } from "react-bootstrap-icons"
@@ -13,14 +13,18 @@ export default function TokenLink(props: TokenPageProps) {
                 <span>Contract:&nbsp;</span>
                 <ContractAvatar 
                     contract={props.token.contract} 
+                    width={24}
+                    height={24}
                 />
                 
             </div>
             {/* Token Collection info */}
             <div className="py-1 flex gap-1 items-center">
                 <span>Collection:&nbsp;</span>
-                <CollectionAvatar 
-                    xcollection={props.token.xcollection} 
+                <CollectionAvatarWithLInk 
+                    xcollection={props.token.xcollection}
+                    width={24}
+                    height={24}
                 />
             </div>
 

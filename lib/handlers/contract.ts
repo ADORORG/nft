@@ -3,6 +3,18 @@ import type { EthereumAddress } from '../types/common'
 import type ContractType from '../types/contract'
 import ContractModel from '../models/contract'
 
+
+export async function validateContract(document: any) {
+    try {
+        await ContractModel.validate(document)
+        return true
+    } catch(error) {
+        // console.log(error)
+        return false
+    }
+}
+
+
 /**
  * Create a new contract
  * @param contract - The contract data to create
@@ -29,7 +41,7 @@ export async function createContract(contract: ContractType) {
  * @param contractAddress - Contract Address
  * @returns an `owner` account populated contract data
  */
-export function getContractByAddress(contractAddress: EthereumAddress) {
+export function getContractByAddress(contractAddress: EthereumAddress, chainId?: number) {
     const leanOption = {lean: true}
     const populate = [
         {
@@ -39,9 +51,13 @@ export function getContractByAddress(contractAddress: EthereumAddress) {
         }
     ] satisfies PopulateOptions[]
 
-    return ContractModel.findOne({
-        contractAddress
-    })
+    const query: Record<string, unknown> = {contractAddress}
+    
+    if (chainId) {
+        query.chainId = chainId
+    }
+
+    return ContractModel.findOne(query)
     .populate(populate)
     .lean()
     .exec()
@@ -96,7 +112,7 @@ export function getContractById(_id: Types.ObjectId | string) {
  * @param update - Update object
  * @returns - an updated contract or a newly created contract
  */
-export async function getOrCreateContractByQuery(query: Partial<Record<keyof ContractType, unknown>>, update: Partial<Record<keyof ContractType, unknown>>) {
+export async function getOrCreateContractByQuery(query: Record<string, unknown>, update: Record<string, unknown>) {
     const leanOption = {lean: true}
     const populate = [
         {
@@ -137,7 +153,7 @@ export async function getOrCreateContractByQuery(query: Partial<Record<keyof Con
  * @returns - an array of populated contract
  */
 export async function getContractsByQuery(
-    query: Partial<Record<keyof ContractType, unknown>>,
+    query: Record<string, unknown>,
     options: {
         limit?: number,
         skip?: number,
@@ -179,7 +195,7 @@ export async function getContractsByQuery(
  * @param query - a filter object
  * @returns a document count
  */
-export function countContractByQuery(query: Partial<Record<keyof ContractType, unknown>>) {
+export function countContractByQuery(query: Record<string, unknown>) {
     return ContractModel.countDocuments({
         ...query
     })
@@ -191,7 +207,7 @@ export function countContractByQuery(query: Partial<Record<keyof ContractType, u
  * @param query - a filter object
  * @returns a document count
  */
-export function estimateContractByQuery(query: Partial<Record<keyof ContractType, unknown>>) {
+export function estimateContractByQuery(query: Record<string, unknown>) {
     return ContractModel.estimatedDocumentCount({
         ...query
     })
