@@ -22,7 +22,7 @@ import {
 } from "@/components/Form"
 import { Select } from "@/components/Select"
 import { ConnectWalletButton } from "@/components/ConnectWallet"
-import { ImagePreview } from "@/components/MediaPreview"
+import { ImagePreview, MediaRenderer } from "@/components/MediaPreview"
 import { useAccountCollection, useAccountContract } from "@/hooks/fetch"
 import QuickModal from "@/components/QuickModal"
 import TagList from "@/components/TagList"
@@ -551,7 +551,8 @@ export default function CreateTokenForm() {
                         
                         {
                             nftTokenMedia &&
-                            <ImagePreview 
+                            <MediaRenderer 
+                                type={nftTokenData?.mediaType}
                                 src={nftTokenMedia}
                                 clickRef={tokenMediaRef.current}
                                 previewClassName="md:h-[250px] md:w-[500px] h-[250px] w-[444px]"
