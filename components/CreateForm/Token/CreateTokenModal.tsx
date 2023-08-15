@@ -71,7 +71,7 @@ export default function CreateTokenModal({contract}: CreateTokenModalProps) {
             <Stepper
                 steps={Object.values(steps)}
             />
-            <div className="px-6">
+            <div className="px-6 text-gray-950 dark:text-gray-100">
                 <ul className="mb-4">
                     <li className="py-1">Name: {nftTokenData?.name}</li>
                     <li className="py-1">Contract: {contract.label}</li>
@@ -206,15 +206,15 @@ function UploadTokenData() {
         
         // append requried fields
         for (const field of requiredFormFields) {
-            if (nftTokenData && field in nftTokenData) {
+            if (nftTokenData && field in nftTokenData && nftTokenData[field]) {
                 formData.append(field, nftTokenData[field] as string)
             }
         }
 
         // append other form fields
         for (const field of otherFormFields) {
-            if (nftTokenData && field in nftTokenData) {
-                formData.append(field, nftTokenData[field] as any)
+            if (nftTokenData && field in nftTokenData && nftTokenData[field]) {
+                formData.append(field, nftTokenData[field] || "" as any)
             }
         }
 

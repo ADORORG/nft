@@ -55,8 +55,10 @@ export default function CreateTokenForm() {
     const [nftTokenMedia, setNftTokenMedia] = useAtom(nftTokenMediaStore)
     const [nftTokenData, setNftTokenData] = useAtom(nftTokenDataStore)
     const [nftTokenAttribute, setNftTokenAttribute] = useAtom(nftTokenAttributeStore)
+    /** Signifies that token data has minted on the blockchain */
     const [, setNftTokenCreated] = useAtom(nftTokenCreatedStore)
-    const [, setNftTokenUploaded] = useAtom(nftTokenUploadedStore)
+    /** Signifies that token data has been uploaded to the backend */
+    const [nftTokenUploaded, setNftTokenUploaded] = useAtom(nftTokenUploadedStore)
 
     /** Modal for minting and uploading token data */
     const [showModal, setShowModal] = useState(false)
@@ -126,7 +128,7 @@ export default function CreateTokenForm() {
      */
     const resetForm = () => {
         setNftTokenCreated(false)
-        setNftTokenUploaded(true)
+        setNftTokenUploaded(false)
         setNftTokenData({})
         setNftTokenAttribute([{...defaultAttributes}])
         setNftTokenImage("")
@@ -581,12 +583,18 @@ export default function CreateTokenForm() {
                             rounded
                             onClick={handleSubmit}
                         >Create Token</Button>
-                    
-                        <Button
-                            className="px-3 bg-gray-600"
-                            rounded
-                            onClick={resetForm}
-                        >Reset</Button>
+                        {
+                            nftTokenUploaded ? 
+                            // Reset to mint new token
+                            <Button
+                                className="px-3 bg-gray-600"
+                                rounded
+                                onClick={resetForm}
+                            >Mint another</Button>
+                            :
+                            null
+                        }
+                        
                     </>
                     :
                     <ConnectWalletButton />

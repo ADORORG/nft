@@ -115,15 +115,21 @@ export default function CreateCollectionForm() {
             formData.append("banner", bannerFile)
 
             for (const field of requiredFormFields) {
-                formData.append(field, collectionData ? collectionData[field] || "" : "")
+                if (collectionData && field in collectionData && collectionData[field]) {
+                    formData.append(field,  collectionData[field])
+                }
             }
 
             for (const field of socialMediaFields) {
-                formData.append(field, collectionData ? collectionData[field] || "" as string : "")
+                if (collectionData && field in collectionData && collectionData[field]) {
+                    formData.append(field,  collectionData[field] as string)
+                }
             }
 
             for (const field of otherFormFields) {
-                formData.append(field, collectionData ? collectionData[field] || "" as string : "")
+                if (collectionData && field in collectionData && collectionData[field]) {
+                    formData.append(field, collectionData[field] as any)
+                }
             }
 
             await fetcher(apiRoutes.createCollection, {
@@ -358,12 +364,17 @@ export default function CreateCollectionForm() {
                                 loading={isLoading}
                             >Create Collection</Button>
                         }
-                        
-                        <Button
-                            className="px-3 bg-gray-600"
-                            rounded
-                            onClick={resetForm}
-                        >Reset</Button>
+                        {
+                            collectionCreated ?
+                            // Reset to create a another collection
+                            <Button
+                                className="px-3 bg-gray-600"
+                                rounded
+                                onClick={resetForm}
+                            >Create another</Button>
+                            :
+                            null
+                        }
                     </>
                     :
                     <ConnectWalletButton />
