@@ -5,7 +5,7 @@ import CollectionAvatar from "@/components/CollectionAvatar"
 import Button from "@/components/Button"
 import Link from "next/link"
 import appRoutes from "@/config/app.route"
-import { replaceUrlParams } from "@/utils/main"
+import { replaceUrlParams, cutString } from "@/utils/main"
 
 type NftTokenProps = {
     token: PopulatedNftTokenType, 
@@ -31,7 +31,7 @@ export default function NftTokenCard(props: NftTokenProps) {
                 </div>
 
                 <div className="w-full flex flex-col py-2 lg:py-4 justify-end">
-                    <h4 className={`text-xl text-gray-950 dark:text-white tracking-wide subpixel-antialiased`}>{name} #{tokenId}</h4>
+                    <h4 className={`text-xl text-gray-950 dark:text-white tracking-wide subpixel-antialiased`}>{cutString(name, 10)} #{tokenId}</h4>
                     
                     <div className="flex flex-row items-center justify-between pt-2">
                         <div className="flex flex-row items-center gap-3">

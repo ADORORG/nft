@@ -47,7 +47,7 @@ describe('Token handler functions', () => {
         contractAddress: '0xA58950F05FeA2277d2608748412bf9F802eA4901',
         chainId: 1,
         royalty: 0,
-        nftSchema: 'ERC1155',
+        nftSchema: 'erc1155',
         version: '1',
         owner: testAccount.address
     } as const
@@ -58,7 +58,7 @@ describe('Token handler functions', () => {
         description: 'A collection of amazing art work',
         image: 'someipfshash',
         banner: 'someipfshash',
-        tags: 'art,work,amazing'.split(','),
+        tags: 'art,work,amazing',
         category: 'painting',
         owner: testAccount.address
     }
@@ -90,7 +90,7 @@ describe('Token handler functions', () => {
         const tokens = await getTokensByOwner(testAccount.address) as Array<NftTokenType & {xcollection: CollectionType, owner: AccountType, contract: ContractType}>
 
         expect(tokens[0]).toBeDefined()
-        // we create a single document
+        // we created a single token
         expect(tokens).toHaveLength(1)
         expect(tokens[0]._id).toBeDefined()
         // must be populated by default
@@ -102,13 +102,13 @@ describe('Token handler functions', () => {
 
     it('should get tokens by collection', async () => {
         const collections = await getCollectionsByOwner(testAccount.address) as Array<CollectionType & {owner: AccountType}>
-        const tokens = await getTokensByCollection(collections[0]?._id as string) as Array<NftTokenType & {xcollection: CollectionType, owner: AccountType, contract: ContractType}>
+        const tokens = await getTokensByCollection(collections[0]?._id as any) as Array<NftTokenType & {xcollection: CollectionType, owner: AccountType, contract: ContractType}>
 
-        // we create a single contract
+        // we created a single contract
         expect(collections).toHaveLength(1)
         expect(collections[0].owner?._id).toBe(testAccount.address)
         expect(tokens[0]).toBeDefined()
-        // we create a single document
+        // we created a single token
         expect(tokens).toHaveLength(1)
         expect(tokens[0]._id).toBeDefined()
         // must be populated by default
@@ -119,7 +119,7 @@ describe('Token handler functions', () => {
 
     it('should get tokens by contract', async () => {
         const contracts = await getContractsByOwner(testAccount.address) as Array<ContractType & {owner: AccountType}>
-        const tokens = await getTokensByContract(contracts[0]?._id as string) as Array<NftTokenType & {xcollection: CollectionType, owner: AccountType, contract: ContractType}>
+        const tokens = await getTokensByContract(contracts[0]?._id as any) as Array<NftTokenType & {xcollection: CollectionType, owner: AccountType, contract: ContractType}>
         
         // we create a single contract
         expect(contracts).toHaveLength(1)
@@ -140,8 +140,8 @@ describe('Token handler functions', () => {
         await createAccount({address: newOwner})
 
         const tokens = await getTokensByOwner(testAccount.address) as NftTokenType[]
-        const tokenId = tokens[0]._id as string
-        const transferredOwnership = await setTokenOwner(tokenId, newOwner) as NftTokenType & {owner: AccountType}
+        const tokenId = tokens[0]._id
+        const transferredOwnership = await setTokenOwner(tokenId as any, newOwner) as NftTokenType & {owner: AccountType}
 
         expect(transferredOwnership).toBeDefined()
         expect(transferredOwnership?.owner._id).toBe(newOwner)

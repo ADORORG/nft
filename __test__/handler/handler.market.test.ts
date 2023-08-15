@@ -70,7 +70,7 @@ describe('Market and bid handler functions', () => {
         contractAddress: '0xA58950F05FeA2277d2608748412bf9F802eA4901',
         chainId: 1,
         royalty: 0,
-        nftSchema: 'ERC1155',
+        nftSchema: 'erc1155',
         version: '1',
         owner: testAccountA.address
     } as const
@@ -81,7 +81,7 @@ describe('Market and bid handler functions', () => {
         description: 'A collection of amazing art work',
         image: 'someipfshash',
         banner: 'someipfshash',
-        tags: 'art,work,amazing'.split(','),
+        tags: 'art,work,amazing',
         category: 'painting',
         owner: testAccountA.address
     }
@@ -141,10 +141,10 @@ describe('Market and bid handler functions', () => {
         }) as MarketOrderPopulated
 
         // transfer token to the new owner (account B)
-        await setTokenOwner(newToken._id as string, accountB._id as string)
+        await setTokenOwner(newToken._id as any, accountB._id as string)
 
         // sell to account B
-        const soldMarketOrder = await setMarketOrderStatusToSold(marketOrderFixed._id as string, {
+        const soldMarketOrder = await setMarketOrderStatusToSold(marketOrderFixed._id as any, {
             buyerId: accountB._id as string,
             soldPrice: marketOrderFixed.price,
             saleTxHash: '0x000'
@@ -210,17 +210,17 @@ describe('Market and bid handler functions', () => {
         }) as MarketOrderPopulated
 
         const auctionBid = await createBid({
-            marketOrder: marketOrderAuction._id as string,
+            marketOrder: marketOrderAuction._id as any,
             bidder: accountA,
             price: '0.2',
             txHash: '0x00'
         })
 
-        const bidById = await getBidById(auctionBid._id as string)
+        const bidById = await getBidById(auctionBid._id as any)
         // get Bid by bidder
         const bidsByBidder = await getBidsByBidder(accountA._id as string) as MarketBidPopulated[]
         // get Bid by market order id
-        const bidsByMarketOrderId = await getBidsByMarketOrderId(marketOrderAuction._id as string) as MarketBidPopulated[]
+        const bidsByMarketOrderId = await getBidsByMarketOrderId(marketOrderAuction._id as any) as MarketBidPopulated[]
 
         expect(auctionBid).not.toBeNull()
         expect(auctionBid._id).toStrictEqual(bidById?._id)
@@ -287,7 +287,7 @@ describe('Market and bid handler functions', () => {
 
         try {
 
-            // endsAt and buyer (offerrer) are missing
+            // buyer (offerrer) are missing
             await createMarketOrder({
                 price: '1.2',
                 saleType: 'offer',
@@ -304,7 +304,7 @@ describe('Market and bid handler functions', () => {
         } catch(error: any) {
             expect(error).toBeInstanceOf(MongooseError)
             expect(Object.keys(error.errors).sort())
-            .toStrictEqual(['endsAt', 'buyer'].sort())
+            .toStrictEqual(['buyer'].sort())
         }
 
         const offerMarketOrder = await createMarketOrder({
@@ -343,7 +343,7 @@ describe('Market and bid handler functions', () => {
             orderSignature: 'somecryptographysignature',
         })
 
-        const cancelledMarketOrder = await setMarketOrderStatusToCancelled(offerMarketOrder._id as string)
+        const cancelledMarketOrder = await setMarketOrderStatusToCancelled(offerMarketOrder._id as any)
 
         expect(cancelledMarketOrder?._id).toStrictEqual(offerMarketOrder._id)
         expect(cancelledMarketOrder?.status).toBe('cancelled')

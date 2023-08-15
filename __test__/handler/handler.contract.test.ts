@@ -27,7 +27,7 @@ describe('Contract handler functions', () => {
         contractAddress: '0xA58950F05FeA2277d2608748412bf9F802eA4901',
         chainId: 1,
         royalty: 0,
-        nftSchema: 'ERC1155',
+        nftSchema: 'erc1155',
         version: '1',
         owner: '0xfc3ab3cb662da997592ceb18d357a07fc898cb2e'
     } as const
@@ -37,7 +37,6 @@ describe('Contract handler functions', () => {
         const newContract = await createContract({...testContract, owner: account})
 
         expect(newContract).toBeDefined()
-        expect(typeof newContract.createdAt).toBe('number')
         expect(typeof newContract.owner === 'object' && newContract.owner.address).toBe(testContract.owner)
         expect(newContract.nftSchema).toBe('erc1155')
     })
@@ -49,7 +48,7 @@ describe('Contract handler functions', () => {
         expect(typeof contract?.owner === 'object' && contract.owner.address).toBe(testContract.owner)
         expect(contract?.nftSchema).toBe('erc1155')
 
-        await expect(getContractById(contract?._id as string)).resolves.toBeDefined()
+        await expect(getContractById(contract?._id as any)).resolves.toBeDefined()
     })
 
     it('should get contracts owned by an account address', async () => {

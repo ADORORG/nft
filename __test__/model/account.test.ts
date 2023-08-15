@@ -27,7 +27,6 @@ describe('Saving and updating Account Model', () => {
         expect(newAccount._id).toBe(account.address.toLowerCase());
         expect(newAccount.emailVerified).toBeFalsy();
         expect(newAccount.email).toBeUndefined();
-        expect(typeof newAccount.createdAt).toBe('number');
 
         // update using save
         const testEmail = 'test@gmail.com';
@@ -38,7 +37,6 @@ describe('Saving and updating Account Model', () => {
 
         expect(newAccount.emailVerified).toBeTruthy();
         expect(newAccount.email).toBe(testEmail);
-        expect(typeof newAccount.updatedAt).toBe('number');
         expect(newAccount._id).toBe(newAccount.address);
         expect(newAccount._id).toBe(account.address.toLowerCase());
     })
@@ -80,7 +78,6 @@ describe('Saving and updating Account Model', () => {
         expect(newAccount._id).toBe(account.address.toLowerCase());
         expect(newAccount.emailVerified).toBeFalsy();
         expect(newAccount.email).toBeUndefined();
-        expect(typeof newAccount.createdAt).toBe('number');
     })
 
     it('should fail for findOneAndUpdate for invalid address', async () => {

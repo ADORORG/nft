@@ -68,8 +68,9 @@ export default function AddTokenToMarket(props: TokenPageProps) {
 
             <Select
                 className="rounded my-1"
-                value={orderData.currency?.toString() || ""}
+                value={orderData?.currency?.toString() || ""}
                 onChange={handleChange}
+                name="currency"
             >
                 <Select.Option value="" disabled>Select currency</Select.Option>
                 {

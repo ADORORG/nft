@@ -1,5 +1,3 @@
-
-
 /**
  * Get a settled promise value from Promise.allSettled
  * @param settledPromised - A promise result from Promise.allSettled
@@ -46,6 +44,18 @@ export function cutAddress(addr: string, prefix = 5, suffix = 4): string {
     const start = addr.substring(0, prefix);
     const end = addr.substring(addr.length - suffix);
     return `${start}...${end}`;
+}
+
+/**
+ * Cut a string and attach an ellipsis
+ * @param str 
+ * @param length 
+ * @returns 
+ */
+export function cutString(str: string | undefined, length: number) {
+	if (!str || typeof str !== 'string') return '';
+	if (str.length <= length) return str;
+	return str.substring(0, length) + '...';
 }
 
 /**
