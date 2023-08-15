@@ -9,6 +9,8 @@ import { AppInfo } from "@/lib/app.config"
 import { Toaster } from "react-hot-toast"
 import { Changa/* , Inconsolata */ } from "next/font/google"
 import { ConnectWalletContextWrapper } from "@/components/ConnectWallet"
+import appRoutes from "@/config/app.route"
+import externalLinks from "@/config/social.link"
 
 const changa = Changa(
   { subsets: ["latin"],
@@ -33,51 +35,50 @@ export const footerNav = {
   resources: [
     {
       name: "Marketplace",
-      href: "/marketplace",
+      href: appRoutes.marketplace,
     },
     {
       name: "Explore",
-      href: "/explore",
+      href: appRoutes.explore,
     },
     {
       name: "Create",
-      href: "/create",
+      href: appRoutes.create,
     },
     {
       name: "Import",
-      href: "/import",
+      href: appRoutes.import
     },
   ],
   followUs: [
     {
       name: "Twitter",
-      href: "#"
+      href: externalLinks.twitter
     },
     {
       name: "Discord Server",
-      href: "#"
+      href: externalLinks.discord
     },
     {
       name: "Telegram",
-      href: "#"
+      href: externalLinks.telegram
     }
   ],
   legal: [
     {
       name: "Privacy Policy",
-      href: "#"
+      href: appRoutes.privacyPolicy,
     },
     {
       name: "Terms & Conditions",
-      href: "#"
+      href: appRoutes.termsOfService
     }
   ],
   social: {
-    twitter: "#",
-    facebook: "#",
-    instagram: "#",
-    github: "#",
-    dribbble: "#",
+    twitter: externalLinks.twitter,
+    facebook: externalLinks.facebook,
+    github: externalLinks.github,
+    instagram: externalLinks.instagram
   }
 }
 
@@ -87,15 +88,15 @@ export const topNav = {
   navLink: [
     {
       name: "Explore",
-      href: "#"
+      href: appRoutes.explore
     },
     {
       name: "Marketplace",
-      href: "#"
+      href: appRoutes.marketplace
     },
     {
       name: "Create",
-      href: "/create"
+      href: appRoutes.create
     },
   ]
 }

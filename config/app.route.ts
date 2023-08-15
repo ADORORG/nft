@@ -19,13 +19,19 @@ const appRoutes = {
     /** Explore account address */
     viewAccount: "/account/:address",
     /** Explore token & collection page */
-    explore: "/explore",
+    explore: "#",
     /** Marketplace page */
-    marketplace: "/marketplace",
+    marketplace: "#",
     /** Import token page */
-    import: "/import",
+    import: "#",
     /** Transfer token page */
-    transfer: "/transfer"
+    transfer: "#",
+    /** Create page that shows options to create token, collection & contract */
+    create: "/create",
+
+    /** Legal links */
+    privacyPolicy: "#",
+    termsOfService: "#"
 }
 
 export default appRoutes

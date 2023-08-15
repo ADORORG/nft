@@ -1,5 +1,7 @@
 import { PuzzlePieceIcon, WalletIcon, ShoppingBagIcon } from "@heroicons/react/24/outline"
 import Button from "@/components/Button"
+import Link from "next/link"
+import appRoutes from "@/config/app.route"
 
 export default function StepsToCreate() {
 
@@ -46,12 +48,14 @@ export default function StepsToCreate() {
                 }
                 </div>
                 <div className="text-center pt-12">
-                    <Button
-                        className="py-3 px-4 text-2xl hover:opacity-70 transition opacity-80"
-                        variant="primary"
-                        rounded
-                        inversed
-                    >Get started</Button>
+                    <Link href={appRoutes.create}>
+                        <Button
+                            className="py-3 px-4 text-2xl hover:opacity-70 transition opacity-80"
+                            variant="primary"
+                            rounded
+                            inversed
+                        >Get started</Button>
+                    </Link>
                 </div>
             </div>
         </div>

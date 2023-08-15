@@ -23,7 +23,7 @@ export default function Navbar({ topNav }:{ topNav: TopNavProps }) {
             <div className="lg:flex lg:items-center lg:justify-evenly lg:p-2">
                 <div className="flex items-center justify-between">
                     <div className="p-4 justify-start items-center inline-flex">
-                        <a href="#">
+                        <Link href="/">
                             <Image 
                                 className="w-auto h-20" 
                                 src={logoUrl}
@@ -31,7 +31,7 @@ export default function Navbar({ topNav }:{ topNav: TopNavProps }) {
                                 width={200}
                                 height={200}
                             />
-                        </a>
+                        </Link>
                         <div className="text-center dark:text-white text-gray-900 text-3xl font-semibold tracking-wide">{ name }</div>
                     </div>
                     {/* <!-- Mobile menu button --> */}
