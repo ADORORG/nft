@@ -1,9 +1,11 @@
-import type { NextRequest, NextResponse } from 'next/server'
+import { type NextRequest, NextResponse } from 'next/server'
 import { withRequestError } from '@/wrapper'
 
 
 async function getCollections(request: NextRequest) {
-
+    return NextResponse.json({
+        message:  "Not implemented"
+    }, {status: 501})
 }
 
 

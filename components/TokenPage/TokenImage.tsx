@@ -7,7 +7,7 @@ export default function TokenImage(props: TokenPageProps) {
         <div className="flex justify-center p-4 drop-shadow-lg">
             <Image 
                 src={props.token.image}
-                alt={props.token.tokenId}
+                alt={props.token.tokenId.toString()}
                 data={`${props.token.contract.contractAddress}${props.token.tokenId}`}
                 title={props.token.name}
                 // height={350}

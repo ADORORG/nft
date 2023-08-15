@@ -1,18 +1,3 @@
-// import AccountModel from '../models/account'
-// import BidModel from '../models/bid'
-// import CollectionModel from '../models/collection'
-// import ContractModel from '../models/contract'
-// import CurrencyModel from '../models/currency'
-// import MarketModel from '../models/market'
-// import TokenModel from '../models/token'
-
-// AccountModel.init()
-// BidModel.init()
-// CollectionModel.init()
-// CurrencyModel.init()
-// ContractModel.init()
-// MarketModel.init()
-// TokenModel.init()
 
 export * from '@/lib/handlers/account'
 export * from '@/lib/handlers/bid'

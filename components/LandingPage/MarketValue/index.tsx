@@ -5,8 +5,7 @@ type MarketValueSummaryProps = {
     marketValue: TotalMarketValueInDollarType
 }
 
-export default function MarketValueSummary({ marketValue }: MarketValueSummaryProps) {
-    const { dollarValue, orderCount } = marketValue
+export default function MarketValueSummary({ marketValue: {dollarValue, orderCount} }: MarketValueSummaryProps) {
     return (
         <div className="bg-white dark:bg-gray-950 p-2">
             <div className="container px-6 py-16 mx-auto">

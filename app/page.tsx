@@ -9,23 +9,18 @@ import { getSettledPromiseValue } from "@/utils/main"
 // server side
 import mongoooseConnectionPromise from '@/wrapper/mongoose_connect'
 import { 
-  getMarketOrdersByQuery,
+  getTrendingMarketOrders,
   getTraderAccountMarketValue,
   getTotalMarketValueInDollar,
 } from "@/lib/handlers"
 
 async function getServerSideData() {
   await mongoooseConnectionPromise
-  // fetch market orders
-  const marketOrdersPromise = getMarketOrdersByQuery({
-    status: {$ne: "cancelled"},
-    $or: [
-      {saleType: "auction"},
-      {saleType: "fixed"}
-    ]
-  }, {
-    limit: 22 
-  })
+  /**
+   * fetch market orders
+   * @todo - Implement a way of marking order as featured/trending
+   */
+  const marketOrdersPromise = getTrendingMarketOrders({status: {$ne: "cancelled"}}, 10)
 
   // fetch top traders
   const topTradersPromise = getTraderAccountMarketValue({}, 8)
@@ -41,14 +36,25 @@ async function getServerSideData() {
   }
 }
 
-
+/**
+ * @todo - Find two orders (fixed|auction) in marketOrders and pass it <HeroSection />
+ * @returns 
+ */
 export default async function LandingPage() {
   const {marketOrders, topTraders, marketValue} = await getServerSideData()
 
   return (
     <div className="">
       <HeroSection marketOrders={marketOrders} />
-      <MarketValueSummary marketValue={marketValue[0]} />
+      <MarketValueSummary 
+        marketValue={
+          marketValue && 
+          marketValue.length ? 
+          marketValue[0]
+          : 
+          {dollarValue: 0, orderCount:0} 
+        }
+      />
       <SupportedBlockchainNetwork />
       <TrendingAuction marketOrders={marketOrders}/>
       <TrendingFixedOrder marketOrders={marketOrders} />

@@ -5,7 +5,7 @@ import type NftTokenType from '../types/token';
 const { collections: xcollections, tokens, contracts, accounts } = dbCollections;
 
 const TokenSchema = new Schema<NftTokenType>({
-    tokenId: {type: String, required: true, minlength: 1},
+    tokenId: {type: Number, required: true, min: 0},
     supply: Number,
     name: String,
     description: String,

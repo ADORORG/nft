@@ -1,8 +1,8 @@
 "use client"
-
+import type { PopulatedMarketOrderType } from '@/lib/types/market'
 import React, { useRef } from 'react'
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline"
-import MarketCard from '@/components/Card/MarketCard'
+import MarketCard from '@/components/Card/MarketListingCard'
 import Button from "@/components/Button"
 import CategoryButtons from "@/components/CategoryButtons"
 
@@ -35,20 +35,42 @@ const CardList = () => {
 
     return  {
       token: {
-          tokenId: "1",
+          tokenId: 1,
           supply: 1,
-          imported: false,
-          contract: "no-contract",
+          contract: {
+            label: "some contract",
+            contractAddress: "0x",
+            chainId: 5,
+            nftSchema: "erc721",
+            royalty: 10,
+            version: "1"
+          },
           name: "NFT Name",
           image: `http://localhost:3000/test-images/image${imgNumber}.png`,
-          createdAt: 1635724800000,
-          updatedAt: 1635724800000,
+          createdAt: new Date(),
+          updatedAt: new Date(),
           owner: {
               address: "0x1234567890123456789012345678901234567890",
               image: "http://localhost:3000/test-images/image2.png",
-              createdAt: 1635724800000,
-              updatedAt: 1635724800000,
+              createdAt: new Date(),
+              updatedAt: new Date(),
           },
+          xcollection: {
+            name: "my collection",
+            slug: "mycollection",
+            owner: "0x1234567890123456789012345678901234567890",
+            image: "hash",
+            banner: "hash",
+            description: "",
+            tags: "",
+            category: "print"
+          }
+      },
+      seller: {
+        address: "0x1234567890123456789012345678901234567890",
+        image: "http://localhost:3000/test-images/image2.png",
+        createdAt: new Date(),
+        updatedAt: new Date(),
       },
       price: "0.1",
       currency: {
@@ -63,14 +85,14 @@ const CardList = () => {
       saleType: "fixed",
       quantity: 1,
       status: "active",
-      endsAt: 1688338800000,
+      endsAt: new Date(),
       permitType: "offchain",
-      version: 1,
-      createdAt: 1635724800000,
-      updatedAt: 1635724800000,
-  } as const
-
+      version: "1",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    } satisfies PopulatedMarketOrderType
   }
+
   return (
     <div className="bg-white dark:bg-gray-950 p-4 lg:p-8">
       <div className="container mx-auto py-16">

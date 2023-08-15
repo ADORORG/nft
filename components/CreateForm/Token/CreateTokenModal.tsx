@@ -291,7 +291,7 @@ function AddTokenToMarket({contract}: CreateTokenModalProps) {
                         appRoutes.viewToken
                         .replace(":chainId", contract.chainId.toString())
                         .replace(":contractAddress", contract.contractAddress)
-                        .replace(":tokenId", nftTokenData?.tokenId || "")
+                        .replace(":tokenId", nftTokenData?.tokenId.toString() || "")
                     }
                 >
                     Marketplace

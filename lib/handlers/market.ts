@@ -1,6 +1,6 @@
 import type { Types, PipelineStage, PopulateOptions } from 'mongoose'
 import type { EthereumAddress } from '../types/common'
-import type MarketOrderType from '../types/market'
+import type { default as MarketOrderType, PopulatedMarketOrderType } from '../types/market'
 import type { TopTraderAccountType, TotalMarketValueByCryptoCurrencyType, TotalMarketValueInDollarType } from '../types/common'
 import MarketOrderModel from '../models/market'
 import { dbCollections } from '../app.config';
@@ -150,6 +150,100 @@ export function getMarketOrdersByQuery(
     .populate(populate)
     .lean()
     .exec()
+}
+
+/**
+ * Get trending auctions & fixed price market orders by query
+ * Attempts to fetch equal number of auction & fixed orders
+ * @param query - Filter query
+ * @param limit - Limit for each saleType
+ */
+export async function getTrendingMarketOrders(query: Record<string, unknown>, limit: number = 8) {
+  const leanOption = {lean: true}
+  const populate = [
+    {
+        path: 'seller',
+        select: '-email -roles -emailVerified -__v',
+        options: leanOption
+    },
+    {
+        path: 'buyer',
+        select: '-email -roles -emailVerified -__v',
+        options: leanOption
+    },
+    {
+        path: 'token',
+        options: leanOption,
+        populate: {
+            path: 'xcollection contract owner',
+            options: leanOption
+        }
+    },
+    {
+        path: 'currency',
+        options: leanOption
+    }
+] satisfies PopulateOptions[]
+
+  const aggregatePipeline = [
+    {
+      /** Sort by createdAt */
+      $sort: {
+        createdAt: -1 
+      }
+    },
+    {
+      /** Fetch each saleType separately */
+      $facet: {
+        fixedSales: [
+          {
+            $match: {
+              ...query,
+              saleType: 'fixed',
+            },
+          },
+          {
+            $limit: limit,
+          }
+        ],
+        auctionSales: [
+          {
+            $match: {
+              ...query,
+              saleType: 'auction',
+            },
+          },
+          {
+            $limit: limit,
+          }
+        ]
+      }
+    },
+  
+    {
+      $project: {
+        /** Merge the two results into 'documents */
+        documents: {
+          $concatArrays: ['$fixedSales', '$auctionSales']
+        }
+      }
+    },
+    {
+      /** Unwind the document */
+      $unwind: {
+        path: '$documents',
+        includeArrayIndex: '_',
+        preserveNullAndEmptyArrays: false
+      }
+    },
+    /** unwind the document to the root */
+    { $replaceRoot: { newRoot: '$documents' } }
+  
+  ] satisfies PipelineStage[]
+
+  const trendingOrders = await MarketOrderModel.aggregate<MarketOrderType>(aggregatePipeline).exec()
+  const trendingOrdersPopulated = await MarketOrderModel.populate(trendingOrders, populate) as PopulatedMarketOrderType[]
+  return trendingOrdersPopulated
 }
 
 /**

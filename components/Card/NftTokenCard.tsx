@@ -52,7 +52,7 @@ export default function NftTokenCard(props: NftTokenProps) {
                             <Link
                                 href={
                                     replaceUrlParams(appRoutes.viewToken, {
-                                        tokenId,
+                                        tokenId: tokenId.toString(),
                                         contractAddress: contract.contractAddress,
                                         chainId: contract.chainId.toString()
                                     })

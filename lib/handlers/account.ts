@@ -61,7 +61,7 @@ export function getAccountsByEmail(email: string | string[]): Promise<AccountTyp
  * @param skip - Accounts to skip in find query
  * @returns a maximum of 100 accounts
  */
-export function getAccountsByQuery(query: Partial<Record<keyof AccountType, unknown>>, skip: number = 0) {
+export function getAccountsByQuery(query: Record<string, any>, skip: number = 0) {
     return AccountModel.find({...query})
     .skip(skip)
     .limit(100)
@@ -75,7 +75,7 @@ export function getAccountsByQuery(query: Partial<Record<keyof AccountType, unkn
  * @param query - a filter object
  * @returns a document count
  */
-export function countAccountByQuery(query: Partial<Record<keyof AccountType, unknown>>) {
+export function countAccountByQuery(query: Record<string, unknown>) {
     return AccountModel.countDocuments({
         ...query
     })
@@ -88,7 +88,7 @@ export function countAccountByQuery(query: Partial<Record<keyof AccountType, unk
  * @param query - a filter object
  * @returns a document count
  */
-export function estimateAccountByQuery(query: Partial<Record<keyof AccountType, unknown>>) {
+export function estimateAccountByQuery(query: Record<string, unknown>) {
     return AccountModel.estimatedDocumentCount({
         ...query
     })

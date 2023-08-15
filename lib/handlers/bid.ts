@@ -122,7 +122,7 @@ export function getBidsByBidder(bidderId: EthereumAddress, skip: number = 0) {
  * @param query - a filter object
  * @returns a document count
  */
-export function countBidByQuery(query: Partial<Record<keyof MarketBidType, unknown>>) {
+export function countBidByQuery(query: Record<string, unknown>) {
     return MarketBidModel.countDocuments({
         ...query
     })
@@ -135,7 +135,7 @@ export function countBidByQuery(query: Partial<Record<keyof MarketBidType, unkno
  * @param query - a filter object
  * @returns a document count
  */
-export function estimateBidByQuery(query: Partial<Record<keyof MarketBidType, unknown>>) {
+export function estimateBidByQuery(query: Record<string, unknown>) {
     return MarketBidModel.estimatedDocumentCount({
         ...query
     })
