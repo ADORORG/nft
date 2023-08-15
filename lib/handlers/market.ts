@@ -248,7 +248,7 @@ export async function getTrendingMarketOrders(query: Record<string, unknown>, li
 
 /**
  * Get the market value for account. 
- * Passing an empty value returns top 8 account with the highest trade
+ * By default, it will return top 8 account with the highest trades
  * @param query Query object filter
  * @param limit Number of Account to return
  * @returns 

@@ -3,9 +3,11 @@ import Image from "@/components/Image"
 import Banner from "@/components/Banner"
 import SocialIcon from "@/components/SocialIcon"
 import { NftTokenCard } from "@/components/Card"
+import { FiatCurrencyDisplay } from "@/components/Currency"
+
 // Server
 import mongoooseConnectionPromise from "@/wrapper/mongoose_connect"
-import { setAccountDetails, getTokensByOwner } from "@/lib/handlers"
+import { setAccountDetails, getTokensByOwner, getTraderAccountMarketValue } from "@/lib/handlers"
 
 interface PageProps {
     address: string
@@ -15,19 +17,23 @@ async function getServerSideData(params: PageProps) {
     const { address } = params
     await mongoooseConnectionPromise
 
-    const [account, tokens] = await Promise.all([
+    const [account, tokens, accountMarketValue] = await Promise.all([
         setAccountDetails(address, {}),
-        getTokensByOwner(address)
+        getTokensByOwner(address),
+        getTraderAccountMarketValue({
+            $or: [{seller: address.toLowerCase(), buyer: address.toLowerCase()}]
+        })
     ])
-
+    console.log("accountMarketValue", accountMarketValue)
     return {
         tokens,
-        account
+        account,
+        accountMarketValue
     }
 }
 
 export default async function Page({params}: {params: PageProps}) {
-    const { account, tokens} = await getServerSideData(params)
+    const { account, tokens, accountMarketValue} = await getServerSideData(params)
 
     const {
         address,
@@ -58,6 +64,19 @@ export default async function Page({params}: {params: PageProps}) {
                         <Banner.Text>
                             <span className="select-all break-words">{address}</span>
                         </Banner.Text>
+                        <h5 className="py-4">
+                            Value:&nbsp; 
+                            <FiatCurrencyDisplay 
+                                amount={
+                                    accountMarketValue.length
+                                    ?
+                                    accountMarketValue[0].dollarValue
+                                    :
+                                    0
+                                } 
+                                className="text-white font-bold" 
+                            />
+                        </h5>
                     </Banner.Body>
                     <Banner.Links>
                         <SocialIcon
