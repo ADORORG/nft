@@ -184,7 +184,7 @@ export default function CreateTokenForm() {
      * @param e Event handler
      */
     const removeAttribute = (e: React.MouseEvent<HTMLButtonElement>) => {
-		const index = (e.target as HTMLButtonElement).getAttribute("data-index") as string
+		const index = (e.currentTarget as HTMLButtonElement).getAttribute("data-index") as string
 		const newAttributes = nftTokenAttribute.filter((_, i) => i !== parseInt(index))
 		setNftTokenAttribute(newAttributes)
 	}
