@@ -111,11 +111,11 @@ export default async function Page({params: {slug}}: {params: {slug: string}}) {
                             socials={[
                                 {
                                     name: "twitter",
-                                    link: twitter
+                                    link: twitter||'#'
                                 },
                                 {
                                     name: "discord",
-                                    link: discord
+                                    link: discord||'#'
                                 }
                             ]}
                             

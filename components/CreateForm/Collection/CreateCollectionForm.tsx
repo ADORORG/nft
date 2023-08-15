@@ -115,15 +115,15 @@ export default function CreateCollectionForm() {
             formData.append("banner", bannerFile)
 
             for (const field of requiredFormFields) {
-                formData.append(field, collectionData ? collectionData[field] : "")
+                formData.append(field, collectionData ? collectionData[field] || "" : "")
             }
 
             for (const field of socialMediaFields) {
-                formData.append(field, collectionData ? collectionData[field] as string : "")
+                formData.append(field, collectionData ? collectionData[field] || "" as string : "")
             }
 
             for (const field of otherFormFields) {
-                formData.append(field, collectionData ? collectionData[field] as string : "")
+                formData.append(field, collectionData ? collectionData[field] || "" as string : "")
             }
 
             await fetcher(apiRoutes.createCollection, {
