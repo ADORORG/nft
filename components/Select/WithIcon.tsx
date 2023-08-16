@@ -32,10 +32,10 @@ export default function SelectWithIcon(props: SelectWithIconInterface) {
     };
     
     useEffect(() => {
-        document.addEventListener('click', handleClickOutside);
+        document.addEventListener("click", handleClickOutside);
     
         return () => {
-          document.removeEventListener('click', handleClickOutside);
+          document.removeEventListener("click", handleClickOutside);
         };
     });
 

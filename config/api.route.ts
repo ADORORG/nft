@@ -46,7 +46,9 @@ const apiRoutes = {
     /** Get currency by chain Id */
     getCurrenciesByChain: "/api/currency/chain/:chainId",
     /** Add new currency. Callable by admin */
-    addNewCurrency: "/api/currency/new"
+    addNewCurrency: "/api/currency/add",
+    /** Update a currency. Substituting the currency _id for 'currencyDocId' in params  */
+    updateCurrency: "/api/currency/update/:currencyDocId",
 }
 
 export default apiRoutes

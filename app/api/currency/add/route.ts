@@ -14,28 +14,23 @@ async function addNewCurrency(request: NextRequest, _: any, { user }: {user: Acc
         throw new CustomRequestError('Unauthorized', 401)
     }
 
-    const formData = await request.formData()
-    const currencyData: Record<string, any> = {}
-
-    for (const key of formData.keys()) {
-        currencyData[key] = formData.get(key) || ""
-    }
-
+    const formData = await request.json()
     // validate the Currency data
-    const isValidCurrency = await validateCurrency(currencyData)
+    const isValidCurrency = await validateCurrency(formData)
     if (!isValidCurrency) {
         throw new CustomRequestError('Currency data is invalid', 400)
     }
 
     const newCurrency = await createCurrency({
-        name: currencyData.name,
-        cid: currencyData.cid,
-        symbol: currencyData.symbol,
-        decimals: currencyData.decimals,
-        chainId: currencyData.chainId,
-        address: currencyData.address,
-        marketId: currencyData.marketId,
-        logoURI: currencyData.logoURI
+        name: formData.name,
+        cid: formData.cid,
+        symbol: formData.symbol,
+        decimals: formData.decimals,
+        chainId: formData.chainId,
+        address: formData.address,
+        marketId: formData.marketId,
+        logoURI: formData.logoURI,
+        disabled: !!formData.disabled
     })
 
     // send the new currency in response

@@ -42,7 +42,8 @@ const CurrencySchema = new Schema<CryptocurrencyType>({
     address: {type: String, required: true},
     logoURI: {type: String, required: true},
     price: PriceSchema,
-    marketId: String
+    marketId: String,
+    disabled: {type: Boolean, default: false}
 }, {
     collection: currencies,
     timestamps: true

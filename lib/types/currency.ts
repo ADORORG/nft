@@ -36,6 +36,8 @@ export interface CryptocurrencyType extends Partial<Document> {
     price?: Record<string, string>;
     /** Concatenation of cid and chainId */
     uid?: string;
-    /** Market id on market cap */
-    marketId?: string
+    /** Currency id on marketcap website. Will be used to fetch currency price */
+    marketId?: string;
+    /** Signifies whether currency can be used in listing */
+    disabled?: boolean
 }
