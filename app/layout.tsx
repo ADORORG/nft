@@ -6,6 +6,7 @@ import NextAuthSessionProvider from "@/components/NextAuthSession"
 import SWRProvider from "@/components/SWRProvider"
 import WagmiProvider from "@/components/WagmiProvider"
 import AdminWrapper from "@/components/AdminWrapper"
+import TermsOfServiceWrapper from "@/components/TermsOfServiceWrapper"
 import { ConnectWalletContextWrapper } from "@/components/ConnectWallet"
 import { AppInfo } from "@/lib/app.config"
 import { Toaster } from "react-hot-toast"
@@ -111,6 +112,7 @@ export default function RootLayout({
   return (    
     <html lang="en">
       <body className={`min-h-full ${changa.className}`}>
+        <TermsOfServiceWrapper />
         <Toaster 
           toastOptions={{
             duration: 5000,

@@ -2,7 +2,7 @@ import { useEffect } from "react"
 import { Moon, Sun, Laptop } from "react-bootstrap-icons"
 import { SelectWithIcon } from "@/components/Select"
 import { useAtom } from "jotai"
-import { appTheme } from "@/store/theme"
+import { appTheme } from "@/store/common"
 
 export default function ThemeSwitcher() {
     const [themeValue, setThemeValue] = useAtom(appTheme)
