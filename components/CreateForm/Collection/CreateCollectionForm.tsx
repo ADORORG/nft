@@ -177,17 +177,18 @@ export default function CreateCollectionForm() {
                             className="rounded focus:transition-all duration-700"
                         />
 
-                        <p className="my-4">
+                        <p className="my-4 transition-all duration-500 text-gray-900 dark:text-gray-100">
                             Slug: {collectionSlug}&nbsp;
+                            {/* isInvalidCollectionSlug is 'undefined' by default. Hence, the need to check for true or false */}
                             {
                                 isInvalidCollectionSlug === true
                                 &&
-                                <span className="transition-all duration-500 text-gray-600">is not available</span>
+                                <span>is not available</span>
                             }
                             {
                                 isInvalidCollectionSlug === false
                                 &&
-                                <span className="transition-all duration-500 text-gray-600">is available</span>
+                                <span>is available</span>
                             }
                         </p>
                     </div>
