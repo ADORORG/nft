@@ -11,7 +11,8 @@ import {
   optimism,
   arbitrum,
   goerli,
-  bsc
+  bsc,
+  type Chain
 } from "wagmi/chains"
 import { alchemyProvider } from "wagmi/providers/alchemy"
 import { publicProvider } from "wagmi/providers/public"
@@ -23,8 +24,33 @@ const supportedChains = [
     optimism, 
     arbitrum, 
     bsc,
-    goerli
-];
+    goerli,
+    /** Add base mainnet */
+    {
+        id: 8453,
+        name: "Base",
+        network: "base-mainnet",
+        nativeCurrency: {
+            name: "Ether",
+            symbol: "ETH",
+            decimals: 18
+        },
+        blockExplorers: {
+            default: {
+                name: "Basescan",
+                url: "https://basescan.org"
+            }
+        },
+        rpcUrls: {
+            default: {
+                http: ["https://mainnet.base.org"]
+            },
+            public: {
+                http: ["https://mainnet.base.org"]
+            }
+        }
+    } satisfies Chain
+]
 
 const { chains, publicClient } = configureChains(
     supportedChains,

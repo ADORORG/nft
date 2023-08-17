@@ -15,18 +15,20 @@ import {
     ArbitrumIcon,
     HarmonyIcon,
     OptimismIcon,
+    BaseIcon
 } from "./Icons"
 
-const chainIcons = {
+const chainIcons: Record<number, React.FC<React.SVGAttributes<SVGElement>>> = {
     1: EthereumIcon,
     5: EthereumIcon,
     10: OptimismIcon,
     56: BinanceIcon,
     137: PolygonIcon,
     250: FantomIcon,
+    8453: BaseIcon,
     43114: AvalancheIcon,
     42161: ArbitrumIcon,
-    1666600000: HarmonyIcon
+    1666600000: HarmonyIcon,
 }
 
 export default function NetworkChainSelect() {
