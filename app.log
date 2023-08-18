@@ -39,3 +39,5 @@
 {"errorCode":401,"level":"error","name":"RequestError"}
 {"errorCode":401,"level":"error","name":"RequestError"}
 {"errorCode":401,"level":"error","name":"RequestError"}
+{"errorCode":400,"level":"error","name":"RequestError"}
+{"errorCode":400,"level":"error","name":"RequestError"}

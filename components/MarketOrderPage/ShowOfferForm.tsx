@@ -16,7 +16,7 @@ import Button from "@/components/Button"
 import InfoText from "@/components/InfoText"
 import erc20ABI from "@/abi/erc20"
 /** Import the default (latest) marketplace ABIs */
-import erc1155MarketplaceABI from "@/abi/marketplace.erc1155"
+// import erc1155MarketplaceABI from "@/abi/marketplace.erc1155"
 import erc721MarketplaceABI from "@/abi/marketplace.erc721"
 import apiRoutes from "@/config/api.route"
 import { defaultMarketplaceVersion, getMarketplaceContract } from "@/config/marketplace.contract"
@@ -80,11 +80,12 @@ export default function ShowOfferForm(props: MarketOrdersProp & TokenPageProps) 
                 throw new Error(`Not enough ${currency.symbol} balance`)
             }
 
-            const isErc721 = props.token.contract.nftSchema.toLowerCase() === "erc721"
+            // const isErc721 = props.token.contract.nftSchema === "erc721"
             const tokenContractChainId = props.token.contract.chainId
             const tokenId = props.token.tokenId
             const tokenContractAddress = props.token.contract.contractAddress
-            const marketplaceAbi = isErc721 ? erc721MarketplaceABI : erc1155MarketplaceABI
+            // const marketplaceAbi = isErc721 ? erc721MarketplaceABI : erc1155MarketplaceABI
+            const marketplaceAbi = erc721MarketplaceABI
 
             /* const marketplaceContractInstance = getContract({
                 address: marketplaceContractByVersion,
@@ -127,8 +128,8 @@ export default function ShowOfferForm(props: MarketOrdersProp & TokenPageProps) 
                 },
                 primaryType: "Order",
                 domain: {
-                    name: marketplaceContractName as string,
-                    version: marketplaceContractVersion as string,
+                    name: marketplaceContractName,
+                    version: marketplaceContractVersion,
                     chainId: BigInt(tokenContractChainId),
                     verifyingContract: getAddress(marketplaceContractAddress),
                 },

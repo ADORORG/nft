@@ -13,6 +13,11 @@ export async function fetcher<R=AppRouterApiResponseType>(url: URL | string, opt
     return data
 }
 
+/**
+ * Get error message from Error object
+ * @param error 
+ * @returns 
+ */
 export function getFetcherErrorMessage(error: any): string {
     const message = error.body && error.body.message ? error.body.message : error.message
     return message

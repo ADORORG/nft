@@ -35,7 +35,7 @@ export default function CancelListingButton(props: MarketOrderProp) {
                 </Button>
                 :
                 <Button
-                    className="w-full wd:w-3/4"
+                    className="w-full wd:w-4/5"
                     variant="secondary"
                     disabled
                     rounded

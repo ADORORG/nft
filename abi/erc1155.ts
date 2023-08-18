@@ -664,7 +664,7 @@ const erc1155Abi = [
 
 /** Map erc1155 version */
 const erc1155AbiVersionMap = {
-  1: erc1155Abi
+  "1": erc1155Abi
 } as const
 
 /** Export version map */

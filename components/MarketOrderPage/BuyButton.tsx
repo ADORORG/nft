@@ -1,6 +1,5 @@
 import type { MarketOrderProp } from "./types"
 import { Tag as TagIcon } from "react-bootstrap-icons"
-import { CryptoCurrencyDisplay } from "@/components/Currency"
 import Button from "@/components/Button"
 
 
@@ -11,21 +10,21 @@ export default function BuyButton(props: MarketOrderProp) {
     }
     
     return (
-        <div>
+        <div className="w-3/4">
             <Button 
-                className="flex flex-wrap items-center"
+                className="flex flex-wrap justify-center items-center gap-2 w-full py-3 text-xl md:text-2xl"
                 variant="secondary"
                 onClick={buyFixedOrder} 
                 rounded
             >
+                
                 <TagIcon
                     className="h-5 w-5"
-                />&nbsp; 
-                Buy now&nbsp; 
-                <CryptoCurrencyDisplay
-                    currency={props.order.currency}
-                    amount={props.order.price}
                 />
+                <span className="flex">
+                    Buy now
+                </span>
+            
             </Button>
         </div>
     )

@@ -1,9 +1,9 @@
 import HeroText from "./HeroText"
 import { MarketListingCard } from "@/components/Card"
-import type MarketOrderType from "@/lib/types/market"
+import type { PopulatedMarketOrderType } from "@/lib/types/market"
 
 type HeroSectionProps = {
-    marketOrders: MarketOrderType[]
+    marketOrders: PopulatedMarketOrderType[]
 }
 
 export default function HeroSection({marketOrders}: HeroSectionProps) {

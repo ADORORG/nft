@@ -18,38 +18,38 @@ export default function MarketOrderPage(props: MarketOrdersProp & TokenPageProps
   
     return (
         <div className="w-[320px] md:w-[420px] text-gray-900 dark:text-white">
-            <div className="flex flex-col justify-between h-max">
-                {
-                    activeOrder ?
-                    <ShowActiveOrder 
-                        order={activeOrder} 
-                    />
-                    :
-                    null
-                }
-                {
-                    tokenIsOwnedBySessionAccount ?
-                    <OwnerSection 
-                        orders={props.orders} 
-                        token={props.token} 
-                        activeOrder={activeOrder}
-                    />
-                    :
-                    <PublicSection 
-                        orders={props.orders} 
-                        token={props.token} 
-                        activeOrder={activeOrder}
-                    />
-                }
+            <div className="flex flex-col h-max">
+                    {
+                        activeOrder ?
+                        <ShowActiveOrder 
+                            order={activeOrder} 
+                        />
+                        :
+                        null
+                    }
+                    {
+                        tokenIsOwnedBySessionAccount ?
+                        <OwnerSection 
+                            orders={props.orders} 
+                            token={props.token} 
+                            activeOrder={activeOrder}
+                        />
+                        :
+                        <PublicSection 
+                            orders={props.orders} 
+                            token={props.token} 
+                            activeOrder={activeOrder}
+                        />
+                    }
 
-                <ShowOrderHistory 
-                    orders={props.orders} 
-                />
+                    <ShowOrderHistory 
+                        orders={props.orders} 
+                    />
 
-                <ShowOrderBids
-                    bids={marketOrderBids || []}
-                    order={activeOrder as any}
-                />
+                    <ShowOrderBids
+                        bids={marketOrderBids || []}
+                        order={activeOrder as any}
+                    />
             </div>
         </div>
     )

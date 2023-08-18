@@ -16,9 +16,11 @@ type MarketplaceContractMap = {
 const goerliMarketplace: ChainMarketplaceMap = {
     /** Map marketplace versions to nft type */
     erc721: {
+        // version 1
         1: "0x4Dbd29AdF3D79f2CF506f148288352EF921BE65a"
     },
     erc1155: {
+        // version 1
         1: "0x0000000000000000000000000000000000000000"
     }
 } as const
@@ -27,9 +29,11 @@ const goerliMarketplace: ChainMarketplaceMap = {
 const ethMainnetMarketplace: ChainMarketplaceMap = {
     /** Map marketplace versions */
     erc721: {
+        // version 1
         1: "0xA9515EBAe4EaE0EF8F63951283868614B7645027"
     },
     erc1155: {
+        // version 1
         1: "0x0000000000000000000000000000000000000000"
     }
 } as const
@@ -44,7 +48,7 @@ export const defaultMarketplaceVersion = 1
 export default marketplaceContractAddresses
 
 /**
- * Get the appropriate marketplace contract address based on chainId=>contractSchema=>contractVersion
+ * Get the appropriate marketplace contract address based on contract chainId & contract nftSchema
  * @param token - A populated token containing contract data
  * @param version - The version to get, defaults to the marketplace contract latest version
  * @returns 
@@ -54,7 +58,7 @@ export function getMarketplaceContract(token: PopulatedNftTokenType, version: nu
         /** Get the contract chainId */
         const tokenContractChainId = token.contract.chainId
          /** Get the contract nftSchema */
-         const tokenContractSchema = token.contract.nftSchema.toLowerCase()
+         const tokenContractSchema = token.contract.nftSchema
         /** Get the marketplace contract by chainId */
         const marketplaceContractByChain = marketplaceContractAddresses[tokenContractChainId]
 

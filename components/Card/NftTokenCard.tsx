@@ -31,7 +31,9 @@ export default function NftTokenCard(props: NftTokenProps) {
                 </div>
 
                 <div className="w-full flex flex-col py-2 lg:py-4 justify-end">
-                    <h4 className={`text-xl text-gray-950 dark:text-white tracking-wide subpixel-antialiased`}>{cutString(name, 10)} #{tokenId}</h4>
+                    <h4 className={`text-xl text-gray-950 dark:text-white tracking-wide subpixel-antialiased`}>
+                        {cutString(name, 10)} #{tokenId}
+                    </h4>
                     
                     <div className="flex flex-row items-center justify-between pt-2">
                         <div className="flex flex-row items-center gap-3">

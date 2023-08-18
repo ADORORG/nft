@@ -1,4 +1,3 @@
-
 const erc721ABI = [
     {
       "inputs": [
@@ -683,8 +682,8 @@ const erc721ABI = [
 
 /** Map erc721 version */
 const erc721AbiVersionMap = {
-  1: erc721ABI
-}
+  "1": erc721ABI
+} as const
 
 /** Export version map */
 export {

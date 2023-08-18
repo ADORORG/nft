@@ -7,8 +7,8 @@ export default function ShowActiveOrder(props: MarketOrderProp) {
     const auctionTimeLeft = dateToRelativeDayAndHour(new Date(props.order?.endsAt ?? new Date()))
 
     return (
-        <div>
-            <div>
+        <div className="pt-8 pb-4 flex flex-col gap-4 justify-center items-center">
+            <div className="flex flex-row items-center text-xl md:text-2xl gap-2 justify-center">
                 <span>
                     Price: 
                 </span>
@@ -19,7 +19,7 @@ export default function ShowActiveOrder(props: MarketOrderProp) {
             </div>
             {
                 isAuction ? 
-                <span>
+                <span className="text-xl">
                     Auction {auctionTimeLeft.future ? "ends" : "ended"}: {auctionTimeLeft.days}, {(auctionTimeLeft.hours)}
                 </span>
                 :

@@ -2,7 +2,7 @@
 "use client"
 import { MarketListingCard } from '@/components/Card/'
 import Button from "@/components/Button"
-import SaleTypeButtons from "@/components/SaleTypeButtons"
+// import SaleTypeButtons from "@/components/SaleTypeButtons"
 import type { default as MarketOrderType, PopulatedMarketOrderType} from "@/lib/types/market"
 
 type TrendingOfferOrFixedOrderProps = {
@@ -12,9 +12,9 @@ type TrendingOfferOrFixedOrderProps = {
 export default function TrendingOfferOrFixedOrder({marketOrders}: TrendingOfferOrFixedOrderProps) {
   const offerOrFixedOrder = marketOrders.filter((m => m.saleType !== "auction")) as PopulatedMarketOrderType[]
 
-  const changeSaleType = (saleType: string) => {
+  /* const changeSaleType = (saleType: string) => {
     console.log(saleType)
-  }
+  } */
 
   return (
     <div className="bg-white dark:bg-gray-950 p-4 lg:p-8">
@@ -25,12 +25,12 @@ export default function TrendingOfferOrFixedOrder({marketOrders}: TrendingOfferO
         </h1>
 
         {/* Category Buttons */}
-        <div className="flex justify-center mb-12">
+        {/* <div className="flex justify-center mb-12">
           <SaleTypeButtons 
             onSelected={changeSaleType}
             exclude={["auction"]}
         />
-        </div>
+        </div> */}
         <div className="flex flex-wrap justify-center gap-4 lg:gap-6">
           {
           offerOrFixedOrder

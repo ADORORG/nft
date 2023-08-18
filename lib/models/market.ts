@@ -22,7 +22,7 @@ const MarketOrderSchema = new Schema<MarketOrderType>({
     saleTxHash: {type: String},
     cancelTxHash: {type: String},
     approvalSignature: {type: String, required: function() { return (this as any).permitType === 'offchain' && (this as any).saleType === 'fixed'}},
-    orderSignature: {type: String, required: function() { return (this as any).permitType === 'offchain'}},
+    orderSignature: {type: String, required: function() { return (this as any).permitType === 'offchain' && (this as any).saleType === 'fixed'}},
     orderDeadline: {type: String, required: function() { return (this as any).permitType === 'offchain'}},
     version: {type: String, required: true},
     createdAt: {type: Date},

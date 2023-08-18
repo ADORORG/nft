@@ -32,8 +32,9 @@ export default function CreatorCard({creatorAccount, currencyNode}: CreatorCardP
         <div className="lg:h-[150px] lg:w-[370px] flex lg:flex-row flex-col justify-start items-center gap-2 p-1 bg-gray-200 dark:bg-gray-900 transition dark:bg-opacity-70 dark:hover:bg-opacity-90 rounded shadow-lg">
             <div className="p-1">
                 <Image 
-                    className="w-[220px]" 
+                    className="w-[220px] rounded border border-gray-300" 
                     src={image}
+                    data={address}
                     alt=""
                     width={300}
                     height={300}
@@ -52,7 +53,7 @@ export default function CreatorCard({creatorAccount, currencyNode}: CreatorCardP
                     className="relative rotate-90 lg:rotate-0"
                     onClick={() => setShowDropdown(!showDropdown)}
                 >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6 lg:w-10 lg:h-10">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6 lg:w-10 lg:h-10 text-gray-950 dark:text-gray-100">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
                     </svg>
                 </button>
