@@ -37,7 +37,7 @@ function getErrorMessage(error: any) {
              * Mongo Server Error
              * It include 'duplicate' and some other erros
              */
-            errorMessage = 'Server Error. Error has been reported'
+            errorMessage = error.code === 11000 ? 'Duplicate data received' : 'Server Error. Error has been reported'
             break
 
         case error instanceof MongooseError:
@@ -71,11 +71,13 @@ export default function withRequestErrorr<T extends Function>(func: T) {
         if (func.constructor && func.constructor.name === 'AsyncFunction') {
             return func(...restParams).catch((error: any) => {
                 // send response
-                console.log('error async: ', error.stack)
                 // log to error reporting service
                 logger.error(error)
                 
-                const status = error.code ?? error.errorCode ?? 500
+                /** Mongoose Error code for duplicate entry is 11000
+                 * Thus, we capped error to 599 to avoid http range error
+                 */
+                const status = error.code < 599 || error.errorCode || 500
                 return NextResponse.json({
                     success: false,
                     message: getErrorMessage(error),
@@ -89,7 +91,6 @@ export default function withRequestErrorr<T extends Function>(func: T) {
             return func(...restParams) 
         } catch (error: any) {
             // send response
-            console.log('error sync: ', error)
             // log to error reporting service
             logger.error(error)
 

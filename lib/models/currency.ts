@@ -35,7 +35,7 @@ const PriceSchema = new Schema<CryptocurrencyMarketDataType>({
 const CurrencySchema = new Schema<CryptocurrencyType>({
     name: {type: String, required: true},
     cid: {type: String, required: true},
-    uid: {type: String, unique: true, default: function() { return (this as any).cid + '#' + (this as any).chainId}},
+    uid: {type: String, lowercase: true, unique: true, default: function() { return (this as any).cid + '#' + (this as any).chainId}},
     symbol: {type: String, required: true},
     decimals: {type: Number, required: true},
     chainId: {type: Number, required: true},
