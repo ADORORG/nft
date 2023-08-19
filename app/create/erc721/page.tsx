@@ -1,7 +1,7 @@
-import CreateERC721ContractForm from "@/components/CreateForm/Contract/CreateERC721ContractForm"
+import CreateNftContractForm from "@/components/CreateForm/Contract/CreateNftContractForm"
 
 export default function Page() {
     return (
-        <CreateERC721ContractForm />
+        <CreateNftContractForm nftSchema="erc721" />
     )
 }

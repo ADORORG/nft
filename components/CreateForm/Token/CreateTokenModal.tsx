@@ -4,7 +4,7 @@ import { CodeSlash, CloudCheck, BagCheck } from "react-bootstrap-icons"
 import { useAtom } from "jotai"
 import { toast } from "react-hot-toast"
 import { decodeEventLog } from "viem"
-import { usePrepareContractWrite, useContractWrite, useAccount, useFeeData, usePublicClient } from "wagmi"
+import { usePrepareContractWrite, useContractWrite, useAccount, useFeeData, usePublicClient, useWalletClient } from "wagmi"
 import {
     nftTokenImageStore,
     nftTokenMediaStore,
@@ -14,12 +14,12 @@ import {
     nftTokenAttributeStore
 } from "@/store/form"
 import { fetcher, getFetcherErrorMessage } from "@/utils/network"
+import { useContractChain } from "@/hooks/contract"
 import Stepper from "@/components/Stepper"
 import Button from "@/components/Button"
 import Link from "next/link"
 import apiRoutes from "@/config/api.route"
 import appRoutes from "@/config/app.route"
-/** Use the default Abi */
 import erc1155Abi from "@/abi/erc1155"
 import erc721Abi from "@/abi/erc721"
 
@@ -102,13 +102,15 @@ function MintToken({contract}: CreateTokenModalProps) {
     const [nftTokenData, setNftTokenData] = useAtom(nftTokenDataStore)
     const { address } = useAccount()
     const { data: feeData } = useFeeData({ chainId: contract.chainId })
-
+    const { data: walletClient } = useWalletClient()
+    const contractChain = useContractChain(contract, walletClient)
+    
     const writeArgs: Record<string, Record<string, any>> = {
         erc721: {
             functionName: "mint",
             /** @todo Execution is always reverted if royalty is passed */
             // args: [address, BigInt(nftTokenData?.royalty || 1)],
-            args: [address],
+            args: [],
             abi: erc721Abi,
             address: contract.contractAddress,
             chainId: contract.chainId,
@@ -137,6 +139,8 @@ function MintToken({contract}: CreateTokenModalProps) {
     const handleMinting = async () => {
         try {
             setMinting(true)
+            // Ensure we are connected to the chain which contrat was deployed
+            await contractChain.ensureContractChainAsync()
             /** Send the transaction */
             const mintTransaction = await writeAsync?.()
             /** Wait for the transaction to be mined */
