@@ -1,6 +1,7 @@
 "use client"
 import Link from "next/link"
 import { useState, useRef } from "react"
+import { useSearchParams } from "next/navigation"
 import { useAtom } from "jotai"
 import { toast } from "react-hot-toast"
 import { useAccount, useNetwork } from "wagmi"
@@ -31,6 +32,7 @@ import CreateTokenModal from "./CreateTokenModal"
 import appRoutes from "@/config/app.route"
 
 export default function CreateTokenForm() {
+    const searchParams = useSearchParams()
     const { isConnected, address } = useAccount()
     /**
      * Fetch address contracts and collections
@@ -236,6 +238,8 @@ export default function CreateTokenForm() {
 			toast.error("Please upload token image")
 			return
 		}
+
+        
 
         setShowModal(true)
     }
@@ -459,7 +463,7 @@ export default function CreateTokenForm() {
                             id="account-contracts"
                             onChange={handleInputChange}
                             name="contract"
-                            value={nftTokenData?.contract?.toString() || ""}
+                            value={nftTokenData?.contract?.toString() || searchParams.get("contract") || ""}
                             className="rounded focus:transition-all duration-700"
                         >
                             <Select.Option value="" disabled>Select contract</Select.Option>
@@ -473,7 +477,7 @@ export default function CreateTokenForm() {
                                         className="active:bg-purple-300"
                                         key={contract._id?.toString()} 
                                         value={contract._id?.toString()}>
-                                            {contract.label || contract.contractAddress}
+                                            {contract.label || contract.contractAddress} - {contract.nftSchema}
                                     </Select.Option>
                                 ))
                             }

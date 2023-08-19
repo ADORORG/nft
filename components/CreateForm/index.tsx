@@ -1,11 +1,19 @@
 "use client"
+import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { CodeBracketIcon, FolderPlusIcon, DocumentPlusIcon } from "@heroicons/react/24/outline"
+import { useAccount } from "wagmi"
+import { useAccountContract } from "@/hooks/fetch"
 import { WithoutCheckbox } from "@/components/SelectCard"
+import { Select } from "@/components/Select"
+import Button from "@/components/Button"
 import appRoute from "@/config/app.route"
 
 export default function RenderCreateOption() {
+    const [selectedContract, setSelectedContract] = useState("")
     const router = useRouter()
+    const { isConnected, address } = useAccount()
+    const { accountContracts } = useAccountContract(address)
 
     const defaultCreateOption = [
         {
@@ -37,16 +45,44 @@ export default function RenderCreateOption() {
         },
     ]
 
-    const handleSelect = (link: string) => {
+    const gotoRoute = (link: string) => {
         router.push(link)
     }
 
     return (
         <div>
-            <h1 className="text-4xl text-center py-8 md:leading-4">Select an option</h1>
+            <h1 className="text-3xl text-center py-8 md:leading-4">Select an option</h1>
 
-            <div className="flex flex-col gap-4 my-4">
-                <div className="flex flex-col md:flex-row gap-8 justify-center align-center my-4">
+            <div className="flex flex-col justify-center items-center gap-4 my-4">
+                <div className="flex flex-col md:flex-row gap-4 my-6">
+                    <Select
+                        className="rounded"
+                        value={selectedContract}
+                        onChange={e => setSelectedContract(e.target.value)}
+                    >
+                        <Select.Option value="" disabled>Choose existing Contract</Select.Option>
+                        {
+                            isConnected &&
+                            accountContracts &&
+                            accountContracts.length &&
+                            accountContracts.map(contract => (
+                                <Select.Option 
+                                    key={contract._id?.toString()}
+                                    value={contract._id?.toString()}>{contract.label}-{contract.nftSchema}</Select.Option>
+                            ))
+                        }
+                    </Select>
+                    <Button
+                        className=""
+                        variant="gradient"
+                        disabled={!selectedContract}
+                        onClick={() => gotoRoute(appRoute.createToken + "?contract=" + selectedContract)}
+                        rounded
+                    >
+                        Mint on Contract
+                    </Button>
+                </div>
+                <div className="flex flex-col md:flex-row gap-8 justify-center items-center my-4">
                     {
                         defaultCreateOption.map((create, index) => {
                             return (
@@ -56,7 +92,7 @@ export default function RenderCreateOption() {
                                     icon={create.icon}
                                     heading={create.title}
                                     textContent={create.subtitle}
-                                    onClick={() => handleSelect(create.link)}
+                                    onClick={() => gotoRoute(create.link)}
                                 />
                             )
                         })
@@ -72,7 +108,7 @@ export default function RenderCreateOption() {
                                     icon={create.icon}
                                     heading={create.title}
                                     textContent={create.subtitle}
-                                    onClick={() => handleSelect(create.link)}
+                                    onClick={() => gotoRoute(create.link)}
                                 />
                             )
                         })

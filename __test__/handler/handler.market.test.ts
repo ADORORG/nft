@@ -87,7 +87,7 @@ describe('Market and bid handler functions', () => {
     }
 
     const testToken = {
-        tokenId: '1',
+        tokenId: 1,
         supply: 1
     }
 
@@ -343,7 +343,7 @@ describe('Market and bid handler functions', () => {
             orderSignature: 'somecryptographysignature',
         })
 
-        const cancelledMarketOrder = await setMarketOrderStatusToCancelled(offerMarketOrder._id as any)
+        const cancelledMarketOrder = await setMarketOrderStatusToCancelled({_id: offerMarketOrder._id})
 
         expect(cancelledMarketOrder?._id).toStrictEqual(offerMarketOrder._id)
         expect(cancelledMarketOrder?.status).toBe('cancelled')
