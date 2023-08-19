@@ -1,5 +1,5 @@
 
-import { CreateCollectionForm } from "@/components/CreateForm"
+import CreateCollectionForm from "@/components/CreateForm/Collection/CreateCollectionForm"
 
 export default function Page() {
 

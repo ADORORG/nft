@@ -26,11 +26,22 @@ export function typeGuarded<T>(obj: any, prop: string): obj is T {
 
 /** 
 * Check for a valid format of an ethereum address. It does not check for checksum address
-* @param address - Ethereum Address to validate
+* @param address - '0x' prefixed Ethereum Address to validate
 * @returns
 */
 export function isEthereumAddress(address: string): boolean {
     return (/^(0x){1}[0-9a-fA-F]{40}$/i.test(address));
+}
+
+/**
+ * Check for a valid format of an ethereum transaction hash.
+ * 
+ * @param hash - '0x' prefixed Transaction hash
+ * @returns 
+ */
+export function isEthereumTransactionHash(hash: string): boolean {
+	// Ethereum transaction hash is a 64-character hexadecimal string
+	return (/^(0x){1}[0-9a-fA-F]{64}$/i.test(hash));
 }
 
 /**

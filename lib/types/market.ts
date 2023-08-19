@@ -73,8 +73,12 @@ export default interface MarketOrderType extends Partial<Document> {
 }
 
 export interface PopulatedMarketOrderType extends MarketOrderType {
+    /** Populated nft token */
     token: PopulatedNftTokenType
+    /** Populated seller account */
     seller: AccountType
+    /** Populated buyer account */
     buyer?: AccountType
+    /** The currency for listing */
     currency: CryptocurrencyType
 }

@@ -5,12 +5,13 @@ import { useTokenMarketOrderBids } from "@/hooks/fetch"
 import { useAuthStatus } from "@/hooks/account"
 import { CryptoCurrencyDisplay } from "@/components/Currency"
 import { InputField } from "@/components/Form"
+import { ConnectWalletButton } from "@/components/ConnectWallet"
 import Button from "@/components/Button"
 
 export default function BidForm(props: MarketOrderProp) {
-    const [newBidPrice, setNewBidPrice] = useState("0")
+    const [newBidPrice, setNewBidPrice] = useState(props.order.price)
     const { marketOrderBids } = useTokenMarketOrderBids(props.order._id?.toString())
-    const { session } = useAuthStatus()
+    const { session, isConnected } = useAuthStatus()
 
     const isAuctionEnded = new Date(props.order.endsAt as Date) < new Date()
 
@@ -42,77 +43,84 @@ export default function BidForm(props: MarketOrderProp) {
         <>
             {
                 isAuctionEnded ?
-                <>
+                <div className="flex flex-col gap-4">
                     {
                         hasBidAndHighestBidder ?
                         /** Auction ended and highest bidder can claim the token */
                         <Button 
-                            className=""
-                            variant="secondary"
+                            className="flex items-center justify-center text-xl p-4 gap-2"
+                            variant="gradient"
                             onClick={ClaimAuctionToken} 
                             rounded    
                         >
                             <Trophy 
-                                className="h-5 w-5" 
-                            />&nbsp; 
-                            Claim token
+                                className="h-6 w-6" 
+                            />
+                            <span>Claim token</span>
                         </Button>
                         :
                         /**
                          * Auction ended
                          */
                         <Button 
-                            className=""
-                            variant="secondary"
+                            className="flex items-center justify-center text-xl p-4 gap-2"
+                            variant="gradient"
                             disabled
                             rounded
                         >
                             <Cart 
-                                className="h-5 w-5" 
-                            />&nbsp; 
-                            Auction ended!
+                                className="h-6 w-6" 
+                            />
+                            <span>Auction ended</span>
                         </Button>
                     }
-                </>
+                </div>
                 :
-                <>
+                <div className="flex flex-col gap-4">
                     {
                         hasBidAndHighestBidder ?
                         /** Current account is the highest bidder */
                         <Button 
-                            className=""
-                            variant="secondary" 
+                            className="flex items-center justify-center text-xl p-4 gap-2"
+                            variant="gradient" 
                             rounded
                             disabled>
                             <PatchCheck
-                                className="h-5 w-5"
-                            />&nbsp; 
-                            Highest bidder (You)
+                                className="h-6 w-6"
+                            />
+                            <span>Highest bidder (You)</span>
                         </Button>
                         :
                         /**
                          * Place a bid
                          */
-                        <div className="flex flex-row gap-4">
+                        <div className="flex flex-col gap-4">
                             <InputField
                                 label="Bid price"
                                 type="number"
                                 min={highestBid ? highestBid.price : props.order.price}
                                 value={newBidPrice}
                                 onChange={e => setNewBidPrice(e.target.value) }
-                                labelClassName="my-2"
+                                className="my-2 rounded text-lg"
+                                step="0.00001"
                             />
-                            <Button
-                                className=""
-                                variant="secondary" 
-                                onClick={placeBid}
-                                rounded
-                            >
-                                <TagIcon 
-                                    className="h-5 w-5" 
-                                />&nbsp; 
-                                Place a Bid
-                            </Button>
+                            {
+                                isConnected ?
+                                <Button
+                                    className="flex items-center justify-center gap-2 text-xl py-3"
+                                    variant="gradient" 
+                                    onClick={placeBid}
+                                    rounded
+                                >
+                                    <TagIcon 
+                                        className="h-6 w-6" 
+                                    /> 
+                                    <span>Place a Bid</span>
+                                </Button>
+                                :
+                                <ConnectWalletButton />
+                            }
+                            
                         </div>
                        
                     }
@@ -123,19 +131,21 @@ export default function BidForm(props: MarketOrderProp) {
                          */
                         parseFloat(props.order.buyNowPrice || "0") > 0 &&
                         <Button 
-                            className="flex flex-wrap items-center"
-                            variant="secondary" 
+                            className="flex flex-col items-center justify-center gap-2 text-xl"
+                            variant="gradient"
+                            disabled={!isConnected}
                             onClick={buyAuctionNow}
                             rounded
                         >
-                            Buy now&nbsp; 
+                            <span>Buy now</span>
                             <CryptoCurrencyDisplay 
                                 currency={props.order.currency}
                                 amount={props.order.buyNowPrice || "0"}
+                                width={16}
                             />
                         </Button>
                     }
-                </>
+                </div>
             }
         </>
     )

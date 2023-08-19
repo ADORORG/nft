@@ -17,7 +17,7 @@ import InfoText from "@/components/InfoText"
 import erc20ABI from "@/abi/erc20"
 /** Import the default (latest) marketplace ABIs */
 // import erc1155MarketplaceABI from "@/abi/marketplace.erc1155"
-import erc721MarketplaceABI from "@/abi/marketplace.erc721"
+import marketplaceAbi from "@/abi/marketplace"
 import apiRoutes from "@/config/api.route"
 import { defaultMarketplaceVersion, getMarketplaceContract } from "@/config/marketplace.contract"
 import { fetcher, getFetcherErrorMessage } from "@/utils/network"
@@ -84,8 +84,6 @@ export default function ShowOfferForm(props: MarketOrdersProp & TokenPageProps) 
             const tokenContractChainId = props.token.contract.chainId
             const tokenId = props.token.tokenId
             const tokenContractAddress = props.token.contract.contractAddress
-            // const marketplaceAbi = isErc721 ? erc721MarketplaceABI : erc1155MarketplaceABI
-            const marketplaceAbi = erc721MarketplaceABI
 
             /* const marketplaceContractInstance = getContract({
                 address: marketplaceContractByVersion,
@@ -192,7 +190,7 @@ export default function ShowOfferForm(props: MarketOrdersProp & TokenPageProps) 
                 activeOfferFromAccount ?
                 <Button 
                     className="my-3 flex flex-wrap justify-center items-center w-full"
-                    variant="secondary"
+                    variant="gradient"
                     rounded
                     disabled
                 >
@@ -200,9 +198,9 @@ export default function ShowOfferForm(props: MarketOrdersProp & TokenPageProps) 
                 </Button>
                 :
                 <div className="flex flex-col gap-4">
-                    <h5 className="my-2">
+                    <h2 className="text-2xl py-6">
                         Make an offer for <strong>{props.token.name}#{props.token.tokenId}</strong>
-                    </h5>
+                    </h2>
                     <InputField 
                         label="Offer price"
                         labelClassName="my-2"
@@ -255,7 +253,7 @@ export default function ShowOfferForm(props: MarketOrdersProp & TokenPageProps) 
                         <Button
                             className="my-2 w-full md:w-3/4"
                             onClick={makeAnOffer}
-                            variant="secondary"
+                            variant="gradient"
                             loading={loading}
                             disabled={loading}
                             rounded

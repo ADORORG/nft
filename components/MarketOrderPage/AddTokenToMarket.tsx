@@ -12,11 +12,11 @@ import { dateToHtmlInput, dateToRelativeDayAndHour } from "@/utils/date"
 import { fetcher, getFetcherErrorMessage } from "@/utils/network"
 import { useAuthStatus } from "@/hooks/account"
 import { useAllCurrencies } from "@/hooks/fetch"
+import { useContractChain } from "@/hooks/contract"
 import { parseUnits, getAddress } from "viem"
 import { useNetwork, usePublicClient, useWalletClient } from "wagmi"
 /** Import nft & marketplace ABIs versions */
-// import { erc1155MaketplaceAbiVersionMap } from "@/abi/marketplace.erc1155"
-import { erc721MaketplaceAbiVersionMap } from "@/abi/marketplace.erc721"
+import { marketplaceAbiVersionMap } from "@/abi/marketplace"
 // import { erc1155AbiVersionMap } from "@/abi/erc1155"
 import { erc721AbiVersionMap } from "@/abi/erc721"
 import { defaultMarketplaceVersion, getMarketplaceContract } from "@/config/marketplace.contract"
@@ -28,13 +28,20 @@ export default function AddTokenToMarket(props: TokenPageProps) {
     const router = useRouter()
     const { currencies } = useAllCurrencies()
     const { chain } = useNetwork()
-    const {data: walletClient} = useWalletClient({chainId: chain?.id})
+    const {data: walletClient} = useWalletClient()
     const publicClient = usePublicClient()
+    const contractChain = useContractChain(props.token.contract, walletClient)
     const { address, session } = useAuthStatus()
     /** List form fields */
     const [orderData, setOrderData] = useState<Partial<MarketOrderType>>({})
     /** Processing status */
     const [loading, setLoading] = useState(false)
+    /** Keep track of actions processesd.
+     * This way, if transaction fails or an unexpected error occurred, user could continue from the last point
+     * This may not be necessary if we have a backend cron that monitors the changes/events in the contract onchain 
+    */
+    const [processedOnchain, setProcessedOnchain] = useState(false)
+    const [processedOffchain, setProcessedOffchain] = useState(false)
     /** Date and Time used to handle orderData.endsAt */
     const [time, setTime] = useState("")
     const [date, setDate] = useState("")
@@ -207,105 +214,162 @@ export default function AddTokenToMarket(props: TokenPageProps) {
     }
 
     /**
+     * Save new market data to the database
+     * @todo Make it reusable in other similar functions
+     * @param orderData
+     */
+    const addTokenToMarketplaceOffchain = async (orderData: MarketOrderType) => {
+        const response = await fetcher(apiRoutes.createMarketOrder, {
+            method: "POST",
+            body: JSON.stringify(orderData)
+        })
+
+        if (response.success) {
+            setProcessedOffchain(true)
+            toast.success(response.message)
+            router.refresh()
+        }
+    }
+
+    /**
     * Handle token listing in the marketplace 
     * @todo Reduce function further - separation of concern
-    * 
     */
-    const handleAddTokenToMarketplace = async () => {
+    const addTokenToMarketplaceOnchain = async () => {
+        /**
+         * ERC1155 Marketplace is not implemented yet
+         */
+        if (!isErc721) {
+            throw new Error("ERC1155 market is not implemented")
+        }
+
+        /** Validate market form fields */
+        validateOrderForm()
+
+        const {
+            tokenId,
+            contract: {
+                contractAddress: tokenContractAddress,
+                version: tokenContractVersion,
+                chainId: tokenContractChainId
+            }
+        } = props.token
+
+        /** Create an intermediate type of Token Contract version
+         * This is to ensure that "viem" infer argument type
+        */
+        type TokenContractAbiVersions = keyof typeof erc721AbiVersionMap
+        /** The ABI version for this token contract */
+        const tokenContractAbi = erc721AbiVersionMap[tokenContractVersion as TokenContractAbiVersions]
+
+        /** 
+         * The permit type to use for listing of this token (Offchain or onchain).
+         * By default, we"ll list the token onchain */
+        let permitType: "offchain" | "onchain" = "onchain"
+
+        /**
+         * Check for offchain permit support on token contract address
+         * @note Nft Contract deployed on this app support offchain.
+         * However, contract imported from another platform may not support offchain permit.
+         * Hence, the need to check for support
+         */
         try {
-            setLoading(true)
-            /**
-             * ERC1155 Marketplace is not implemented yet
-             */
-            if (!isErc721) {
-                throw new Error("ERC1155 market is not implemented")
+            const supportOffchainSigning = await publicClient.readContract({
+                address: tokenContractAddress as any,
+                abi: tokenContractAbi,
+                functionName: "supportsInterface",
+                args: [IERC721PermitInterface]
+            })
+
+            if (supportOffchainSigning) {
+                permitType = "offchain"
             }
 
-            /** Validate market form fields */
-            validateOrderForm()
+        } catch (error: any) {
+            console.log(error)
+        }
 
-            const {
-                tokenId,
-                contract: {
-                    contractAddress: tokenContractAddress,
-                    version: tokenContractVersion,
-                    chainId: tokenContractChainId
-                }
-            } = props.token
+        /** The selected currency for listing */
+        const currency = currencies?.find(c => c._id?.toString() === orderData.currency) as CryptocurrencyType
+        /** Convert order price to bigInt */
+        const bigOrderPrice = parseUnits(orderData.price as string, currency.decimals)
+        /** Convert order buyNowPrice to bigInt */
+        const bigOrderBuyNowPrice = parseUnits(orderData.buyNowPrice || "0", currency.decimals)
+        /** A hard coded deadline of a month (in seconds) is used for order and approval deadline for signature */
+        const signatureDeadline = Math.floor(Date.now() / 1000) + 2592000
 
-            /** Create an intermediate type of Token Contract version
-             * This is to ensure that "viem" infer argument type
-            */
-            type TokenContractAbiVersions = keyof typeof erc721AbiVersionMap
-            /** The ABI version for this token contract */
-            const tokenContractAbi = erc721AbiVersionMap[tokenContractVersion as TokenContractAbiVersions]
+        /** 
+         * The appropriate marketplace contract address
+         * We"ll add new listing to the latest (default) marketplace contract
+         * Hence, we get the marketplace contract address & its ABI using the defaultMarketplaceVersion
+         * 
+        */
+        const marketplaceContractAddress = getMarketplaceContract(props.token, defaultMarketplaceVersion)
+        const marketplaceAbiByVersion = marketplaceAbiVersionMap[defaultMarketplaceVersion]
+        let orderSignature, approvalSignature, listTxHash
 
-            /** 
-             * The permit type to use for listing of this token (Offchain or onchain).
-             * By default, we"ll list the token onchain */
-            let permitType: "offchain" | "onchain" = "onchain"
+        /** Auction listing happens onchain for the current defaultMarketplaceVersion.
+         * No offchain listing for auction sale type
+         */
+        if (permitType === "offchain" && !isAuction) {
+            // This listing is fixed price listing with offchain support
 
             /**
-             * Check for offchain permit support on token contract address
-             * @note Nft Contract deployed on this app support offchain.
-             * However, contract imported from another platform may not support offchain permit.
-             * Hence, the need to check for support
+             * Fetch marketplace contract name and version, contract name and nonce to use for signing
              */
-            try {
-                const supportOffchainSigning = await publicClient.readContract({
-                    address: tokenContractAddress as any,
+            const [marketplaceContractName, marketplaceContractVersion, tokenContractName, tokenContractNonce] = await Promise.all([
+                publicClient.readContract({
+                    address: marketplaceContractAddress,
+                    abi: marketplaceAbiByVersion,
+                    functionName: "name",
+                }),
+                publicClient.readContract({
+                    address: marketplaceContractAddress,
+                    abi: marketplaceAbiByVersion,
+                    functionName: "version",
+                }),
+                publicClient.readContract({
+                    address: getAddress(tokenContractAddress),
                     abi: tokenContractAbi,
-                    functionName: "supportsInterface",
-                    args: [IERC721PermitInterface]
+                    functionName: "name",
+                }),
+                publicClient.readContract({
+                    address: getAddress(tokenContractAddress),
+                    abi: tokenContractAbi,
+                    functionName: "nonces",
+                    args: [BigInt(tokenId)]
                 })
+            ])
 
-                if (supportOffchainSigning) {
-                    permitType = "offchain"
-                }
+            orderSignature = await getOrderSignature({
+                marketplaceContractVersion,
+                marketplaceContractName,
+                marketplaceContractAddress,
+                tokenContractChainId,
+                tokenContractAddress,
+                tokenId,
+                bigOrderPrice,
+                currency,
+                signatureDeadline
+            })
 
-            } catch (error: any) {
-                console.log(error)
-            }
+            approvalSignature = await getApprovalSignature({
+                tokenContractName,
+                tokenContractChainId,
+                tokenContractAddress,
+                tokenContractNonce,
+                tokenId,
+                marketplaceContractAddress,
+                signatureDeadline
+            })
 
-            /** The selected currency for listing */
-            const currency = currencies?.find(c => c._id?.toString() === orderData.currency) as CryptocurrencyType
-            /** Convert order price to bigInt */
-            const bigOrderPrice = parseUnits(orderData.price as string, currency.decimals)
-            /** Convert order buyNowPrice to bigInt */
-            const bigOrderBuyNowPrice = parseUnits(orderData.buyNowPrice || "0", currency.decimals)
-            /** A hard coded deadline of a month (in seconds) is used for order and approval deadline for signature */
-            const signatureDeadline = Math.floor(Date.now() / 1000) + 2592000
-    
-            /** 
-             * The appropriate marketplace contract address
-             * We"ll add new listing to the latest (default) marketplace contract
-             * Hence, we get the marketplace contract address & its ABI using the defaultMarketplaceVersion
-             * 
-            */
-            const marketplaceContractAddress = getMarketplaceContract(props.token, defaultMarketplaceVersion)
-            const marketplaceAbiByVersion = erc721MaketplaceAbiVersionMap[defaultMarketplaceVersion]
-            let orderSignature, approvalSignature, listTxHash
+        } else {
 
-            /** Auction listing happens onchain for the current defaultMarketplaceVersion.
-             * No offchain listing for auction sale type
-             */
-            if (permitType === "offchain" && !isAuction) {
-                // This listing is fixed price listing with offchain support
-
-                /**
-                 * Fetch marketplace contract name and version, contract name and nonce to use for signing
-                 */
-                const [marketplaceContractName, marketplaceContractVersion, tokenContractName, tokenContractNonce] = await Promise.all([
-                    publicClient.readContract({
-                        address: marketplaceContractAddress,
-                        abi: marketplaceAbiByVersion,
-                        functionName: "name",
-                    }),
-                    publicClient.readContract({
-                        address: marketplaceContractAddress,
-                        abi: marketplaceAbiByVersion,
-                        functionName: "version",
-                    }),
+            if (permitType === "offchain") {
+                /** Offchain is supported. However, this is an auction listing 
+                 * We'll use the eip712 approvalSignature 
+                */
+                const [tokenContractName, tokenContractNonce] = await Promise.all([
                     publicClient.readContract({
                         address: getAddress(tokenContractAddress),
                         abi: tokenContractAbi,
@@ -319,18 +383,6 @@ export default function AddTokenToMarket(props: TokenPageProps) {
                     })
                 ])
 
-                orderSignature = await getOrderSignature({
-                    marketplaceContractVersion,
-                    marketplaceContractName,
-                    marketplaceContractAddress,
-                    tokenContractChainId,
-                    tokenContractAddress,
-                    tokenId,
-                    bigOrderPrice,
-                    currency,
-                    signatureDeadline
-                })
-
                 approvalSignature = await getApprovalSignature({
                     tokenContractName,
                     tokenContractChainId,
@@ -340,160 +392,145 @@ export default function AddTokenToMarket(props: TokenPageProps) {
                     marketplaceContractAddress,
                     signatureDeadline
                 })
+                
+            } else if (consentToApproveAll) {
+                /** eip712 offchain approval signature is not supported.
+                 * Thus, request to approval all nft token if user has consented to approval all
+                 */
 
-            } else {
+                /** isApprovedForAll status for this marketplace contract */
+                const isApproved = await publicClient.readContract({
+                    address: getAddress(tokenContractAddress),
+                    abi: tokenContractAbi,
+                    functionName: "isApprovedForAll",
+                    args: [address as any, marketplaceContractAddress]
+                })
 
-                if (permitType === "offchain") {
-                    /** Offchain is supported. However, this is an auction listing 
-                     * We'll use the eip712 approvalSignature 
-                    */
-                    const [tokenContractName, tokenContractNonce] = await Promise.all([
-                        publicClient.readContract({
-                            address: getAddress(tokenContractAddress),
-                            abi: tokenContractAbi,
-                            functionName: "name",
-                        }),
-                        publicClient.readContract({
-                            address: getAddress(tokenContractAddress),
-                            abi: tokenContractAbi,
-                            functionName: "nonces",
-                            args: [BigInt(tokenId)]
-                        })
-                    ])
-
-                    approvalSignature = await getApprovalSignature({
-                        tokenContractName,
-                        tokenContractChainId,
-                        tokenContractAddress,
-                        tokenContractNonce,
-                        tokenId,
-                        marketplaceContractAddress,
-                        signatureDeadline
-                    })
-                    
-                } else if (consentToApproveAll) {
-                    /** eip712 offchain approval signature is not supported.
-                     * Thus, request to approval all nft token if user has consented to approval all
-                     */
-
-                    /** isApprovedForAll status for this marketplace contract */
-                    const isApproved = await publicClient.readContract({
+                if (!isApproved) {
+                    await walletClient?.writeContract({
                         address: getAddress(tokenContractAddress),
                         abi: tokenContractAbi,
-                        functionName: "isApprovedForAll",
-                        args: [address as any, marketplaceContractAddress]
+                        functionName: "setApprovalForAll",
+                        args: [marketplaceContractAddress, true]
                     })
-
-                    if (!isApproved) {
-                        await walletClient?.writeContract({
-                            address: getAddress(tokenContractAddress),
-                            abi: tokenContractAbi,
-                            functionName: "setApprovalForAll",
-                            args: [marketplaceContractAddress, true]
-                        })
-                    }
-
-
-                } else {
-                    /** Approved address to spend this token */
-                    const approvedAddress = await publicClient.readContract({
-                        address: getAddress(tokenContractAddress),
-                        abi: tokenContractAbi,
-                        functionName: "getApproved",
-                        args: [BigInt(tokenId)]
-                    })
-
-                    if (approvedAddress.toLowerCase() !== marketplaceContractAddress.toLowerCase()) {
-                        await walletClient?.writeContract({
-                            address: getAddress(tokenContractAddress),
-                            abi: tokenContractAbi,
-                            functionName: "approve",
-                            args: [marketplaceContractAddress, BigInt(tokenId)]
-                        })
-                    }
                 }
 
-                if (isAuction) {
-                    const auctionDuration = Math.floor(((orderData?.endsAt || new Date()).getTime() - Date.now()) / 1000) // duration in seconds,
-                    if (approvalSignature) {
-                        // use offchain signature
-                        listTxHash = await walletClient?.writeContract({
-                            address: marketplaceContractAddress,
-                            abi: marketplaceAbiByVersion,
-                            functionName: "createAuctionListingWithPermit",
-                            args: [
-                                getAddress(tokenContractAddress),
-                                BigInt(tokenId),
-                                bigOrderPrice,
-                                bigOrderBuyNowPrice,
-                                BigInt(auctionDuration),
-                                getAddress(currency.address),
-                                BigInt(signatureDeadline),
-                                approvalSignature
-                            ]
-                        })
-                    } else {
-                        // no offchain
-                        listTxHash = await walletClient?.writeContract({
-                            address: marketplaceContractAddress,
-                            abi: marketplaceAbiByVersion,
-                            functionName: "createAuctionListing",
-                            args: [
-                                getAddress(tokenContractAddress),
-                                BigInt(tokenId),
-                                bigOrderPrice,
-                                bigOrderBuyNowPrice,
-                                BigInt(auctionDuration),
-                                getAddress(currency.address)
-                            ]
-                        })
-                    }
-                } else {
+
+            } else {
+                /** Approved address to spend this token */
+                const approvedAddress = await publicClient.readContract({
+                    address: getAddress(tokenContractAddress),
+                    abi: tokenContractAbi,
+                    functionName: "getApproved",
+                    args: [BigInt(tokenId)]
+                })
+
+                if (approvedAddress.toLowerCase() !== marketplaceContractAddress.toLowerCase()) {
+                    await walletClient?.writeContract({
+                        address: getAddress(tokenContractAddress),
+                        abi: tokenContractAbi,
+                        functionName: "approve",
+                        args: [marketplaceContractAddress, BigInt(tokenId)]
+                    })
+                }
+            }
+
+            if (isAuction) {
+                const auctionDuration = Math.floor(((orderData?.endsAt || new Date()).getTime() - Date.now()) / 1000) // duration in seconds,
+                if (approvalSignature) {
+                    // use offchain signature
                     listTxHash = await walletClient?.writeContract({
                         address: marketplaceContractAddress,
                         abi: marketplaceAbiByVersion,
-                        functionName: "createFixedListing",
+                        functionName: "createAuctionListingWithPermit",
                         args: [
                             getAddress(tokenContractAddress),
                             BigInt(tokenId),
                             bigOrderPrice,
+                            bigOrderBuyNowPrice,
+                            BigInt(auctionDuration),
+                            getAddress(currency.address),
+                            BigInt(signatureDeadline),
+                            approvalSignature
+                        ]
+                    })
+                } else {
+                    // no offchain
+                    listTxHash = await walletClient?.writeContract({
+                        address: marketplaceContractAddress,
+                        abi: marketplaceAbiByVersion,
+                        functionName: "createAuctionListing",
+                        args: [
+                            getAddress(tokenContractAddress),
+                            BigInt(tokenId),
+                            bigOrderPrice,
+                            bigOrderBuyNowPrice,
+                            BigInt(auctionDuration),
                             getAddress(currency.address)
                         ]
                     })
                 }
+            } else {
+                listTxHash = await walletClient?.writeContract({
+                    address: marketplaceContractAddress,
+                    abi: marketplaceAbiByVersion,
+                    functionName: "createFixedListing",
+                    args: [
+                        getAddress(tokenContractAddress),
+                        BigInt(tokenId),
+                        bigOrderPrice,
+                        getAddress(currency.address)
+                    ]
+                })
             }
+        }
 
-            if (listTxHash) {
-                // wait for listTxhash
-                // if it fails, we do not want to proceed with listing
-                await publicClient.waitForTransactionReceipt({hash: listTxHash})
-            }
+        if (listTxHash) {
+            // wait for listTxhash
+            // if it fails, we do not want to proceed with listing
+            await publicClient.waitForTransactionReceipt({hash: listTxHash})
+        }
+        // Done processing onchain
+        setProcessedOnchain(true)
 
-            const response = await fetcher(apiRoutes.createMarketOrder, {
-                method: "POST",
-                body: JSON.stringify({
-                    token: props.token,
-                    price: orderData.price as string,
-                    buyNowPrice: orderData.buyNowPrice,
-                    saleType: isAuction ? "auction" : "fixed",
-                    quantity: 1,
-                    seller: session?.user.address as string,
-                    permitType,
-                    status: "active",
-                    currency,
-                    listTxHash,
-                    endsAt: orderData.endsAt,
-                    version: defaultMarketplaceVersion.toString(),
-                    orderDeadline: signatureDeadline.toString(),
-                    orderSignature,
-                    approvalSignature
-                } satisfies MarketOrderType)
-            })
+        return {
+            token: props.token,
+            saleType: isAuction ? "auction" : "fixed",
+            quantity: 1,
+            seller: session?.user.address as string,
+            permitType,
+            status: "active",
+            currency,
+            listTxHash,
+            version: defaultMarketplaceVersion.toString(),
+            orderDeadline: signatureDeadline.toString(),
+            orderSignature,
+            approvalSignature
+        } as const
+    }
 
-            if (response.success) {
-                toast.success(response.message)
+    /**
+     * Handle listing token in the marketplace
+     * @todo - Make it reusable in other similar functions
+     */
+    const handleAddTokenToMarketplace = async () => {
+        try {
+            setLoading(true)
+
+            if (!processedOnchain) {
+                // ensure we are connected to right chain that host this token contract
+                await contractChain.ensureContractChainAsync()
+                
+                const result = await addTokenToMarketplaceOnchain()
+                const update = {...orderData, ...result}
+                setOrderData(update)
+                await addTokenToMarketplaceOffchain(update as MarketOrderType)
+            } else if (!processedOffchain) {
+                await addTokenToMarketplaceOffchain(orderData as MarketOrderType)
+            } else {
                 router.refresh()
             }
+
         } catch (error: any) {
             toast.error(getFetcherErrorMessage(error))
         } finally {
@@ -503,6 +540,9 @@ export default function AddTokenToMarket(props: TokenPageProps) {
 
     return (
         <div className="flex flex-col justify-center my-3">
+            <h1 className="text-2xl py-6">
+                Add {props.token.name}#{props.token.tokenId} to market
+            </h1>
             <div className="flex flex-wrap gap-4 my-1">
                 <Radio 
                     label="Fixed"
@@ -533,9 +573,6 @@ export default function AddTokenToMarket(props: TokenPageProps) {
                     currencies.length &&
                     /** If not chain (i.e wallet is not connected) show all currencies */
                     currencies.filter(c => !chain || c.chainId === chain.id)
-                    /** Remove chain coin like ETH, BNB. 
-                     * Only tokens are accepted for offer */
-                    .filter(c => !!Number(c.address))
                     .map(c => (
                         <Select.Option
                             key={c._id?.toString()} 
@@ -626,9 +663,9 @@ export default function AddTokenToMarket(props: TokenPageProps) {
             <div>
                 <Button
                     className="w-full md:w-3/4"
-                    variant="secondary"
+                    variant="gradient"
                     loading={loading}
-                    disabled={loading}
+                    disabled={loading || !session?.user}
                     onClick={handleAddTokenToMarketplace}
                     rounded
                 >

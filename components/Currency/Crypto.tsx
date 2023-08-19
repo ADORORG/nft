@@ -23,7 +23,7 @@ export default function CryptoCurrencyDisplay({currency, amount, width = 10, hei
                 width={width}
                 height={height}
             />
-            <span className={`text-gray-900 dark:text-white tracking-wide`}>{amount} {symbol}</span>
+            <span className={`tracking-wide`}>{amount} {symbol}</span>
         </div>
     )
 }

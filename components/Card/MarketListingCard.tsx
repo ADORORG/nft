@@ -18,20 +18,6 @@ export default function MarketListingCard({marketOrder, size = "md"}: MarketList
     const { token, price, endsAt, currency, saleType } = marketOrder
 
     const sizes: Record<string, any> = {
-        // large card
-        lg: {
-            cardWidth: 48,
-            cardHeight: 96,
-            imageWidth: 355,
-            imageHeight: 485.1,
-            currencyWidth: 24,
-            currencyHeight: 24,
-            avatarWidth: 16,
-            avatarHeight: 16,
-            textNormal: 'text-3xl',
-            textMedium: 'text-2xl',
-            textSmall: 'text-lg',
-        },
         // medium card
         md: {
             cardWidth: 40,
@@ -65,9 +51,9 @@ export default function MarketListingCard({marketOrder, size = "md"}: MarketList
             </div>
 
             <div className="w-full flex justify-between py-2 lg:py-4">
-                <div className={`flex flex-col items-start justify-between ${sizes[size].textNormal}`}>
+                <div className={`flex flex-col items-start justify-between text-gray-950 dark:text-white ${sizes[size].textNormal}`}>
                     
-                    <p className={`text-gray-950 text-opacity-80 dark:text-white ${sizes[size].textNormal} tracking-wide subpixel-antialiased`}>
+                    <p className={`text-gray-950 dark:text-white ${sizes[size].textNormal} tracking-wide subpixel-antialiased`}>
                         <Link
                             href={
                                 replaceUrlParams(appRoutes.viewToken, {

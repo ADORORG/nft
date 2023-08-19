@@ -51,3 +51,12 @@ export type AppRouterApiResponseType<T=any> = {
     /** Http code */
     code: string | number
 }
+
+export type FinaliseMarketOrderType = {
+    /** The purchase transaction hash */
+    saleTxHash: string,
+    /** The _id of the buyer */
+    buyerId: EthereumAddress,
+    /** The price token was sold */
+    soldPrice: string
+}

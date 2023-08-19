@@ -1,16 +1,10 @@
 "use client"
-
-export { default as CreateCollectionForm } from "./Collection/CreateCollectionForm"
-export { default as CreateTokenForm } from "./Token/CreateTokenForm"
-export { default as CreateERC721ContractForm } from "./Contract/CreateERC721ContractForm"
-export { default as CreateERC1155ContractForm } from "./Contract/CreateERC1155ContractForm"
-
 import { useRouter } from "next/navigation"
 import { CodeBracketIcon, FolderPlusIcon, DocumentPlusIcon } from "@heroicons/react/24/outline"
 import { WithoutCheckbox } from "@/components/SelectCard"
 import appRoute from "@/config/app.route"
 
-export function RenderCreateOption() {
+export default function RenderCreateOption() {
     const router = useRouter()
 
     const defaultCreateOption = [
@@ -43,7 +37,7 @@ export function RenderCreateOption() {
         },
     ]
 
-    const handleSelect = (link: any) => {
+    const handleSelect = (link: string) => {
         router.push(link)
     }
 

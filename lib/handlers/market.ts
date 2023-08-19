@@ -432,7 +432,7 @@ export function getTotalMarketValueInDollar(query: Record<string, unknown>) {
  * @param cancelTxHash - Optional cancel transaction hash if it's onchain listing
  * @returns - an updated market order
  */
-export function setMarketOrderStatusToCancelled(marketOrderId: Types.ObjectId | string, cancelTxHash?: string) {
+export function setMarketOrderStatusToCancelled(query: Record<string, unknown>, cancelTxHash?: string) {
     const leanOption = {lean: true}
     const populate = [
         {
@@ -459,8 +459,8 @@ export function setMarketOrderStatusToCancelled(marketOrderId: Types.ObjectId | 
         }
     ] satisfies PopulateOptions[]
 
-    return MarketOrderModel.findByIdAndUpdate({
-        _id: marketOrderId,
+    return MarketOrderModel.findOneAndUpdate({
+        ...query,
         status: 'active'
     }, {
         cancelTxHash,

@@ -36,6 +36,10 @@ const apiRoutes = {
     getTokenMarketOrders: "/api/market/token/:tokenDocId",
     /** Get token market order bids */
     getTokenMarketOrderBids: "/api/market/bid/:marketOrderDocId",
+    /** Mark a market order as sold */
+    finaliseMarketOrder: "/api/market/finalise/:marketOrderDocId",
+    /** Cancel market order */
+    cancelMarketOrder: "/api/market/cancel/:marketOrderDocId",
     /** 
      * Get Redeemable content of a token. 
      * Callable by the token holder/owner
