@@ -60,3 +60,10 @@ export type FinaliseMarketOrderType = {
     /** The price token was sold */
     soldPrice: string
 }
+
+export type MarketFilterType = {
+    saleType: MarketSaleType | 'all',
+    nftSchema: NftContractSchemaType | 'all',
+    createdAt: 1 | -1,
+    totalOrder: number
+}

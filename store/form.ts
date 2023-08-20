@@ -1,6 +1,7 @@
 import type CollectionType from "@/lib/types/collection"
 import type NftTokenType from "@/lib/types/token"
 import type ContractType from "@/lib/types/contract"
+import type { MarketFilterType } from "@/lib/types/common"
 import { atomWithLocalStorage } from "./atom.local"
 
 
@@ -20,3 +21,6 @@ export const nftTokenAttributeStore = atomWithLocalStorage<{trait_type: string, 
 
 // Contract data store
 export const nftContractDataStore = atomWithLocalStorage<ContractType | undefined>("nftContractData", undefined)
+
+// Market order filter 
+export const marketFilterStore = atomWithLocalStorage<Partial<MarketFilterType>>('marketFilterData', {createdAt: -1})

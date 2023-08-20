@@ -46,10 +46,16 @@ export default function MarketOrderPage(props: MarketOrdersProp & TokenPageProps
                         orders={props.orders} 
                     />
 
-                    <ShowOrderBids
-                        bids={marketOrderBids || []}
-                        order={activeOrder as any}
-                    />
+                    {
+                        marketOrderBids?.length ?
+                        <ShowOrderBids
+                            bids={marketOrderBids}
+                            order={activeOrder as any}
+                        />
+                        :
+                        null
+                    }
+                    
             </div>
         </div>
     )

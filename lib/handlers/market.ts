@@ -153,8 +153,9 @@ export function getMarketOrdersByQuery(
 }
 
 /**
- * Get trending auctions & fixed price market orders by query
- * Attempts to fetch equal number of auction & fixed orders
+ * Get trending auctions & fixed price market orders by query.
+ * @todo - How do we calculate trending item? Most viewed or most with market transaction?
+ * Attempts to fetch equal number of auction & fixed|offer orders
  * @param query - Filter query
  * @param limit - Limit for each saleType
  */
@@ -199,7 +200,7 @@ export async function getTrendingMarketOrders(query: Record<string, unknown>, li
           {
             $match: {
               ...query,
-              saleType: 'fixed',
+              saleType: {$in: ['fixed', 'offer']},
             },
           },
           {

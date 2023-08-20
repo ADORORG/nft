@@ -18,9 +18,9 @@ async function getServerSideData() {
   await mongoooseConnectionPromise
   /**
    * fetch market orders
-   * @todo - Implement a way of marking order as featured/trending
+   * @todo - Implement a way to mark/determine an order as featured/trending
    */
-  const marketOrdersPromise = getTrendingMarketOrders({status: {$ne: "cancelled"}}, 10)
+  const marketOrdersPromise = getTrendingMarketOrders({status: "active"}, 10)
 
   // fetch top traders
   const topTradersPromise = getTraderAccountMarketValue({}, 8)
