@@ -1,7 +1,9 @@
 "use client"
-import { MarketListingCard } from '@/components/Card'
+import { MarketListingCard } from "@/components/Card"
 import Button from "@/components/Button"
 import type { default as MarketOrderType, PopulatedMarketOrderType} from "@/lib/types/market"
+import Link from "next/link"
+import appRoutes from "@/config/app.route"
 
 type TrendingAuctionProps = {
   marketOrders: MarketOrderType[]
@@ -31,11 +33,13 @@ export default function TrendingAuction({marketOrders}: TrendingAuctionProps) {
         </div>
         
         <div className="text-center pt-12 lg:my-10">
-          <Button
-            className="py-2 px-3 text-xl lg:text-4xl hover:opacity-80"
-            variant="primary"
-            rounded
-          >See more...</Button>
+          <Link href={appRoutes.marketplace}>
+            <Button
+              className="py-2 px-3 text-xl"
+              variant="gradient"
+              rounded
+            >See more...</Button>
+          </Link>
         </div>
 
       </div>

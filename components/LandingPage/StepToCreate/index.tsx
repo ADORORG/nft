@@ -51,7 +51,7 @@ export default function StepsToCreate() {
                     <Link href={appRoutes.create}>
                         <Button
                             className="py-3 px-4 text-2xl hover:opacity-70 transition opacity-80"
-                            variant="primary"
+                            variant="gradient"
                             rounded
                             inversed
                         >Get started</Button>

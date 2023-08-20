@@ -2,6 +2,8 @@
 "use client"
 import { MarketListingCard } from '@/components/Card/'
 import Button from "@/components/Button"
+import Link from "next/link"
+import appRoutes from "@/config/app.route"
 // import SaleTypeButtons from "@/components/SaleTypeButtons"
 import type { default as MarketOrderType, PopulatedMarketOrderType} from "@/lib/types/market"
 
@@ -45,11 +47,13 @@ export default function TrendingOfferOrFixedOrder({marketOrders}: TrendingOfferO
         </div>
         
         <div className="text-center pt-12 lg:my-10">
-          <Button
-            className="py-2 px-3 text-xl lg:text-4xl hover:opacity-80"
-            variant="primary"
-            rounded
-          >Marketplace</Button>
+          <Link href={appRoutes.marketplace}>
+            <Button
+              className="py-2 px-4 text-xl"
+              variant="gradient"
+              rounded
+            >Visit Marketplace</Button>
+          </Link>
         </div>
 
       </div>
