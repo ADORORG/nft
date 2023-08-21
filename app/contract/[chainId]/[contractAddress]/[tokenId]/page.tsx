@@ -1,13 +1,13 @@
 import SingleTokenPage from "@/components/TokenPage"
 import MarketOrderPage from "@/components/MarketOrderPage"
-
+import type { PopulatedMarketBidType } from "@/lib/types/bid"
 /**
  * @todo Use parallel routing for token and marketOrder sections 
  */
 
 // Server
 import mongoooseConnectionPromise from "@/wrapper/mongoose_connect"
-import { getContractsByQuery, getTokenByQuery, getMarketOrdersByQuery } from "@/lib/handlers"
+import { getContractsByQuery, getTokenByQuery, getMarketOrdersByQuery, getBidsByMarketOrderId } from "@/lib/handlers"
 
 interface PageProps {
     chainId: string,
@@ -29,18 +29,30 @@ async function getServerSideData(params: PageProps) {
     })
 
     const marketOrders = await getMarketOrdersByQuery({token: token?._id}, {})
+    /**
+     * If there's active auction,
+     * fetch the bids
+     */
+    const activeAuction = marketOrders.find(order => order.status === "active" && order.saleType === "auction")
+    let activeAuctionBids
+
+    if (activeAuction) {
+        activeAuctionBids = await getBidsByMarketOrderId(activeAuction._id?.toString() as string) as PopulatedMarketBidType[]
+    }
     // console.log("token", token)
     // console.log("marketOrders", marketOrders)
     return {
         token,
-        marketOrders
+        marketOrders,
+        activeAuctionBids
     }
 }
 
 export default async function Page({params}: {params: PageProps}) {
     const {
         token, // token
-        marketOrders // market orders for this token
+        marketOrders, // market orders for this token
+        activeAuctionBids
     } = await getServerSideData(params)
     
     return (
@@ -49,7 +61,11 @@ export default async function Page({params}: {params: PageProps}) {
                 <SingleTokenPage token={token as any} />
             </div>
             <div className="border border-gray-50 dark:border-gray-900 rounded px-6 shadow-2xl">
-                <MarketOrderPage orders={marketOrders as any} token={token as any} />
+                <MarketOrderPage 
+                    orders={marketOrders as any} 
+                    token={token as any} 
+                    bids={activeAuctionBids}    
+                />
             </div>
         </div>
     )
