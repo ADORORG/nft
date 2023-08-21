@@ -4,15 +4,12 @@ import { useState, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { Tag as TagIcon } from "react-bootstrap-icons"
 import { toast } from "react-hot-toast"
-import { parseUnits, getAddress } from "viem"
-import { usePublicClient, useWalletClient } from "wagmi"
+import { usePublicClient } from "wagmi"
 import { useAuthStatus } from "@/hooks/account"
-import { useContractChain, useERC20Approval } from "@/hooks/contract"
+import { useContractChain } from "@/hooks/contract"
+import { useFixedPriceOrder } from "@/hooks/contract/marketplace"
 import { fetcher, getFetcherErrorMessage } from "@/utils/network"
 import { isAddressZero, replaceUrlParams } from "@/utils/main"
-/** Import nft & marketplace ABIs versions */
-import { marketplaceAbiVersionMap } from "@/abi/marketplace"
-import { getMarketplaceContract } from "@/config/marketplace.contract"
 import apiRoutes from "@/config/api.route"
 import Button from "@/components/Button"
 
@@ -32,134 +29,47 @@ export default function BuyButton(props: MarketOrderProp) {
     const [processedOffchain, setProcessedOffchain] = useState(false)
     const [purchaseData, setPurchaseData] = useState<Partial<FinaliseMarketOrderType>>({})
     const { session } = useAuthStatus()
-    const {data: walletClient} = useWalletClient()
     const publicClient = usePublicClient()
-    const contractChain = useContractChain(props.order.token.contract, walletClient)
-    const erc20Approval = useERC20Approval(publicClient, walletClient)
+    const contractChain = useContractChain(props.order.token.contract)
+    const fixedPriceOrder = useFixedPriceOrder(props.order)
 
     const buyFixedOrder = useCallback(async () => {
-        /** Destruct order data */
-        const {
-            price,
-            token,
-            seller,
-            version,
-            currency,
-            permitType,
-            orderDeadline,
-            orderSignature,
-            approvalSignature,
-        } = props.order
-        
+        // ensure we are connected to right chain that host this token contract
+        await contractChain.ensureContractChainAsync()
         /** True if the payment currency is ETH or BNB or Blockchain default Coin. Otherwise it's a token with contract address  */
-        const isETHPayment = isAddressZero(currency.address)
+        const isETHPayment = isAddressZero(props.order.currency.address)
 
-        /** The marketplace contract address in which this order was listed */
-        const marketplaceContractAddress = getMarketplaceContract(token, version)
-        type MarketplaceVersionsKey = keyof typeof marketplaceAbiVersionMap
-        /** The marketplace abi for the marketplaceContractAddress */
-        const marketplaceAbi = marketplaceAbiVersionMap[version as MarketplaceVersionsKey]
-
-        /** Big order price */
-        const bigOrderPrice = parseUnits(price, currency.decimals)
-        /** Order data to send onchain */
-        const onchainOrderData = {
-            side: 0, // 0 for buy, 1 for sell
-            seller: getAddress(seller.address),
-            buyer: getAddress(session?.user.address as string),
-            paymentToken: getAddress(currency.address),
-            buyNowPrice: bigOrderPrice,
-            startPrice: BigInt(0),
-            deadline: BigInt(orderDeadline || 0),
-            duration: BigInt(0)
-        }
-
-        /** Simulate write contract result */
-        let writeContractRequest: any
+        let saleTxHash;
 
         if (isETHPayment) {
-            if (permitType === "offchain") {
+            if (props.order.permitType === "offchain") {
                 // order was signed offchain
-                writeContractRequest = await publicClient.simulateContract({
-                    account: getAddress(session?.user.address as string),
-                    address: marketplaceContractAddress,
-                    abi: marketplaceAbi,
-                    functionName: "atomicBuyETH",
-                    value: bigOrderPrice,
-                    args: [
-                        getAddress(token.contract.contractAddress),
-                        BigInt(token.tokenId),
-                        onchainOrderData,
-                        orderSignature as any,
-                        approvalSignature as any
-                    ]
-                })
-
-                
+                saleTxHash = await fixedPriceOrder.atomicBuy().buyWithETH()
             } else {
                 // order was not signed offchain
-                writeContractRequest = await publicClient.simulateContract({
-                    account: getAddress(session?.user.address as string),
-                    address: marketplaceContractAddress,
-                    abi: marketplaceAbi,
-                    functionName: "buyWithETH",
-                    value: bigOrderPrice,
-                    args: [
-                        getAddress(token.contract.contractAddress),
-                        BigInt(token.tokenId),
-                    ]
-                })
+                saleTxHash = await fixedPriceOrder.nonAtomicBuy().buyWithETH()
             }
         } else {
-            // Request token approval
-            await erc20Approval.requestERC20ApprovalAsync({
-                contractAddress: currency.address,
-                bigAmount: bigOrderPrice,
-                owner: session?.user.address as string,
-                spender: marketplaceContractAddress,
-            })
 
-            if (permitType === "offchain") {
+            if (props.order.permitType === "offchain") {
                 // Execute Atomic buy with ERC20
-                writeContractRequest = await publicClient.simulateContract({
-                    account: getAddress(session?.user.address as string),
-                    address: marketplaceContractAddress,
-                    abi: marketplaceAbi,
-                    functionName: "atomicBuyERC20",
-                    args: [
-                        getAddress(token.contract.contractAddress),
-                        BigInt(token.tokenId),
-                        onchainOrderData,
-                        orderSignature as any,
-                        approvalSignature as any
-                    ]
-                })
+                saleTxHash = await fixedPriceOrder.atomicBuy().buyWithERC20Token()
             } else {
                 // order was not signed offchain
-                writeContractRequest = await publicClient.simulateContract({
-                    account: getAddress(session?.user.address as string),
-                    address: marketplaceContractAddress,
-                    abi: marketplaceAbi,
-                    functionName: "buyWithERC20",
-                    args: [
-                        getAddress(token.contract.contractAddress),
-                        BigInt(token.tokenId),
-                    ]
-                })
+                saleTxHash = await fixedPriceOrder.nonAtomicBuy().buyWithERC20Token()
             }
 
         }
 
-        const saleTxHash = await walletClient?.writeContract(writeContractRequest?.request)
         await publicClient.waitForTransactionReceipt({hash: saleTxHash as any})
         /** We done processing onchain */
         setProcessedOnchain(true)
         return {
-            saleTxHash,
-            soldPrice: price,
+            saleTxHash: saleTxHash as string,
+            soldPrice: props.order.price,
             buyerId: session?.user.address,
         }
-    }, [props.order, publicClient, session?.user, walletClient, erc20Approval])
+    }, [props.order, publicClient, fixedPriceOrder, session?.user, contractChain])
 
     /**
      * Finalise market order
@@ -187,9 +97,6 @@ export default function BuyButton(props: MarketOrderProp) {
             setLoading(true)
         
             if (!processedOnchain) {
-                // ensure we are connected to right chain that host this token contract
-                await contractChain.ensureContractChainAsync()
-
                 const result = await buyFixedOrder()
                 setPurchaseData(result)
                 // finalise

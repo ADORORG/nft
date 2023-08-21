@@ -30,7 +30,7 @@ export default function AddTokenToMarket(props: TokenPageProps) {
     const { chain } = useNetwork()
     const {data: walletClient} = useWalletClient()
     const publicClient = usePublicClient()
-    const contractChain = useContractChain(props.token.contract, walletClient)
+    const contractChain = useContractChain(props.token.contract)
     const { address, session } = useAuthStatus()
     /** List form fields */
     const [orderData, setOrderData] = useState<Partial<MarketOrderType>>({})
@@ -343,8 +343,8 @@ export default function AddTokenToMarket(props: TokenPageProps) {
 
             orderSignature = await getOrderSignature({
                 marketplaceContractVersion,
-                marketplaceContractName,
                 marketplaceContractAddress,
+                marketplaceContractName,
                 tokenContractChainId,
                 tokenContractAddress,
                 tokenId,

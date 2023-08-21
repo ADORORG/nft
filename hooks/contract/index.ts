@@ -1,25 +1,30 @@
 import type ContractType from "@/lib/types/contract";
-import { /* WalletClient, */ type PublicClient, getAddress } from "viem"
-import erc20Abi from "@/abi/erc20"
 import { useCallback } from "react"
+import { getAddress } from "viem"
+import { usePublicClient, useWalletClient } from "wagmi"
 
-export function useContractChain(contract: ContractType, walletClient: any /* WalletClient */) {
+import erc20Abi from "@/abi/erc20"
+
+export function useContractChain(contract: ContractType) {
+    const {data: walletClient} = useWalletClient()
     return {
         ensureContractChainAsync: useCallback(() => walletClient?.switchChain({id: contract.chainId}), [walletClient, contract]) 
     }
 }
 
-export function useERC20Approval(publicClient: PublicClient, walletClient: any) {
+export function useERC20Approval() {
+    const {data: walletClient} = useWalletClient()
+    const publicClient = usePublicClient()
 
     const requestERC20ApprovalAsync = useCallback(async ({
-        requireEnoughBalance,
+        requireEnoughBalance = true,
         contractAddress,
         bigAmount,
         spender,
         owner,
         chain,
     }: {
-        requireEnoughBalance: boolean,
+        requireEnoughBalance?: boolean,
         contractAddress: string,
         bigAmount: bigint,
         spender: string,
@@ -66,3 +71,4 @@ export function useERC20Approval(publicClient: PublicClient, walletClient: any) 
         requestERC20ApprovalAsync
     }
 }
+

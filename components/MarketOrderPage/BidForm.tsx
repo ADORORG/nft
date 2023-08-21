@@ -1,12 +1,13 @@
 import type { MarketOrderProp } from "./types"
 import type { default as MarketBidType, PopulatedMarketBidType } from "@/lib/types/bid"
 import type { FinaliseMarketOrderType } from "@/lib/types/common"
-import { useState } from "react"
+import { useState, useCallback } from "react"
 import { PatchCheck, Tag as TagIcon, Trophy, Cart } from "react-bootstrap-icons"
 import { toast } from "react-hot-toast"
 import { useRouter } from "next/navigation"
 import { useTokenMarketOrderBids } from "@/hooks/fetch"
 import { useAuthStatus } from "@/hooks/account"
+import { useContractChain } from "@/hooks/contract"
 import { useAuctionOrder } from "@/hooks/contract/marketplace"
 import { fetcher, getFetcherErrorMessage } from "@/utils/network"
 import { replaceUrlParams } from "@/utils/main"
@@ -115,14 +116,16 @@ function BuyAuctionNow(props: MarketOrderProp) {
     const [processedOffchain, setProcessedOffchain] = useState(false)
     const [purchaseData, setPurchaseData] = useState<Partial<FinaliseMarketOrderType>>({})
     // Handle bidding and instant auction purchase
-    const auctionOrder = useAuctionOrder(props.order.token.contract)
+    const auctionOrder = useAuctionOrder()
+    const contractChain = useContractChain(props.order.token.contract)
 
-    const buyAuctionNow = async () => {
+    const buyAuctionNow = useCallback(async () => {
+        await contractChain.ensureContractChainAsync()
         const result = await auctionOrder.createBid(props.order, props.order.buyNowPrice as string)
         /** We done processing onchain */
         setProcessedOnchain(true)
         return result
-    }
+    }, [auctionOrder, props.order, contractChain])
 
      /**
      * Finalise auction
@@ -198,9 +201,11 @@ function ShowBidForm(props: MarketOrderProp & {highestBid?: PopulatedMarketBidTy
     const [processedOnchain, setProcessedOnchain] = useState(false)
     const [processedOffchain, setProcessedOffchain] = useState(false)
     // Handle bidding and instant auction purchase
-    const auctionOrder = useAuctionOrder(props.order.token.contract)
+    const auctionOrder = useAuctionOrder()
+    const contractChain = useContractChain(props.order.token.contract)
 
-    const placeBidOnchain = async () => {
+    const placeBidOnchain = useCallback(async () => {
+        await contractChain.ensureContractChainAsync()
         const result = await auctionOrder.createBid(props.order, bidData.price as string)
         /** We done processing onchain */
         setProcessedOnchain(true)
@@ -209,7 +214,7 @@ function ShowBidForm(props: MarketOrderProp & {highestBid?: PopulatedMarketBidTy
             bidder: result.buyerId,
             price: result.soldPrice
         }
-    }
+    }, [auctionOrder, props.order, bidData.price, contractChain])
 
     const createBidOffchain = async (bidData: Partial<MarketBidType>) => {
         // Send the bid to the backend
@@ -307,14 +312,17 @@ function ClaimAuctionToken(props: MarketOrderProp & {highestBid?: PopulatedMarke
     const [loading, setLoading] = useState(false)
     const [processedOnchain, setProcessedOnchain] = useState(false)
     const [processedOffchain, setProcessedOffchain] = useState(false)
-    const auctionOrder = useAuctionOrder(props.order.token.contract)
+    const auctionOrder = useAuctionOrder()
+    const contractChain = useContractChain(props.order.token.contract)
 
-    const claimOnchain = async () => {
+
+    const claimOnchain = useCallback(async () => {
+        await contractChain.ensureContractChainAsync()
         const result = await auctionOrder.finaliseAuction(props.order)
         /** We done processing onchain */
         setProcessedOnchain(true)
         return result
-    }
+    }, [auctionOrder, props.order, contractChain])
 
     const claimOffchain = async (purchaseData: Partial<FinaliseMarketOrderType>) => {
         // Send the purchase to the backend

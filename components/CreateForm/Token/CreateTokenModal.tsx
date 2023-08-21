@@ -4,7 +4,7 @@ import { CodeSlash, CloudCheck, BagCheck } from "react-bootstrap-icons"
 import { useAtom } from "jotai"
 import { toast } from "react-hot-toast"
 import { decodeEventLog } from "viem"
-import { usePrepareContractWrite, useContractWrite, useAccount, useFeeData, usePublicClient, useWalletClient } from "wagmi"
+import { usePrepareContractWrite, useContractWrite, useAccount, useFeeData, usePublicClient } from "wagmi"
 import {
     nftTokenImageStore,
     nftTokenMediaStore,
@@ -14,6 +14,7 @@ import {
     nftTokenAttributeStore
 } from "@/store/form"
 import { fetcher, getFetcherErrorMessage } from "@/utils/network"
+import { replaceUrlParams } from "@/utils/main"
 import { useContractChain } from "@/hooks/contract"
 import Stepper from "@/components/Stepper"
 import Button from "@/components/Button"
@@ -102,8 +103,7 @@ function MintToken({contract}: CreateTokenModalProps) {
     const [nftTokenData, setNftTokenData] = useAtom(nftTokenDataStore)
     const { address } = useAccount()
     const { data: feeData } = useFeeData({ chainId: contract.chainId })
-    const { data: walletClient } = useWalletClient()
-    const contractChain = useContractChain(contract, walletClient)
+    const contractChain = useContractChain(contract)
     
     const writeArgs: Record<string, Record<string, any>> = {
         erc721: {
@@ -292,10 +292,11 @@ function AddTokenToMarket({contract}: CreateTokenModalProps) {
             >
                <Link 
                     href={
-                        appRoutes.viewToken
-                        .replace(":chainId", contract.chainId.toString())
-                        .replace(":contractAddress", contract.contractAddress)
-                        .replace(":tokenId", nftTokenData?.tokenId.toString() || "")
+                        replaceUrlParams(appRoutes.viewToken, {
+                            chainId: contract.chainId.toString(),
+                            contractAddress: contract.contractAddress,
+                            tokenId: nftTokenData?.tokenId.toString() || ""
+                        })
                     }
                 >
                     Marketplace
