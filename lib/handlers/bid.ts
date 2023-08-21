@@ -1,18 +1,24 @@
 import type { Types, PopulateOptions } from 'mongoose'
 import type { EthereumAddress } from '../types/common'
-import type MarketBidType from '../types/bid'
-import type AccountType from '../types/account'
-import type MarketOrderType from '../types/market'
+import type {default as MarketBidType, PopulatedMarketBidType} from '../types/bid'
 import MarketBidModel from '../models/bid'
 
-type MarketBidTypePopulated = MarketBidType & {bidder: AccountType, marketOrder: MarketOrderType}
+export async function validateBid(document: any) {
+    try {
+        await MarketBidModel.validate(document)
+        return true
+    } catch(error) {
+        // console.log(error)
+        return false
+    }
+}
 
 /**
  * Create a bid
  * @param bid - The bid object to create
  * @returns A populated bid with the market and bidder
  */
-export async function createBid(bid: MarketBidType): Promise<MarketBidTypePopulated> {
+export async function createBid(bid: MarketBidType): Promise<PopulatedMarketBidType> {
     const leanOption = {lean: true}
     const populate = [
         {

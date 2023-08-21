@@ -1,6 +1,6 @@
 import mongooseConnectPromise from '@/wrapper/mongoose_connect'
 import { CustomRequestError } from '@/lib/error/request'
-import { setMarketOrderStatusToSold, setTokenOwner, getMarketOrderByQuery } from '@/lib/handlers'
+import { setMarketOrderStatusToSold, setTokenOwner } from '@/lib/handlers'
 import { withRequestError, withSession } from '@/wrapper'
 import { isEthereumTransactionHash, isEthereumAddress } from '@/utils/main'
 import { type FinaliseMarketOrderType } from '@/lib/types/common'

@@ -1,6 +1,5 @@
 import type { Types, Document } from 'mongoose';
-import type { EthereumAddress } from "./common"
-import type { AttributeType } from './common';
+import type { AttributeType, EthereumAddress } from './common';
 import type AccountType from './account';
 import type CollectionType from './collection';
 import type ContractType from './contract';

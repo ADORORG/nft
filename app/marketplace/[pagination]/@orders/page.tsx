@@ -8,7 +8,7 @@ const ORDER_BATCH = 100
 
 async function getServerSideData(pagination: number) {
     await mongoooseConnectionPromise
-    return getMarketOrdersByQuery({}, {
+    return getMarketOrdersByQuery({status: "active"}, {
         limit: ORDER_BATCH, 
         skip: ORDER_BATCH * (pagination - 1)
     })

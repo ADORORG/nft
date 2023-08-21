@@ -1,11 +1,11 @@
 import type { MarketOrderProp } from "./types"
 import type { FinaliseMarketOrderType } from "@/lib/types/common"
-import { useState } from "react"
+import { useState, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { Tag as TagIcon } from "react-bootstrap-icons"
 import { toast } from "react-hot-toast"
 import { parseUnits, getAddress } from "viem"
-import { useNetwork, usePublicClient, useWalletClient } from "wagmi"
+import { usePublicClient, useWalletClient } from "wagmi"
 import { useAuthStatus } from "@/hooks/account"
 import { useContractChain, useERC20Approval } from "@/hooks/contract"
 import { fetcher, getFetcherErrorMessage } from "@/utils/network"
@@ -32,13 +32,12 @@ export default function BuyButton(props: MarketOrderProp) {
     const [processedOffchain, setProcessedOffchain] = useState(false)
     const [purchaseData, setPurchaseData] = useState<Partial<FinaliseMarketOrderType>>({})
     const { session } = useAuthStatus()
-    const { chains } = useNetwork()
     const {data: walletClient} = useWalletClient()
     const publicClient = usePublicClient()
     const contractChain = useContractChain(props.order.token.contract, walletClient)
     const erc20Approval = useERC20Approval(publicClient, walletClient)
 
-    const buyFixedOrder = async () => {
+    const buyFixedOrder = useCallback(async () => {
         /** Destruct order data */
         const {
             price,
@@ -52,11 +51,6 @@ export default function BuyButton(props: MarketOrderProp) {
             approvalSignature,
         } = props.order
         
-        /** Target chain (network) to execute this purchase transaction.
-         * We use the chain where the nft token contract was deployed
-        */
-        const chain = chains.find(c => c.id === token.contract.chainId)
-
         /** True if the payment currency is ETH or BNB or Blockchain default Coin. Otherwise it's a token with contract address  */
         const isETHPayment = isAddressZero(currency.address)
 
@@ -88,7 +82,6 @@ export default function BuyButton(props: MarketOrderProp) {
                 // order was signed offchain
                 writeContractRequest = await publicClient.simulateContract({
                     account: getAddress(session?.user.address as string),
-                    chain,
                     address: marketplaceContractAddress,
                     abi: marketplaceAbi,
                     functionName: "atomicBuyETH",
@@ -107,7 +100,6 @@ export default function BuyButton(props: MarketOrderProp) {
                 // order was not signed offchain
                 writeContractRequest = await publicClient.simulateContract({
                     account: getAddress(session?.user.address as string),
-                    chain,
                     address: marketplaceContractAddress,
                     abi: marketplaceAbi,
                     functionName: "buyWithETH",
@@ -125,14 +117,12 @@ export default function BuyButton(props: MarketOrderProp) {
                 bigAmount: bigOrderPrice,
                 owner: session?.user.address as string,
                 spender: marketplaceContractAddress,
-                chain
             })
 
             if (permitType === "offchain") {
                 // Execute Atomic buy with ERC20
                 writeContractRequest = await publicClient.simulateContract({
                     account: getAddress(session?.user.address as string),
-                    chain,
                     address: marketplaceContractAddress,
                     abi: marketplaceAbi,
                     functionName: "atomicBuyERC20",
@@ -148,7 +138,6 @@ export default function BuyButton(props: MarketOrderProp) {
                 // order was not signed offchain
                 writeContractRequest = await publicClient.simulateContract({
                     account: getAddress(session?.user.address as string),
-                    chain,
                     address: marketplaceContractAddress,
                     abi: marketplaceAbi,
                     functionName: "buyWithERC20",
@@ -170,7 +159,7 @@ export default function BuyButton(props: MarketOrderProp) {
             soldPrice: price,
             buyerId: session?.user.address,
         }
-    }
+    }, [props.order, publicClient, session?.user, walletClient, erc20Approval])
 
     /**
      * Finalise market order

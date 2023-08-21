@@ -1,6 +1,5 @@
 import { Types, Document } from 'mongoose';
-import type { EthereumAddress } from "./common"
-import type { MarketSaleType, MarketPermitType, MarketStatusType } from './common';
+import type { MarketSaleType, MarketPermitType, MarketStatusType, EthereumAddress } from './common';
 import type { CryptocurrencyType } from './currency';
 import type AccountType from './account';
 import type { default as NftTokenType, PopulatedNftTokenType } from './token';

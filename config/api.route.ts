@@ -26,6 +26,8 @@ const apiRoutes = {
     createToken: "/api/create/token",
     /** Create market order */
     createMarketOrder: "/api/create/market",
+    /** Create market auction bid */
+    createMarketAuctionBid: "/api/create/bid/:marketOrderDocId",
     /** Get a single collection */
     getCollectionBySlug: "/api/collection/slug/:slug",
     /** Get account collections by owners' address */

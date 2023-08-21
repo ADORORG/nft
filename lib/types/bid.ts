@@ -1,5 +1,5 @@
 import { Types, Document } from 'mongoose';
-import type { EthereumAddress } from "./common"
+import type { EthereumAddress } from './common'
 import type AccountType from './account';
 import type MarketOrderType from './market';
 

@@ -24,7 +24,6 @@ const supportedChains = [
     optimism, 
     arbitrum, 
     bsc,
-    goerli,
     /** Add base mainnet */
     {
         id: 8453,
@@ -49,7 +48,9 @@ const supportedChains = [
                 http: ["https://mainnet.base.org"]
             }
         }
-    } satisfies Chain
+    } satisfies Chain,
+    // testnet
+    goerli,
 ]
 
 const { chains, publicClient } = configureChains(
