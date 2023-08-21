@@ -53,7 +53,7 @@ export default function CancelListingButton(props: MarketOrderProp) {
                     disabled
                     rounded
                 >
-                    Auction is active
+                    Your auction is active
                 </Button>
             }
             

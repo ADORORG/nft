@@ -1,13 +1,14 @@
-import type { MarketOrdersProp } from "./types"
+import type { MarketOrdersProp, MarketOrderBids } from "./types"
 import type TokenPageProps from "@/components/TokenPage/types"
 import ShowBuyOrBidForm from "./ShowBuyOrBidForm"
 import ShowOfferForm from "./ShowOfferForm"
 
-export default function PublicSection(props: MarketOrdersProp & TokenPageProps) {
+export default function PublicSection(props: MarketOrdersProp & Partial<MarketOrderBids> & TokenPageProps) {
     if (props.activeOrder) {
         return (
             <ShowBuyOrBidForm 
                 order={props.activeOrder} 
+                bids={props.bids}
             />
         )
     }

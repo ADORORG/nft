@@ -5,7 +5,7 @@ import { useState, useCallback } from "react"
 import { PatchCheck, Tag as TagIcon, Trophy, Cart } from "react-bootstrap-icons"
 import { toast } from "react-hot-toast"
 import { useRouter } from "next/navigation"
-import { useTokenMarketOrderBids } from "@/hooks/fetch"
+// import { useTokenMarketOrderBids } from "@/hooks/fetch"
 import { useAuthStatus } from "@/hooks/account"
 import { useContractChain } from "@/hooks/contract"
 import { useAuctionOrder } from "@/hooks/contract/marketplace"
@@ -18,7 +18,7 @@ import Button from "@/components/Button"
 import apiRoutes from "@/config/api.route"
 
 export default function BidForm(props: MarketOrderProp) {
-    const { marketOrderBids } = useTokenMarketOrderBids(props.order._id?.toString())
+    // const { marketOrderBids } = useTokenMarketOrderBids(props.order._id?.toString())
     const { session } = useAuthStatus()
 
     const auctionEnded = new Date(props.order.endsAt as Date) < new Date()
@@ -28,10 +28,10 @@ export default function BidForm(props: MarketOrderProp) {
      */
     let hasBidAndHighestBidder
     let highestBid
-
-    if (session && marketOrderBids && marketOrderBids.length) {
-        marketOrderBids.sort((a, b) => parseFloat(b.price) - parseFloat(a.price)) // sort by price desc
-        highestBid = marketOrderBids[0]
+    console.log("highest bid", highestBid)
+    if (session && props.bids && props.bids.length) {
+        props.bids.sort((a, b) => parseFloat(b.price) - parseFloat(a.price)) // sort by price desc
+        highestBid = props.bids[0]
         hasBidAndHighestBidder = highestBid.bidder.address.toLowerCase() === session.user.address.toLowerCase()
     }
 
@@ -175,7 +175,7 @@ function BuyAuctionNow(props: MarketOrderProp) {
 
     return (
         <Button 
-            className="flex flex-col items-center justify-center gap-2 text-xl"
+            className="flex items-center justify-center gap-2 text-xl"
             variant="gradient"
             disabled={!isConnected || !session?.user || loading}
             loading={loading}
@@ -183,27 +183,38 @@ function BuyAuctionNow(props: MarketOrderProp) {
             rounded
         >
             <span>Buy now</span>
-            <CryptoCurrencyDisplay 
-                currency={props.order.currency}
-                amount={props.order.buyNowPrice || "0"}
-                width={16}
-            />
+            
+            {
+                parseFloat(props.order?.buyNowPrice || "") > 0 ?
+                <CryptoCurrencyDisplay 
+                    currency={props.order.currency}
+                    amount={props.order.buyNowPrice || "0"}
+                    width={16}
+                />
+                : null
+            }
+            
         </Button>
     )
 }
 
 
 function ShowBidForm(props: MarketOrderProp & {highestBid?: PopulatedMarketBidType}) {
+    const minBidPrice = props.highestBid ? props.highestBid.price : props.order.price
     const router = useRouter()
     const { session, isConnected } = useAuthStatus()
-    const [bidData, setBidData] = useState<Partial<MarketBidType>>({})
+    const [bidData, setBidData] = useState<Partial<MarketBidType>>({
+        // set default bid price
+        price: (parseFloat(minBidPrice) + 0.001).toString()
+    })
+
     const [loading, setLoading] = useState(false)
     const [processedOnchain, setProcessedOnchain] = useState(false)
     const [processedOffchain, setProcessedOffchain] = useState(false)
     // Handle bidding and instant auction purchase
     const auctionOrder = useAuctionOrder()
     const contractChain = useContractChain(props.order.token.contract)
-
+    
     const placeBidOnchain = useCallback(async () => {
         await contractChain.ensureContractChainAsync()
         const result = await auctionOrder.createBid(props.order, bidData.price as string)
@@ -274,8 +285,8 @@ function ShowBidForm(props: MarketOrderProp & {highestBid?: PopulatedMarketBidTy
             <InputField
                 label="Bid price"
                 type="number"
-                min={props.highestBid ? props.highestBid.price : props.order.price}
-                value={bidData.price || ""}
+                min={minBidPrice}
+                value={bidData.price}
                 onChange={e => setBidData({...bidData, price: e.target.value}) }
                 className="my-2 rounded text-lg"
                 disabled={processedOnchain || loading}
@@ -297,7 +308,7 @@ function ShowBidForm(props: MarketOrderProp & {highestBid?: PopulatedMarketBidTy
                     <span>Place a Bid</span>
                 </Button>
                 :
-                <ConnectWalletButton />
+                <ConnectWalletButton className="w-full"/>
             }
             
         </div>

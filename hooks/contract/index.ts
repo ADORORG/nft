@@ -50,7 +50,7 @@ export function useERC20Approval() {
 
         if (requireEnoughBalance) {
             if (balance < bigAmount) {
-                throw new Error("Not token enough balance")
+                throw new Error("Not enough token balance")
             }
         }
 

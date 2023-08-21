@@ -39,6 +39,7 @@ export default function MarketOrderPage(props: MarketOrdersProp & TokenPageProps
                             orders={props.orders} 
                             token={props.token} 
                             activeOrder={activeOrder}
+                            bids={props.bids}
                         />
                     }
 

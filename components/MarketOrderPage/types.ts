@@ -8,6 +8,7 @@ export interface MarketOrdersProp {
 
 export interface MarketOrderProp {
     readonly order: PopulatedMarketOrderType
+    readonly bids?: PopulatedMarketBidType[]
 }
 
 export interface MarketOrderBids extends MarketOrderProp {

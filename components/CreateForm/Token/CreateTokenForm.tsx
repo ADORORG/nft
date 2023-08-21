@@ -239,8 +239,6 @@ export default function CreateTokenForm() {
 			return
 		}
 
-        
-
         setShowModal(true)
     }
 
@@ -471,7 +469,8 @@ export default function CreateTokenForm() {
                                 accountContracts &&
                                 accountContracts.length &&
                                 accountContracts
-                                .filter(contract => chain && chain.id === +contract.chainId)
+                                // We do not have to filter, we request user to switch to the selected contract chain on deploy
+                                // .filter(contract => chain && chain.id === +contract.chainId)
                                 .map((contract) => (
                                     <Select.Option 
                                         className="active:bg-purple-300"

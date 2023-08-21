@@ -11,6 +11,7 @@ export default function ShowBuyOrBidForm(props: MarketOrderProp) {
                 isAuction ?
                 <BidForm
                     order={props.order}
+                    bids={props.bids}
                 />
                 :
                 <BuyButton
