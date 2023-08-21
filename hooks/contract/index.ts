@@ -12,12 +12,14 @@ export function useContractChain(contract: ContractType, walletClient: any /* Wa
 export function useERC20Approval(publicClient: PublicClient, walletClient: any) {
 
     const requestERC20ApprovalAsync = useCallback(async ({
+        requireEnoughBalance,
         contractAddress,
         bigAmount,
         spender,
         owner,
         chain,
     }: {
+        requireEnoughBalance: boolean,
         contractAddress: string,
         bigAmount: bigint,
         spender: string,
@@ -25,12 +27,27 @@ export function useERC20Approval(publicClient: PublicClient, walletClient: any) 
         chain?: any,
     }) => {
 
-        const allowance = await publicClient.readContract({
-            address: getAddress(contractAddress),
-            abi: erc20Abi,
-            functionName: "allowance",
-            args: [owner, spender]
-        }) as bigint
+        const [allowance, balance] = await Promise.all([
+            publicClient.readContract({
+                address: getAddress(contractAddress),
+                abi: erc20Abi,
+                functionName: "allowance",
+                args: [owner, spender]
+            }),
+            publicClient.readContract({
+                address: getAddress(contractAddress),
+                abi: erc20Abi,
+                functionName: "balanceOf",
+                args: [owner]
+            })
+        ]) as bigint[]
+
+
+        if (requireEnoughBalance) {
+            if (balance < bigAmount) {
+                throw new Error("Not token enough balance")
+            }
+        }
 
         if (allowance < bigAmount) {
             const txhash = await walletClient?.writeContract({

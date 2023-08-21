@@ -1,4 +1,5 @@
 import type { PopulatedMarketOrderType } from "@/lib/types/market"
+import type ContractType from "@/lib/types/contract"
 import { useCallback } from "react"
 import { usePublicClient, useWalletClient } from "wagmi"
 import { parseUnits, getAddress } from "viem"
@@ -14,18 +15,18 @@ import { getMarketplaceContract } from "@/config/marketplace.contract"
  * @param param0 
  * @returns 
  */
-export function useAuctionOrder({order}: {order: PopulatedMarketOrderType}) {
+export function useAuctionOrder(contract: ContractType) {
     const {data: walletClient} = useWalletClient()
     const publicClient = usePublicClient()
     const erc20Approval = useERC20Approval(publicClient, walletClient)
-    const contractChain = useContractChain(order.token.contract, walletClient)
+    const contractChain = useContractChain(contract, walletClient)
     const { session } = useAuthStatus()
 
     /**
      * Create a bid onchain
      * @param price - A price string. Highest bid price or buyNowPrice for auction
      */
-    const createBid = useCallback(async (price: string) => {
+    const createBid = useCallback(async (order: PopulatedMarketOrderType, price: string) => {
         // ensure we are connected to right chain that host this token contract
         await contractChain.ensureContractChainAsync()
 
@@ -63,6 +64,7 @@ export function useAuctionOrder({order}: {order: PopulatedMarketOrderType}) {
         } else {
             // Request token approval
             await erc20Approval.requestERC20ApprovalAsync({
+                requireEnoughBalance: true,
                 contractAddress: currency.address,
                 bigAmount: bigOrderPrice,
                 owner: session?.user.address as string,
@@ -90,12 +92,12 @@ export function useAuctionOrder({order}: {order: PopulatedMarketOrderType}) {
             buyerId: session?.user.address,
         }
 
-    }, [order, publicClient, session, walletClient, erc20Approval, contractChain])
+    }, [publicClient, session, walletClient, erc20Approval, contractChain])
 
     /**
      * Claim auction when it ended
      */
-    const finaliseAuction = useCallback(async () => {
+    const finaliseAuction = useCallback(async (order: PopulatedMarketOrderType) => {
         // ensure we are connected to right chain that host this token contract
         await contractChain.ensureContractChainAsync()
 
@@ -128,7 +130,7 @@ export function useAuctionOrder({order}: {order: PopulatedMarketOrderType}) {
             buyerId: session?.user.address,
         }
 
-    }, [order, publicClient, session, walletClient, contractChain])
+    }, [publicClient, session, walletClient, contractChain])
 
     return {
         createBid,

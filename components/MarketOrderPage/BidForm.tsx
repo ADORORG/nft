@@ -115,10 +115,10 @@ function BuyAuctionNow(props: MarketOrderProp) {
     const [processedOffchain, setProcessedOffchain] = useState(false)
     const [purchaseData, setPurchaseData] = useState<Partial<FinaliseMarketOrderType>>({})
     // Handle bidding and instant auction purchase
-    const auctionOrder = useAuctionOrder({order: props.order})
+    const auctionOrder = useAuctionOrder(props.order.token.contract)
 
     const buyAuctionNow = async () => {
-        const result = await auctionOrder.createBid(props.order.buyNowPrice as string)
+        const result = await auctionOrder.createBid(props.order, props.order.buyNowPrice as string)
         /** We done processing onchain */
         setProcessedOnchain(true)
         return result
@@ -198,10 +198,10 @@ function ShowBidForm(props: MarketOrderProp & {highestBid?: PopulatedMarketBidTy
     const [processedOnchain, setProcessedOnchain] = useState(false)
     const [processedOffchain, setProcessedOffchain] = useState(false)
     // Handle bidding and instant auction purchase
-    const auctionOrder = useAuctionOrder({order: props.order})
+    const auctionOrder = useAuctionOrder(props.order.token.contract)
 
     const placeBidOnchain = async () => {
-        const result = await auctionOrder.createBid(bidData.price as string)
+        const result = await auctionOrder.createBid(props.order, bidData.price as string)
         /** We done processing onchain */
         setProcessedOnchain(true)
         return {
@@ -307,10 +307,10 @@ function ClaimAuctionToken(props: MarketOrderProp & {highestBid?: PopulatedMarke
     const [loading, setLoading] = useState(false)
     const [processedOnchain, setProcessedOnchain] = useState(false)
     const [processedOffchain, setProcessedOffchain] = useState(false)
-    const auctionOrder = useAuctionOrder({order: props.order})
+    const auctionOrder = useAuctionOrder(props.order.token.contract)
 
     const claimOnchain = async () => {
-        const result = await auctionOrder.finaliseAuction()
+        const result = await auctionOrder.finaliseAuction(props.order)
         /** We done processing onchain */
         setProcessedOnchain(true)
         return result
