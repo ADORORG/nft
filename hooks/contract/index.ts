@@ -2,13 +2,17 @@ import type ContractType from "@/lib/types/contract";
 import { useCallback } from "react"
 import { getAddress } from "viem"
 import { usePublicClient, useWalletClient } from "wagmi"
-
+import { promiseDelay } from "@/utils/main"
 import erc20Abi from "@/abi/erc20"
 
 export function useContractChain(contract: ContractType) {
     const {data: walletClient} = useWalletClient()
     return {
-        ensureContractChainAsync: useCallback(() => walletClient?.switchChain({id: contract.chainId}), [walletClient, contract]) 
+        ensureContractChainAsync: useCallback( async () => {
+            await walletClient?.switchChain({id: contract.chainId})
+            // Delay for one second to allow chain change propagate
+            await promiseDelay(1000)
+        }, [walletClient, contract]) 
     }
 }
 

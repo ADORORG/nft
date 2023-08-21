@@ -245,3 +245,11 @@ export function replaceUrlParams(urlTemplate: string, params: Record<string, str
 	return urlTemplate;
 }
   
+/**
+ * Delay execution with promise or make a process sleep for some moment
+ * @param duration 
+ * @returns 
+ */
+export function promiseDelay(duration: number) {
+	return new Promise(resolve => setTimeout(resolve, duration))
+}
