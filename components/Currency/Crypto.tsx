@@ -1,3 +1,4 @@
+"use client"
 import Image from "next/image"
 import type { CryptocurrencyType } from "@/lib/types/currency"
 
@@ -9,7 +10,7 @@ interface CurrencyDisplayProps extends React.HTMLAttributes<HTMLImageElement> {
 }
 
 export default function CryptoCurrencyDisplay({currency, amount, width = 10, height = 10, className}: CurrencyDisplayProps) {
-    const { symbol, logoURI, /* price */ } = currency
+    const { symbol, logoURI } = currency
     
     return (
         <div 

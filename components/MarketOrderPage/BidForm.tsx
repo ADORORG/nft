@@ -11,7 +11,7 @@ import { useContractChain } from "@/hooks/contract"
 import { useAuctionOrder } from "@/hooks/contract/marketplace"
 import { fetcher, getFetcherErrorMessage } from "@/utils/network"
 import { replaceUrlParams } from "@/utils/main"
-import { CryptoCurrencyDisplay } from "@/components/Currency"
+import { CryptoCurrencyDisplay, CryptoToFiat } from "@/components/Currency"
 import { InputField } from "@/components/Form"
 import { ConnectWalletButton } from "@/components/ConnectWallet"
 import Button from "@/components/Button"
@@ -28,7 +28,7 @@ export default function BidForm(props: MarketOrderProp) {
      */
     let hasBidAndHighestBidder
     let highestBid
-    console.log("highest bid", highestBid)
+
     if (session && props.bids && props.bids.length) {
         props.bids.sort((a, b) => parseFloat(b.price) - parseFloat(a.price)) // sort by price desc
         highestBid = props.bids[0]
@@ -186,11 +186,18 @@ function BuyAuctionNow(props: MarketOrderProp) {
             
             {
                 parseFloat(props.order?.buyNowPrice || "") > 0 ?
-                <CryptoCurrencyDisplay 
-                    currency={props.order.currency}
-                    amount={props.order.buyNowPrice || "0"}
-                    width={16}
-                />
+                <span className="flex items-center">
+                    <CryptoCurrencyDisplay 
+                        currency={props.order.currency}
+                        amount={props.order.buyNowPrice || "0"}
+                        width={16}
+                    />
+                    <CryptoToFiat
+                        currency={props.order.currency}
+                        amount={props.order.buyNowPrice || "0"}
+                        withIcon
+                    />
+                </span>
                 : null
             }
             
@@ -302,10 +309,14 @@ function ShowBidForm(props: MarketOrderProp & {highestBid?: PopulatedMarketBidTy
                     loading={loading}
                     rounded
                 >
-                    <TagIcon 
-                        className="h-6 w-6" 
-                    /> 
-                    <span>Place a Bid</span>
+                    <span>
+                        Place a Bid
+                    </span>
+                    <CryptoToFiat
+                        currency={props.order.currency}
+                        amount={bidData.price}
+                        withIcon
+                    />
                 </Button>
                 :
                 <ConnectWalletButton className="w-full"/>

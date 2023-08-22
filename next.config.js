@@ -27,6 +27,22 @@ const nextConfig = {
         config.externals.push('pino-pretty', 'lokijs', 'encoding');
         return config;
     },
+
+    async redirects() {
+        return [
+            {
+                /*
+                * Marketplace is paginated, like 
+                * /marketplace/1, /marketplace/2
+                * An attempt to visit /marketplace will result in an arrow.
+                * Hence, we redirect /marketplace to /marketplace/1 default page
+                */
+                source: '/marketplace',
+                destination: '/marketplace/1',
+                permanent: true,
+            },
+        ]
+    },
 }
 
 module.exports = nextConfig

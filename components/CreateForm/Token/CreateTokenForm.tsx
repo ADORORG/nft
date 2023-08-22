@@ -18,6 +18,7 @@ import {
 import {
     FileDropzone,
     InputField,
+    Input,
     TextArea,
     SwitchCheckbox
 } from "@/components/Form"
@@ -64,10 +65,7 @@ export default function CreateTokenForm() {
 
     /** Modal for minting and uploading token data */
     const [showModal, setShowModal] = useState(false)
-
-    /** Get connected chain id, use to filter the nft contract to display */
-    const { chain } = useNetwork()
-
+    const [royaltyPercent, setRoyaltyPercent] = useState(0)
 
     /** 
      * Ref for image and media, passed to media preview so the image/media could be replaced right from the preview 
@@ -324,21 +322,29 @@ export default function CreateTokenForm() {
                         </div>
 
                         {/* Token Royalty */}
-                        <div className="my-2">
-                            <InputField
-                                label="Royalty"
-                                type="number"
-                                name="royalty"
+                        <div className="flex flex-col gap-3 mb-4">
+                            <span>Royalty ({royaltyPercent}%)</span>
+                            <Input
+                                type="range"
                                 placeholder="1000 = 10%, 500 = 5%, 100 = 1%"
-                                max={1000}
+                                max={100}
                                 min={0}
-                                onChange={handleInputChange}
-                                value={nftTokenData?.royalty || "0"}
+                                step={1}
+                                onChange={e => {
+                                    const value = Number(e.target.value)
+                                    setRoyaltyPercent(value)
+                                    // set contract royalty
+                                    setNftTokenData({...nftTokenData, royalty: value * 100})
+                                }}
+                                value={royaltyPercent}
                                 autoComplete="off"
-                                className="rounded focus:transition-all duration-700"
+                                className="h-4 bg-gray-300 rounded appearance-none focus:outline-none outline-none transition-all duration-700"
+                                style={{
+                                    background: `linear-gradient(to right, #f43f5e 0%, #a855f7 ${royaltyPercent}%, #06b6d4 ${royaltyPercent}%, #06b6d4 100%)`
+                                }}
                             />
                         </div>
-
+                
                         {/* External Url */}
                         <div className="my-2">
                             <InputField
@@ -435,7 +441,7 @@ export default function CreateTokenForm() {
 
                             <div className="my-2">
                                 <Button 
-                                    variant="secondary" 
+                                    variant="gradient" 
                                     className="rounded text-sm" 
                                     onClick={addAttribute}
                                 >Add attribute</Button>
@@ -448,7 +454,7 @@ export default function CreateTokenForm() {
                         <label htmlFor="account-contracts" className="block mt-4 mb-2 font-medium text-gray-900 dark:text-white">
                             <span>Contract &nbsp;</span>
                             <Button 
-                                variant="secondary" 
+                                variant="gradient" 
                                 className="rounded text-sm py-1" 
                             >
                                 <Link href={appRoutes.createErc721}>
@@ -488,7 +494,7 @@ export default function CreateTokenForm() {
                         <label htmlFor="account-contracts" className="block mt-4 mb-2 font-medium text-gray-900 dark:text-white">
                             <span className="">Collection&nbsp;</span>
                             <Button 
-                                variant="secondary" 
+                                variant="gradient" 
                                 className="rounded text-sm py-1" 
                             >
                                 <Link href={appRoutes.createCollection}>
@@ -583,7 +589,7 @@ export default function CreateTokenForm() {
                     <>
                         <Button
                             className="px-3"
-                            variant="secondary"
+                            variant="gradient"
                             rounded
                             onClick={handleSubmit}
                         >Create Token</Button>

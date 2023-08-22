@@ -248,16 +248,13 @@ export async function getTrendingMarketOrders(query: Record<string, unknown>, li
 }
 
 /**
- * Get the market value for account. 
- * By default, it will return top 8 account with the highest trades
+ * Get the market value for an account. 
  * @param query Query object filter
- * @param limit Number of Account to return
  * @returns 
- * @example getTraderAccountMarketValue({seller: '0x0...'}) returns the seller market value
- * @example getTraderAccountMarketValue({}, 4) returns top 4 account with highest trade
+ * @example getTraderAccountMarketValue({seller: '0x0...'}) returns the seller market value [{dollarValue: 89.39, orderCount: 5}]
  */
-export function getTraderAccountMarketValue(query: Record<string, unknown> = {}, limit = 8) {
-    const { currencies, accounts } = dbCollections;
+export function getTraderAccountMarketValue(query: Record<string, unknown> = {}) {
+    const { currencies } = dbCollections;
 
     const aggregateQuery = [
         {
@@ -288,45 +285,96 @@ export function getTraderAccountMarketValue(query: Record<string, unknown> = {},
           }
         },
         {
-          // group by seller field
           $group: {
-            _id: '$seller',
-            dollarValue: {$sum: '$dollarValue'}
+            _id: null,
+            dollarValue: {$sum: '$dollarValue'},
+            orderCount: {$sum: 1}
           }
         },
-        
-        // $sort and $limit have no effect if get trade value for a single account
-        {
-          $sort: {
-            dollarValue: -1
-          }
-        },
-      
-        {
-          $limit: limit
-        },
-      
-        {
-          // populate each seller account as owner
-          $lookup: {
-            from: accounts,
-            localField: '_id',
-            foreignField: '_id',
-            as: 'owner'
-          }
-        },
-      
-        {
-          // Unwind owner to object
-          $unwind: {
-            path: '$owner',
-            includeArrayIndex: '__i',
-            preserveNullAndEmptyArrays: true
-          }
-        }
       ] satisfies PipelineStage[]
 
-    return MarketOrderModel.aggregate<TopTraderAccountType>(aggregateQuery).exec()
+    return MarketOrderModel.aggregate<TotalMarketValueInDollarType>(aggregateQuery).exec()
+}
+
+/**
+ * Get the market value for top traders account. 
+ * By default, it will return top 8 account with the highest trades
+ * @param query Query object filter
+ * @param limit Number of Account to return
+ * @returns 
+ * @example getTopTradersAccountMarketValue({}, 4) returns top 8 accounts with highest trade
+ */
+export function getTopTradersAccountMarketValue(query: Record<string, unknown> = {}, limit = 8) {
+  const { currencies, accounts } = dbCollections;
+
+  const aggregateQuery = [
+      {
+        // match the orders
+        $match: query
+      },
+      {
+        // populate the currency
+        $lookup: {
+          from: currencies,
+          localField: 'currency',
+          foreignField: '_id',
+          as: 'currency'
+        }
+      },
+      {
+        // Unwind the populated currency
+        $unwind: {
+          path: '$currency',
+          includeArrayIndex: '__i',
+          preserveNullAndEmptyArrays: false
+        }
+      },
+      {
+        // calculate each order value in dollar as dollarValue
+        $set: {
+          dollarValue: {$multiply: [{$toDouble: '$price'}, {$toDouble: '$currency.price.usd'}]}
+        }
+      },
+      {
+        // group by seller field
+        $group: {
+          _id: '$seller',
+          dollarValue: {$sum: '$dollarValue'}
+        }
+      },
+      
+      // $sort and $limit have no effect if get trade value for a single account
+      {
+        $sort: {
+          dollarValue: -1
+        }
+      },
+    
+      {
+        $limit: limit
+      },
+    
+      {
+        // populate each seller account as owner
+        $lookup: {
+          from: accounts,
+          localField: '_id',
+          foreignField: '_id',
+          as: 'owner'
+        }
+      },
+    
+      {
+        // Unwind owner to object
+        $unwind: {
+          path: '$owner',
+          includeArrayIndex: '__i',
+          preserveNullAndEmptyArrays: true
+        }
+      }
+    ] satisfies PipelineStage[]
+
+  return MarketOrderModel.aggregate<TopTraderAccountType>(aggregateQuery).exec()
 }
 
 /**
@@ -425,7 +473,6 @@ export function getTotalMarketValueInDollar(query: Record<string, unknown>) {
 
     return MarketOrderModel.aggregate<TotalMarketValueInDollarType>(aggregateQuery).exec()
 }
-
 
 /**
  * Set market order status to `cancelled`

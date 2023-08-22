@@ -1,5 +1,5 @@
 import type { MarketOrderProp } from "./types"
-import { CryptoCurrencyDisplay } from "@/components/Currency"
+import { CryptoCurrencyDisplay, CryptoToFiat } from "@/components/Currency"
 import { dateToRelativeDayAndHour } from "@/utils/date"
 
 export default function ShowActiveOrder(props: MarketOrderProp) {
@@ -28,6 +28,11 @@ export default function ShowActiveOrder(props: MarketOrderProp) {
                 <CryptoCurrencyDisplay 
                     currency={props.order.currency} 
                     amount={props.order.price}
+                />
+                <CryptoToFiat 
+                    currency={props.order.currency} 
+                    amount={props.order.price}
+                    withIcon
                 />
             </div>
             {

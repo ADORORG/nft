@@ -2,7 +2,7 @@ import type { PopulatedMarketOrderType } from "@/lib/types/market"
 import type { CryptocurrencyType } from "@/lib/types/currency"
 import Link from "next/link"
 import { cutString, replaceUrlParams } from "@/utils/main"
-import { CryptoCurrencyDisplay } from "@/components/Currency"
+import { CryptoCurrencyDisplay, CryptoToFiat } from "@/components/Currency"
 import Image from "@/components/Image"
 import CountdownTimer from "@/components/Countdown"
 import UserAccountAvatar from "@/components/UserAccountAvatar"
@@ -95,19 +95,26 @@ export default function MarketListingCard({marketOrder, size = "md"}: MarketList
                         />
                     </div>
                     
-                   {
-                     saleType === "auction" ? (
-                        <div className="flex flex-col items-end gap-2">
-                            <div className={`text-gray-950 dark:text-white ${sizes[size].textSmall} py-3 text-opacity-40 leading-3 tracking-wide subpixel-antialiased`}>Ending In</div>
-                            
-                            <div className={`text-gray-950 dark:text-white tracking-wide ${sizes[size].textMedium}`}>
-                                <CountdownTimer 
-                                    targetDate={Number(endsAt)} 
-                                />
+                    {
+                        
+                        saleType === "auction" ? (
+                            // Display auction coundown
+                            <div className="flex flex-col items-end gap-2">
+                                <div className={`text-gray-950 dark:text-white ${sizes[size].textSmall} py-3 text-opacity-40 leading-3 tracking-wide subpixel-antialiased`}>Ending In</div>
+                                
+                                <div className={`text-gray-950 dark:text-white tracking-wide ${sizes[size].textMedium}`}>
+                                    <CountdownTimer 
+                                        targetDate={Number(endsAt)} 
+                                    />
+                                </div>
                             </div>
-                        </div>
-                     ): null
-                   }
+                        ):
+                        // Display crypto to fiat conversion
+                        <CryptoToFiat 
+                            amount={price}
+                            currency={currency}
+                        />
+                    }
                 </div>
             </div>
         </div>

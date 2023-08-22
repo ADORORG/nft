@@ -10,7 +10,7 @@ import { getSettledPromiseValue } from "@/utils/main"
 import mongoooseConnectionPromise from '@/wrapper/mongoose_connect'
 import { 
   getTrendingMarketOrders,
-  getTraderAccountMarketValue,
+  getTopTradersAccountMarketValue,
   getTotalMarketValueInDollar,
 } from "@/lib/handlers"
 
@@ -23,7 +23,7 @@ async function getServerSideData() {
   const marketOrdersPromise = getTrendingMarketOrders({status: "active"}, 10)
 
   // fetch top traders
-  const topTradersPromise = getTraderAccountMarketValue({}, 8)
+  const topTradersPromise = getTopTradersAccountMarketValue({}, 8)
   // fetch market value and order count
   const marketValuePromise = getTotalMarketValueInDollar({})
 
@@ -42,7 +42,6 @@ async function getServerSideData() {
  */
 export default async function LandingPage() {
   const {marketOrders, topTraders, marketValue} = await getServerSideData()
-
   return (
     <div className="">
       <HeroSection marketOrders={marketOrders} />

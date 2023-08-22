@@ -1,14 +1,15 @@
 "use client"
 import type ContractType from "@/lib/types/contract"
 import type { Abi } from "viem"
-import { useState } from "react"
+import { useState, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { useAuthStatus } from "@/hooks/account"
 import { toast } from "react-hot-toast"
 import { useNetwork, useWalletClient, usePublicClient } from "wagmi"
-import { InputField } from "@/components/Form"
-import { ConnectWalletButton } from "@/components/ConnectWallet"
 import { fetcher, getFetcherErrorMessage } from "@/utils/network"
+import { replaceUrlParams } from "@/utils/main"
+import { InputField, Input } from "@/components/Form"
+import { ConnectWalletButton } from "@/components/ConnectWallet"
 import { ERC1155_BYTECODE, ERC1155_VERSION } from "@/solidity/erc1155.compiled"
 import { ERC721_BYTECODE, ERC721_VERSION } from "@/solidity/erc721.compiled"
 import erc1155Abi from "@/abi/erc1155"
@@ -21,6 +22,7 @@ export default function CreateNftContractForm({nftSchema}: Pick<ContractType, "n
     const router = useRouter()
     const { isConnected, address } = useAuthStatus()
     const [contractData, setContractData] = useState<Partial<ContractType>>({nftSchema})
+    const [royaltyPercent, setRoyaltyPercent] = useState(0)
     const [loading, setLoading] = useState(false)
     const [deployed, setDeployed] = useState(false)
     const { chain } = useNetwork()
@@ -29,11 +31,11 @@ export default function CreateNftContractForm({nftSchema}: Pick<ContractType, "n
     const isErc721 = nftSchema === "erc721"
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const {name, value} = e.target;
+		const {name, value} = e.target
         setContractData({...contractData, [name]: value})
 	}
 
-    const uploadContractData = async (newContractData: ContractType) => {
+    const uploadContractData = useCallback(async (newContractData: ContractType) => {
         const response = await fetcher(apiRoutes.createContract, {
             method: "POST",
             body: JSON.stringify(newContractData)
@@ -41,15 +43,15 @@ export default function CreateNftContractForm({nftSchema}: Pick<ContractType, "n
 
         if (response.success) {
             toast.success(response.message)
-            router.push(appRoutes.viewContract
-                .replace(":chainId", newContractData.chainId.toString())
-                .replace(":contractAddress", newContractData.contractAddress)
-            )
+            router.push(replaceUrlParams(appRoutes.viewContract, {
+                chainId: newContractData.chainId.toString(),
+                contractAddress: newContractData.contractAddress
+            }))
         }
 
-    }
+    }, [router])
 
-    const deployContractNftContract = async ({nftBytecode, nftAbi, nftVersion}: {nftBytecode: `0x${string}`, nftAbi: Abi, nftVersion: string}) => {
+    const deployContractNftContract = useCallback(async ({nftBytecode, nftAbi, nftVersion}: {nftBytecode: `0x${string}`, nftAbi: Abi, nftVersion: string}) => {
         const chainId = chain?.id as number
         const deployTxhash = await walletClicent?.deployContract({
             abi: nftAbi,
@@ -75,9 +77,9 @@ export default function CreateNftContractForm({nftSchema}: Pick<ContractType, "n
             contractAddress: transactionReceipt.contractAddress as string
         } as const
 
-    }
+    }, [address, chain?.id, contractData, publicClient, walletClicent])
 
-    const handleSubmit = async () => {
+    const handleSubmit = useCallback(async () => {
         try {  
             setLoading(true)
             if (!contractData.label || !contractData.symbol || !contractData.royalty) {
@@ -120,7 +122,7 @@ export default function CreateNftContractForm({nftSchema}: Pick<ContractType, "n
         } finally {
             setLoading(false)
         }
-    }
+    }, [contractData, deployed, uploadContractData, isErc721, deployContractNftContract, nftSchema])
 
     return (
         <div className="w-full md:w-1/2 lg:w-2/5 mx-auto">
@@ -155,21 +157,29 @@ export default function CreateNftContractForm({nftSchema}: Pick<ContractType, "n
                     labelClassName="my-3"
                 />
                 {/* Contract default Royalty */}
-                <InputField
-                    label="Contract Royalty (1000 = 10%, 500 = 5%, 100 = 1%)"
-                    type="number"
-                    name="royalty"
-                    placeholder="1000 = 10%, 500 = 5%, 100 = 1%"
-                    max={1000}
-                    min={0}
-                    onChange={handleInputChange}
-                    disabled={loading}
-                    value={contractData?.royalty || "0"}
-                    autoComplete="off"
-                    className="rounded focus:transition-all duration-700"
-                    labelClassName="my-3"
-                />
-                        
+                <div className="flex flex-col gap-3 mb-4">
+                    <span>Contract Royalty ({royaltyPercent}%)</span>
+                    <Input
+                        type="range"
+                        placeholder="1000 = 10%, 500 = 5%, 100 = 1%"
+                        max={100}
+                        min={0}
+                        step={1}
+                        onChange={e => {
+                            const value = Number(e.target.value)
+                            setRoyaltyPercent(value)
+                            // set contract royalty
+                            setContractData({...contractData, royalty: value * 100})
+                        }}
+                        disabled={loading}
+                        value={royaltyPercent}
+                        autoComplete="off"
+                        className="h-4 bg-gray-300 rounded appearance-none focus:outline-none outline-none transition-all duration-700"
+                        style={{
+                            background: `linear-gradient(to right, #f43f5e 0%, #a855f7 ${royaltyPercent}%, #06b6d4 ${royaltyPercent}%, #06b6d4 100%)`
+                        }}
+                    />
+                </div>
             </div>
 
             <div className="my-4 flex gap-4">
@@ -177,7 +187,7 @@ export default function CreateNftContractForm({nftSchema}: Pick<ContractType, "n
                     isConnected ?
                     <Button
                         className="px-3"
-                        variant="secondary"
+                        variant="gradient"
                         rounded
                         onClick={handleSubmit}
                         disabled={loading}

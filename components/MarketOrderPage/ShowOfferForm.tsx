@@ -12,6 +12,7 @@ import { useMarketOffer } from "@/hooks/contract/marketplace"
 import { InputField } from "@/components/Form"
 import { Select } from "@/components/Select"
 import { ConnectWalletButton } from "@/components/ConnectWallet"
+import { CryptoToFiat } from "@/components/Currency"
 import Button from "@/components/Button"
 import InfoText from "@/components/InfoText"
 import apiRoutes from "@/config/api.route"
@@ -156,14 +157,19 @@ export default function ShowOfferForm(props: MarketOrdersProp & TokenPageProps) 
                     {
                         isConnected ?
                         <Button
-                            className="my-2 w-full md:w-3/4"
+                            className="my-2 w-full md:w-3/4 text-lg flex items-center justify-center"
                             onClick={makeAnOffer}
                             variant="gradient"
                             loading={loading}
                             disabled={loading}
                             rounded
                         >
-                            Send offer
+                            <span>Send offer</span>
+                            <CryptoToFiat
+                                currency={currencies?.find(c => c._id?.toString() === offerCurrency) as any}
+                                amount={offerPrice}
+                                withIcon
+                            />
                         </Button>
                         :
                         <ConnectWalletButton

@@ -358,7 +358,7 @@ export default function CreateCollectionForm() {
                             :
                             <Button
                                 className="px-3"
-                                variant="secondary"
+                                variant="gradient"
                                 rounded
                                 onClick={handleSubmit}
                                 disabled={isInvalidCollectionSlug || isLoading}

@@ -21,10 +21,10 @@ async function getServerSideData(params: PageProps) {
         setAccountDetails(address, {}),
         getTokensByOwner(address),
         getTraderAccountMarketValue({
-            $or: [{seller: address.toLowerCase(), buyer: address.toLowerCase()}]
+            $or: [{seller: address.toLowerCase()}, {buyer: address.toLowerCase()}]
         })
     ])
-    console.log("accountMarketValue", accountMarketValue)
+
     return {
         tokens,
         account,
@@ -34,7 +34,6 @@ async function getServerSideData(params: PageProps) {
 
 export default async function Page({params}: {params: PageProps}) {
     const { account, tokens, accountMarketValue} = await getServerSideData(params)
-
     const {
         address,
         name,
@@ -64,7 +63,7 @@ export default async function Page({params}: {params: PageProps}) {
                         <Banner.Text>
                             <span className="select-all break-words">{address}</span>
                         </Banner.Text>
-                        <h5 className="py-4">
+                        <h5 className="pb-4 text-lg">
                             Value:&nbsp; 
                             <FiatCurrencyDisplay 
                                 amount={

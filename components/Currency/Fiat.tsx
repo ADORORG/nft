@@ -7,7 +7,7 @@ interface FiatCurrencyDisplayProps extends React.HTMLAttributes<HTMLSpanElement>
 export default function FiatCurrencyDisplay({amount, className}: FiatCurrencyDisplayProps) {
    
     return (
-        <span className={`text-gray-900 dark:text-white tracking-wide ${className}`}>
+        <span className={`tracking-wide ${className}`}>
             {formatNumber(amount)}
         </span>
     )
