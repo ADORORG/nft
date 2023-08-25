@@ -30,7 +30,7 @@ const TokenSchema = new Schema<NftTokenType>({
     timestamps: true
 });
 
-TokenSchema.post('find', function(docs: NftTokenType[]) {
+/* TokenSchema.post('find', function(docs: NftTokenType[]) {
     docs.forEach(function(doc) {
         doc?.toObject?.({
             flattenMaps: true,
@@ -38,6 +38,6 @@ TokenSchema.post('find', function(docs: NftTokenType[]) {
             versionKey: false
         })
     })
-})
+}) */
 
 export default (models[tokens] as Model<NftTokenType>) || model<NftTokenType>(tokens, TokenSchema);

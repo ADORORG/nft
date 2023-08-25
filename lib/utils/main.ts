@@ -6,7 +6,7 @@
  */
 export function getSettledPromiseValue(settledPromised: any, altValue: any = []) {
 	return (
-		settledPromised?.status === "fulfilled" 
+		settledPromised?.status === 'fulfilled' 
 		? 
 		settledPromised.value
 		: 

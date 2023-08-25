@@ -1,9 +1,9 @@
-import { Types, Document } from 'mongoose';
+import type { Types, /* Document */ } from 'mongoose';
 import type { EthereumAddress } from './common'
 import type AccountType from './account';
 import type MarketOrderType from './market';
 
-export default interface MarketBidType extends Partial<Document> {
+export default interface MarketBidType /* extends Partial<Document> */ {
     /** Market bid document _id */
     _id?: Types.ObjectId;
     /** A populated market order or market document _id to which this bid belongs. */

@@ -1,7 +1,7 @@
-import type { Document } from 'mongoose'
+// import type { Document } from 'mongoose'
 import type { EthereumAddress } from './common'
 
-export default interface AccountType extends Partial<Document> {
+export default interface AccountType {
     /** Account document _id. Ethereum address are used as the _id */
     _id?: EthereumAddress;
     /** Ethereum address of this account. Same value as _id */

@@ -1,8 +1,8 @@
-import type { Types, Document } from 'mongoose'
+import type { Types, /* Document */ } from 'mongoose'
 import type { EthereumAddress } from './common'
 import type AccountType from './account';
 
-export default interface CollectionType extends Partial<Document> {
+export default interface CollectionType /* extends Partial<Document> */ {
     /** The document objectId */
     _id?: Types.ObjectId;
     /** Name of the collection */

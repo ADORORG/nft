@@ -22,7 +22,7 @@ export default function CreateNftContractForm({nftSchema}: Pick<ContractType, "n
     const router = useRouter()
     const { isConnected, address } = useAuthStatus()
     const [contractData, setContractData] = useState<Partial<ContractType>>({nftSchema})
-    const [royaltyPercent, setRoyaltyPercent] = useState(0)
+    const [royaltyPercent, setRoyaltyPercent] = useState(10)
     const [loading, setLoading] = useState(false)
     const [deployed, setDeployed] = useState(false)
     const { chain } = useNetwork()

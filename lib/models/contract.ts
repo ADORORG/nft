@@ -22,7 +22,7 @@ const ContractSchema = new Schema<ContractType>({
     timestamps: true
 });
 
-ContractSchema.post('find', function(docs: ContractType[]) {
+/* ContractSchema.post('find', function(docs: ContractType[]) {
     docs.forEach(function(doc) {
         doc.toObject?.({
             flattenMaps: true,
@@ -30,6 +30,6 @@ ContractSchema.post('find', function(docs: ContractType[]) {
             versionKey: false
         })
     })
-})
+}) */
 
 export default (models[contracts] as Model<ContractType>) || model<ContractType>(contracts, ContractSchema);

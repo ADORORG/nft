@@ -1,10 +1,10 @@
-import type { Types, Document } from 'mongoose';
+import type { Types, /* Document */ } from 'mongoose';
 import type { AttributeType, EthereumAddress } from './common';
 import type AccountType from './account';
 import type CollectionType from './collection';
 import type ContractType from './contract';
 
-export default interface NftTokenType extends Partial<Document> {
+export default interface NftTokenType /* extends Partial<Document> */ {
     /** The document objectId */
     _id?: Types.ObjectId;
     /** NFT token id */

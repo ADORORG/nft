@@ -1,9 +1,9 @@
 export const AppInfo = {
-  name: "Ador",
-  description: "Expression is essential",
+  name: 'Ador',
+  description: 'Expression is essential',
   website: 'https://adors.org',
 	support: 'support@adors.org',
-  logoUrl: "/logo.svg"
+  logoUrl: '/logo.svg'
 } as const
 
 // Also configured in next.config.js
@@ -64,13 +64,23 @@ export const fiatCurrencies = [
 ] as const
 
 export const dbCollections = {
+  /** Platform user account database collection name */
   accounts: 'nft_accounts',
+  /** Collections of nft tokens created by account */
   collections: 'nft_collections',
+  /** Nft tokens created by account, belongs to a collection */
   tokens: 'nft_tokens',
+  /** Secondary marketplace orders */
   marketOrders: 'nft_market_orders',
+  /** Bids for auction orders type on marketOrders in the marketplace */
   bids: 'nft_bids',
+  /** Crypto Currencies available/supported for listing in the marketplace*/
   currencies: 'nft_currencies',
+  /** Nft Contracts deployed on the blockchain, ERC721 and ERC1155 */
   contracts: 'nft_contracts',
+  /** Nft contract (pre)sale events conducted on the platform, related to contracts and extends contracts (nft_contracts) */
+  nftContractEvents: 'nft_sale_contract_events',
+  /** Authentication for performing actions such as email verification */
   authentication: 'nft_authentication',
 } as const
 

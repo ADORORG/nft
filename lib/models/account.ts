@@ -76,7 +76,7 @@ function _idAndAddressUpdateMerging(next: (arg?: Error) => void) {
 
 AccountSchema.pre('save', requireValidAccountAddress);
 AccountSchema.pre(['findOneAndUpdate', 'updateOne'], _idAndAddressUpdateMerging);
-AccountSchema.post('find', function(docs: AccountType[]) {
+/* AccountSchema.post('find', function(docs: AccountType[]) {
     docs.forEach(function(doc) {
         doc?.toObject?.({
             flattenMaps: true,
@@ -84,6 +84,6 @@ AccountSchema.post('find', function(docs: AccountType[]) {
             versionKey: false
         })
     })
-})
+}) */
 
 export default (models[accounts] as Model<AccountType>) || model<AccountType>(accounts, AccountSchema);

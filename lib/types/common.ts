@@ -10,11 +10,13 @@ export const MARKET_SALE_TYPES = ['fixed', 'auction', 'offer'] as const
 export const MARKET_PERMIT_TYPES = ['onchain', 'offchain'] as const
 export const MARKET_STATUS_TYPES = ['active', 'sold', 'cancelled'] as const
 export const NFT_CONTRACT_SCHEMA = ['erc721', 'erc1155'] as const
+export const NFT_CONTRACT_SALE_EVENT = ['open_edition', 'limited_edition', 'one_of_one', 'generative_series'] as const
 
 export type MarketSaleType = typeof MARKET_SALE_TYPES[number];
 export type MarketPermitType = typeof MARKET_PERMIT_TYPES[number]
 export type MarketStatusType = typeof MARKET_STATUS_TYPES[number]
 export type NftContractSchemaType = typeof NFT_CONTRACT_SCHEMA[number]
+export type NftContractSaleEventType = typeof NFT_CONTRACT_SALE_EVENT[number]
 
 export type EthereumAddress = `0x${string}` | string // Needs to implement ETH address type
 

@@ -1,10 +1,10 @@
-import { Types, Document } from 'mongoose';
+import { Types, /* Document */ } from 'mongoose';
 import type { MarketSaleType, MarketPermitType, MarketStatusType, EthereumAddress } from './common';
 import type { CryptocurrencyType } from './currency';
 import type AccountType from './account';
 import type { default as NftTokenType, PopulatedNftTokenType } from './token';
 
-export default interface MarketOrderType extends Partial<Document> {
+export default interface MarketOrderType /* extends Partial<Document> */ {
     /** Market order document _id */
     _id?: Types.ObjectId;
     /** Populated token or token document _id */

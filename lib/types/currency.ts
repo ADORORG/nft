@@ -1,5 +1,5 @@
-import { Types, Document } from 'mongoose'
-import { EthereumAddress } from './common'
+import type { Types, /* Document */ } from 'mongoose'
+import type { EthereumAddress } from './common'
 
 export interface FiatCurrencyDataType {
     name: string;
@@ -15,7 +15,7 @@ export interface CryptocurrencyMarketDataType {
 }
 
 // Cryptocurrency data type
-export interface CryptocurrencyType extends Partial<Document> {
+export interface CryptocurrencyType /* extends Partial<Document> */ {
     /** Currency document _id */
     _id?: Types.ObjectId;
     /** Name of the currency e.g 'Binance Coin', 'Ethereum' */

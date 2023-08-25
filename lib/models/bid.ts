@@ -21,7 +21,7 @@ const MarketBidSchema = new Schema<MarketBidType>({
     timestamps: true
 });
 
-MarketBidSchema.post('find', function(docs: MarketBidType[]) {
+/* MarketBidSchema.post('find', function(docs: MarketBidType[]) {
     docs.forEach(function(doc) {
         doc?.toObject?.({
             flattenMaps: true,
@@ -30,6 +30,6 @@ MarketBidSchema.post('find', function(docs: MarketBidType[]) {
         })
     })
 })
-
+ */
 export default (models[bids] as Model<MarketBidType>) || model<MarketBidType>(bids, MarketBidSchema);
 

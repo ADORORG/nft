@@ -65,7 +65,7 @@ export default function CreateTokenForm() {
 
     /** Modal for minting and uploading token data */
     const [showModal, setShowModal] = useState(false)
-    const [royaltyPercent, setRoyaltyPercent] = useState(0)
+    const [royaltyPercent, setRoyaltyPercent] = useState(10)
 
     /** 
      * Ref for image and media, passed to media preview so the image/media could be replaced right from the preview 

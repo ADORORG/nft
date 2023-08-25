@@ -40,7 +40,7 @@ CollectionSchema.pre('save', function(next) {
     next()
 })
 
-CollectionSchema.post('find', function(docs: CollectionType[]) {
+/* CollectionSchema.post('find', function(docs: CollectionType[]) {
     docs.forEach(function(doc) {
         doc?.toObject?.({
             flattenMaps: true,
@@ -48,6 +48,6 @@ CollectionSchema.post('find', function(docs: CollectionType[]) {
             versionKey: false
         })
     })
-})
+}) */
 
 export default (models[xcollections] as Model<CollectionType>) || model<CollectionType>(xcollections, CollectionSchema);

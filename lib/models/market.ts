@@ -32,7 +32,7 @@ const MarketOrderSchema = new Schema<MarketOrderType>({
     timestamps: true
 });
 
-MarketOrderSchema.post('find', function(docs: MarketOrderType[]) {
+/* MarketOrderSchema.post('find', function(docs: MarketOrderType[]) {
     docs.forEach(function(doc) {
         doc?.toObject?.({
             flattenMaps: true,
@@ -40,6 +40,6 @@ MarketOrderSchema.post('find', function(docs: MarketOrderType[]) {
             versionKey: false
         })
     })
-})
+}) */
 
 export default (models[marketOrders] as Model<MarketOrderType>) || model<MarketOrderType>(marketOrders, MarketOrderSchema);

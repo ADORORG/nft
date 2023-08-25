@@ -49,7 +49,7 @@ const CurrencySchema = new Schema<CryptocurrencyType>({
     timestamps: true
 });
 
-CurrencySchema.post('find', function(docs: CryptocurrencyType[]) {
+/* CurrencySchema.post('find', function(docs: CryptocurrencyType[]) {
     docs.forEach(function(doc) {
         doc?.toObject?.({
             flattenMaps: true,
@@ -57,6 +57,6 @@ CurrencySchema.post('find', function(docs: CryptocurrencyType[]) {
             versionKey: false
         })
     })
-})
+}) */
 
 export default (models[currencies] as Model<CryptocurrencyType>) || model<CryptocurrencyType>(currencies, CurrencySchema);
