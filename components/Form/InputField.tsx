@@ -6,7 +6,7 @@ export default function InputField(props: InputExtendedProps) {
     const {label, labelClassName, className, ...inputProps} = props
 
     return (
-        <div>
+        <div className="w-full">
             <label 
                 htmlFor={inputId} 
                 className={`block mb-2 text-sm font-medium text-gray-900 dark:text-white ${labelClassName}`}

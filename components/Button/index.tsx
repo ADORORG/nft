@@ -12,7 +12,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 export default function Button({
     children, 
-    variant = "primary", 
+    variant, 
     className,
     inversed = false,
     rounded = false, 
@@ -34,7 +34,7 @@ export default function Button({
         gradient: "border-r border-r-secondary-900 border-l border-l-primary-900 border-b border-b-tertiary-900 border-t border-t-primary-900 text-gray-900 dark:text-gray-100 bg-transparent hover:bg-gradient-to-r hover:from-primary-900 hover:via-secondary-900 hover:to-tertiary-900 hover:text-white"
     }
 
-    const btnClass = inversed ? inverse[variant] : variants[variant]
+    const btnClass = variant ? inversed ? inverse[variant] : variants[variant] : ""
     return (
         <button 
             className={`p-2 ${btnClass} ${rounded && "rounded"} ${disabled && "bg-opacity-60 opacity-60"} ${className}`}

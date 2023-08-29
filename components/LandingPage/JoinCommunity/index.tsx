@@ -6,7 +6,7 @@ export default function JoinOurCommunity() {
     return (
         <div className="bg-white dark:bg-gray-950 dark:text-white p-8 lg:p-8">
             <div className="container mx-auto">
-                <div className="max-w-xl mx-auto flex flex-col justify-center bg-gray-200 dark:bg-slate-900 dark:bg-opacity-40 gap-8 p-8 lg:p-16 rounded">
+                <div className="max-w-xl mx-auto flex flex-col justify-center bg-gray-200 dark:bg-gray-900 dark:bg-opacity-40 gap-8 p-8 lg:p-16 rounded">
                     <h2 className="text-center text-3xl">
                         Join our community
                     </h2>

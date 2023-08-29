@@ -111,12 +111,12 @@ export default function RootLayout({
 
   return (    
     <html lang="en">
-      <body className={`min-h-full text-gray-900 dark:text-gray-100 ${changa.className}`}>
+      <body className={`min-h-full text-gray-950 bg-gray-50 dark:text-gray-50 dark:bg-gray-950 ${changa.className}`}>
         <TermsOfServiceWrapper />
         <Toaster 
           toastOptions={{
             duration: 5000,
-            className: "bg-gray-900 text-gray-100 dark:bg-gray-100 dark:text-gray-900",
+            className: "bg-neutral-950 text-neutral-100 dark:bg-neutral-100 dark:text-neutral-950",
           }}
         />
         <SWRProvider>

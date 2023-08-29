@@ -5,9 +5,8 @@
  * @returns 
  */
 export function dateToHtmlInput(date = new Date()){
-    if (!date) return "";
     const d = new Date(date);
-    return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+    return `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, "0")}-${d.getDate().toString().padStart(2, "0")}`;
 }
 
 /**
@@ -44,4 +43,25 @@ export function dateToRelativeDayAndHour(_date: Date = new Date()) {
 		hours: `at ${hours}`,
 		future: date > now,
 	}
+}
+
+/**
+ * Get time from date string
+ * @param date 
+ * @returns 
+ */
+export function getTimeFromDateString(_date: Date): string {
+	const date = new Date(_date);
+	const hours = date.getHours().toString().padStart(2, '0'); // Zero-padding if necessary
+	const minutes = date.getMinutes().toString().padStart(2, '0'); // Zero-padding if necessary
+  
+	return `${hours}:${minutes}`;
+}
+
+/**
+ * Convert milliseconds to unix timestamp seconds
+ * @param milliseconds
+ */
+export function convertToUnixTimestampSeconds(milliseconds: number): number {
+	return Math.floor(milliseconds / 1000); // Convert milliseconds to seconds
 }

@@ -26,9 +26,16 @@ const appRoutes = {
     import: "#",
     /** Transfer token page */
     transfer: "#",
-    /** Create page that shows options to create token, collection & contract */
+    /** Create page that shows options to create token, event, collection & contract */
     create: "/create",
-
+    /** Create event page */
+    createEvent: "/create/event",
+    /** Create open edition event */
+    createOpenEdition: "/create/event/openEdition",
+    /** Create limited edition event */
+    createLimitedEdition: "/create/event/limitedEdition",
+    /** Create one of one edition event */
+    createOneOfOne: "/create/event/oneOfOne",
     /** Legal links */
     privacyPolicy: "#",
     termsOfService: "#"

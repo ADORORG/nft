@@ -8,7 +8,7 @@ export default function HeroButton() {
         <div className="flex gap-6 my-6">
             <Link href={appRoutes.create}>
                 <Button
-                    className="font-semibold py-3 px-8 text-2xl"
+                    className="py-3 px-6 text-xl"
                     variant="gradient"
                     rounded
                 >
@@ -17,7 +17,7 @@ export default function HeroButton() {
             </Link>     
             <Link href={appRoutes.marketplace}>
                 <Button
-                    className="font-semibold py-3 px-8 text-2xl transition duration"
+                    className="py-3 px-6 text-xl transition-all duration-900"
                     variant="gradient"
                     inversed
                     rounded

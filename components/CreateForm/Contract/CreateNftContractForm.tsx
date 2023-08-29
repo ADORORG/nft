@@ -8,7 +8,7 @@ import { toast } from "react-hot-toast"
 import { useNetwork, useWalletClient, usePublicClient } from "wagmi"
 import { fetcher, getFetcherErrorMessage } from "@/utils/network"
 import { replaceUrlParams } from "@/utils/main"
-import { InputField, Input } from "@/components/Form"
+import { InputField, Input, RangeInput } from "@/components/Form"
 import { ConnectWalletButton } from "@/components/ConnectWallet"
 import { ERC1155_BYTECODE, ERC1155_VERSION } from "@/solidity/erc1155.compiled"
 import { ERC721_BYTECODE, ERC721_VERSION } from "@/solidity/erc721.compiled"
@@ -108,8 +108,9 @@ export default function CreateNftContractForm({nftSchema}: Pick<ContractType, "n
                     royalty: contractData.royalty,
                     symbol: contractData.symbol,
                     nftSchema,
+                    nftEdition: "private",
                     ...result
-                }
+                } as const
 
                 setContractData(contractUpdate)
                 await uploadContractData(contractUpdate)
@@ -159,11 +160,8 @@ export default function CreateNftContractForm({nftSchema}: Pick<ContractType, "n
                 {/* Contract default Royalty */}
                 <div className="flex flex-col gap-3 mb-4">
                     <span>Contract Royalty ({royaltyPercent}%)</span>
-                    <Input
-                        type="range"
-                        placeholder="1000 = 10%, 500 = 5%, 100 = 1%"
-                        max={100}
-                        min={0}
+                    <RangeInput
+                        max={50}
                         step={1}
                         onChange={e => {
                             const value = Number(e.target.value)
@@ -172,12 +170,6 @@ export default function CreateNftContractForm({nftSchema}: Pick<ContractType, "n
                             setContractData({...contractData, royalty: value * 100})
                         }}
                         disabled={loading}
-                        value={royaltyPercent}
-                        autoComplete="off"
-                        className="h-4 bg-gray-300 rounded appearance-none focus:outline-none outline-none transition-all duration-700"
-                        style={{
-                            background: `linear-gradient(to right, #f43f5e 0%, #a855f7 ${royaltyPercent}%, #06b6d4 ${royaltyPercent}%, #06b6d4 100%)`
-                        }}
                     />
                 </div>
             </div>

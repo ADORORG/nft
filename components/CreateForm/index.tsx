@@ -1,7 +1,7 @@
 "use client"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { CodeBracketIcon, FolderPlusIcon, DocumentPlusIcon } from "@heroicons/react/24/outline"
+import { CodeSlash, FileEarmarkPlus, FolderPlus, UiRadiosGrid } from "react-bootstrap-icons"
 import { useAccount } from "wagmi"
 import { useAccountContract } from "@/hooks/fetch"
 import { WithoutCheckbox } from "@/components/SelectCard"
@@ -19,14 +19,20 @@ export default function RenderCreateOption() {
         {
             title: "Mint a token",
             subtitle: "Create a new token",
-            icon: <DocumentPlusIcon className="h-6 w-6 my-2" />,
+            icon: <FileEarmarkPlus className="h-6 w-6 my-2" />,
             link: appRoute.createToken,
         },
         {
             title: "Create Collection",
             subtitle: "Organize your NFTs",
-            icon: <FolderPlusIcon className="h-6 w-6 my-2" />,
+            icon: <FolderPlus className="h-6 w-6 my-2" />,
             link: appRoute.createCollection,
+        },
+        {
+            title: "Create Event",
+            subtitle: "Primary Minting Event",
+            icon: <UiRadiosGrid className="h-6 w-6 my-2" />,
+            link: appRoute.createEvent,
         },
     ]
 
@@ -34,13 +40,13 @@ export default function RenderCreateOption() {
         {
             title: "Create ERC1155",
             subtitle: "Multi NFT Contract",
-            icon: <CodeBracketIcon className="h-6 w-6 my-2" />,
+            icon: <CodeSlash className="h-6 w-6 my-2" />,
             link: appRoute.createErc1155,
         },
         {
             title: "Create ERC721",
             subtitle: "Single NFT Contract",
-            icon: <CodeBracketIcon className="h-6 w-6 my-2" />,
+            icon: <CodeSlash className="h-6 w-6 my-2" />,
             link: appRoute.createErc721,
         },
     ]

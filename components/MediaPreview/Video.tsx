@@ -1,26 +1,11 @@
 import { PlayBtn } from "react-bootstrap-icons"
-import { isHttpUrl } from "@/utils/main";
-import { IPFS_GATEWAY } from "@/lib/app.config";
 import useVideoLoader from "@/hooks/media/useVideoLoader"
 import type MediaPreviewProps from "./type"
 
 export default function VideoPreview(props: MediaPreviewProps) {
-    const { loadingComponent, clickRef, src, className, alt = "", type, previewClassName, ...otherProps } = props
+    const { loadingComponent, htmlFor, src, className, alt = "", type, previewClassName, ...otherProps } = props
 
-    let videoSrc
-
-    if (isHttpUrl(src) || src.startsWith("data:video")) {
-        // it's a url or data url, hence, we use it unmodified
-        videoSrc =  src
-    } else {
-        /** 
-         * We expect it to be IPFS hash
-         * @todo Check if it's IPFS hash 
-        */
-        videoSrc = IPFS_GATEWAY + src 
-    }
-
-    const videoLoaded = useVideoLoader(videoSrc)
+    const videoLoaded = useVideoLoader(src)
 
     return (
         <div className={`relative ${previewClassName}`}>
@@ -30,8 +15,8 @@ export default function VideoPreview(props: MediaPreviewProps) {
                 :
                 <video
                     controls
-                    src={videoSrc}
-                    className={`block w-full h-full ${className}`}
+                    src={src}
+                    className={`${className}`}
                     {...otherProps}
                 >
                     <source src={src} type={type} />
@@ -40,14 +25,14 @@ export default function VideoPreview(props: MediaPreviewProps) {
             }
             
             {
-                clickRef &&
-                <span 
-                    onClick={clickRef.click.bind(clickRef)}
+                htmlFor &&
+                <label 
+                    htmlFor={htmlFor}
                     title="Select another file"    
-                    className="cursor-pointer bg-purple-900 hover:bg-purple-950 p-2 rounded-lg text-gray-100 transition-all absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+                    className="h-8 w-8 cursor-pointer bg-purple-900 hover:bg-purple-950 p-2 rounded-lg text-gray-100 transition-all absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
                 >
-                    <PlayBtn className="h-6" />
-                </span>
+                    <PlayBtn className="h-4 w-4" />
+                </label>
                 
             }
         </div>

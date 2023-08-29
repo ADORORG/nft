@@ -31,7 +31,13 @@ const chainIcons: Record<number, React.FC<React.SVGAttributes<SVGElement>>> = {
     1666600000: HarmonyIcon,
 }
 
-export default function NetworkChainSelect() {
+interface NetworkChainSelectProps {
+    switchOnChange?: boolean,
+    onChange?: (chainId: number | string) => void,
+    className?: string,
+}
+
+export default function NetworkChainSelect(props: NetworkChainSelectProps) {
     const [chainId, setChainId] = useAtom(selectedChainId)
     const { chain: currentChain } = useNetwork()
     const { switchNetworkAsync } = useSwitchNetwork()
@@ -52,8 +58,13 @@ export default function NetworkChainSelect() {
     })
 
     const handleChainChange = async (chainId: number | string) => {
-        await switchNetworkAsync?.(chainId as number)
         setChainId(chainId)
+        if (props.switchOnChange) {
+            await switchNetworkAsync?.(chainId as number)
+        }
+        if (props.onChange) {
+            props.onChange(chainId)
+        }
     }
 
     return (
@@ -61,7 +72,7 @@ export default function NetworkChainSelect() {
             options={selectOptions}
             defaultValue={chainId}
             onChange={handleChainChange}
-            buttonClassName="w-44"
+            buttonClassName={`w-44 ${props.className}`}
         />
     )
 }

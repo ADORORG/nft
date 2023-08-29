@@ -33,7 +33,7 @@ export default function StepsToCreate() {
                 <div className="flex flex-wrap gap-8 justify-center items-center">
                 {
                     creatorSteps.map((step, index) => (
-                        <div key={step.title + index} className="flex flex-col gap-4 p-8 rounded items-center bg-gray-200 dark:bg-slate-900 dark:bg-opacity-40">
+                        <div key={step.title + index} className="flex flex-col gap-4 p-8 rounded items-center bg-gray-200 dark:bg-gray-900 dark:bg-opacity-40">
                             <div className="p-2">
                                 {step.icon}
                             </div>

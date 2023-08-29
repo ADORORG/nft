@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation"
 import { toast } from "react-hot-toast"
 import { InputField, Radio, SwitchCheckbox } from "@/components/Form"
 import { Select } from "@/components/Select"
+import DateAndTime from "@/components/DateAndTime"
 import Button from "@/components/Button"
 import InfoText from "@/components/InfoText"
 import { dateToHtmlInput, dateToRelativeDayAndHour } from "@/utils/date"
@@ -42,9 +43,6 @@ export default function AddTokenToMarket(props: TokenPageProps) {
     */
     const [processedOnchain, setProcessedOnchain] = useState(false)
     const [processedOffchain, setProcessedOffchain] = useState(false)
-    /** Date and Time used to handle orderData.endsAt */
-    const [time, setTime] = useState("")
-    const [date, setDate] = useState("")
     /**
      * Consent to approval all token if it"s a onchain listing
      */
@@ -60,25 +58,6 @@ export default function AddTokenToMarket(props: TokenPageProps) {
     const handleChange = (e: ChangeEvent<HTMLInputElement|HTMLSelectElement>) => {
         const { name, value } = e.target
         setOrderData({...orderData, [name]: value})
-    }
-
-    /** Handle time and date for auction endsAt */
-    const handleDateAndTimeChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target
-        let endsAt = orderData.endsAt
-
-        if (name === "date") {
-            endsAt = new Date(`${value} ${time}`)
-            setDate(value)
-        } else if (name === "time") {
-            setTime(value)
-            endsAt = new Date(`${date} ${value}`)
-        }
-
-        setOrderData({
-            ...orderData,
-           endsAt
-        })
     }
 
     /** Validate market order form */
@@ -614,28 +593,11 @@ export default function AddTokenToMarket(props: TokenPageProps) {
                             disabled={loading}
                         />
                     </div>
+                    <DateAndTime 
+                        onChange={newDate => setOrderData({...orderData, endsAt: newDate})}
+                        minDate={new Date()}
+                    />
 
-                    <div className="flex flex-wrap my-2">
-                        <InputField 
-                            label="End date"
-                            className="rounded"
-                            name="date"
-                            type="date"
-                            min={dateToHtmlInput()}
-                            value={date}
-                            onChange={handleDateAndTimeChange}
-                            disabled={loading}
-                        />
-                        <InputField 
-                            label="End time"
-                            className="rounded"
-                            name="time"
-                            type="time"
-                            value={time}
-                            onChange={handleDateAndTimeChange}
-                            disabled={loading}
-                        />
-                    </div>
                     <p className="py-2">
                         Auction ends: {auctionTimeLeft.days}, {auctionTimeLeft.hours}
                     </p>

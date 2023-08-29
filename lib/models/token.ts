@@ -20,6 +20,7 @@ const TokenSchema = new Schema<NftTokenType>({
     tags: String,
     views: Number,
     royalty: Number,
+    transferrable: {type: Boolean, default: true},
     xcollection: {type: Schema.Types.ObjectId, ref: xcollections, index: true}, // 'collection' is a reserved keyword in Mongoose
     contract: {type: Schema.Types.ObjectId, ref: contracts, required: true, index: true},
     owner: {type: String, ref: accounts, required: true, index: true},    

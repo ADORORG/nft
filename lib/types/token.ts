@@ -43,6 +43,8 @@ export default interface NftTokenType /* extends Partial<Document> */ {
     views?: number;
     /** Token royalty */
     royalty?: number;
+    /** Is the nft token transferrable? */
+    transferrable: boolean;
     /**
      * The collection to which this token belongs.
      * 'collection' is a reserved keyword in Mongoose, hence, 'xcollection' is used
@@ -52,9 +54,7 @@ export default interface NftTokenType /* extends Partial<Document> */ {
     contract: Types.ObjectId | ContractType;
     /** The current owner of this token */
     owner: EthereumAddress | AccountType; 
-    /**
-     * For tokens that are minted elsewhere and imported to this app
-     */
+
     createdAt?: Date;
     updatedAt?: Date;
 }

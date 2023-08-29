@@ -3,20 +3,20 @@ import VideoPreview from "./Video"
 import AudioPreview from "./Audio"
 import type MediaPreviewProps from "./type"
 
-export function MediaRenderer(props: MediaPreviewProps) {
-    const { type = "" } = props
-
+export function MediaPreview(props: MediaPreviewProps) {
+    const { type = "", ...otherProps } = props
+    
     if (type.includes("image")) {
         return (
-            <ImagePreview {...props} />
+            <ImagePreview {...otherProps} />
         )
     } else if (type.includes("video")) {
         return (
-            <VideoPreview {...props} />
+            <VideoPreview {...otherProps} />
         )
     } else if (type.includes("audio")) {
         return (
-            <AudioPreview {...props} />
+            <AudioPreview {...otherProps} />
         )
     } else {
         return null
@@ -24,7 +24,7 @@ export function MediaRenderer(props: MediaPreviewProps) {
 }
 
 export {
-    MediaRenderer as default,
+    MediaPreview as default,
     ImagePreview,
     VideoPreview,
     AudioPreview

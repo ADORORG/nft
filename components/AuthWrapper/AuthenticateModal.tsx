@@ -38,6 +38,7 @@ export default function AuthenticateModal(props: AuthenticateModalProps) {
                     <div className="my-8 space-y-3">
                         <div className="flex flex-col gap-4">
                             <Button
+                                variant="gradient"
                                 onClick={authenticate}
                                 disabled={hasPendingAction}
                                 rounded
@@ -45,6 +46,7 @@ export default function AuthenticateModal(props: AuthenticateModalProps) {
                                 Authenticate
                             </Button>
                             <Button
+                                variant="gradient"
                                 onClick={disconnect}
                                 disabled={hasPendingAction}
                                 rounded

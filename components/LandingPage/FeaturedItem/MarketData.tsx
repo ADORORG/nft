@@ -15,7 +15,7 @@ export default function FeatureItemMarketData() {
                 </span>
             </div>
 
-            <div className="lg:px-10 lg:border-l-2 text-gray-400 border-slate-500">
+            <div className="lg:px-10 lg:border-l-2 text-gray-400 border-gray-500">
                 <h3 className="text-sm font-bold py-3 tracking-tight">
                     Auction Ends
                 </h3>

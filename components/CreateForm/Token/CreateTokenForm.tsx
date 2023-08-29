@@ -4,9 +4,7 @@ import { useState, useRef } from "react"
 import { useSearchParams } from "next/navigation"
 import { useAtom } from "jotai"
 import { toast } from "react-hot-toast"
-import { useAccount, useNetwork } from "wagmi"
-import { XLg } from "react-bootstrap-icons"
-import { deepClone } from "@/utils/main"
+import { useAccount } from "wagmi"
 import {
     nftTokenImageStore,
     nftTokenMediaStore,
@@ -15,17 +13,19 @@ import {
     nftTokenDataStore,
     nftTokenAttributeStore
 } from "@/store/form"
+import { validateFile } from "@/utils/file"
 import {
     FileDropzone,
     InputField,
-    Input,
     TextArea,
-    SwitchCheckbox
+    SwitchCheckbox,
+    RangeInput
 } from "@/components/Form"
 import { Select } from "@/components/Select"
 import { ConnectWalletButton } from "@/components/ConnectWallet"
-import { ImagePreview, MediaRenderer } from "@/components/MediaPreview"
+import { ImagePreview, MediaPreview } from "@/components/MediaPreview"
 import { useAccountCollection, useAccountContract } from "@/hooks/fetch"
+import AttributeForm from "@/components/AttributeForm"
 import QuickModal from "@/components/QuickModal"
 import TagList from "@/components/TagList"
 import Button from "@/components/Button"
@@ -73,56 +73,6 @@ export default function CreateTokenForm() {
     */
     const tokenImageRef = useRef<HTMLInputElement>() as React.MutableRefObject<HTMLInputElement>
     const tokenMediaRef = useRef<HTMLInputElement>() as React.MutableRefObject<HTMLInputElement>
-
-    /**
-     * Read file data as dataURL
-     * @param file - file blob
-     * @param fileResultHandler a function that received the read result
-     */
-    const readSingleFileChange = (file: Blob, fileResultHandler: (update: ArrayBuffer | string | null) => void ) => {
-        
-        if (file && window.Worker) {
-			const fileWorker = new Worker("/file.worker.js")
-			
-			fileWorker.postMessage(file)
-			fileWorker.onmessage = (e) => {
-				fileResultHandler(e.data)
-				fileWorker.terminate()
-			}
-		} else if (file) {
-            const reader = new FileReader()
-            reader.addEventListener("load", function() {
-                fileResultHandler(reader.result)
-            }, false)
-
-            reader.readAsDataURL(file)
-        } else {
-            throw new Error("Invalid file")
-        }
-        
-    }
-
-    /**
-     * Validate a file type and size
-     * @param file File blob
-     * @param options an optional config for allowed extension and media size
-     * @returns `true` or throws if media type/size does not comply with options
-     */
-    const validateFile = (file: Blob, {ext = [], size}: {ext?: string[], size?: number}) => {
-        const fileExt = file?.name?.split(".").pop()?.toLowerCase()
-		const fileSize = file?.size
-
-        if (ext.length && (!fileExt || !ext.includes(fileExt))) {
-            throw new Error("Invalid file extension. Expected one of " + ext.join(" "))
-        }
-
-        if (size && size < fileSize) {
-            throw new Error("File size should not be more than " + size)
-        }
-
-        return true
-    }
-
     /**
      * Reset all the form field. This must be done before creating a new token
      */
@@ -131,8 +81,8 @@ export default function CreateTokenForm() {
         setNftTokenUploaded(false)
         setNftTokenData({})
         setNftTokenAttribute([{...defaultAttributes}])
-        setNftTokenImage("")
-        setNftTokenMedia("")
+        setNftTokenImage(null)
+        setNftTokenMedia(null)
     }
 
     /**
@@ -158,7 +108,7 @@ export default function CreateTokenForm() {
         try {
             if (e.target.files?.length) {
                 validateFile(e.target.files[0], {ext: allowImageExtensions})
-                readSingleFileChange(e.target.files[0], setNftTokenImage)
+                setNftTokenImage(e.target.files[0])
             }
         } catch (error: any) {
             toast.error(error.message)
@@ -173,7 +123,7 @@ export default function CreateTokenForm() {
         try {
             if (e.target.files?.length) {
                 validateFile(e.target.files[0], {ext: allowMediaExtension})
-                readSingleFileChange(e.target.files[0], setNftTokenMedia)
+                setNftTokenMedia(e.target.files[0])
                 setNftTokenData({...nftTokenData, mediaType: e.target.files[0].type})
             }
         } catch (error: any) {
@@ -181,45 +131,6 @@ export default function CreateTokenForm() {
         }
     }
 
-    /**
-     * Remove attribute from the attribute stack
-     * @param e Event handler
-     */
-    const removeAttribute = (e: React.MouseEvent<HTMLButtonElement>) => {
-		const index = (e.currentTarget as HTMLButtonElement).getAttribute("data-index") as string
-		const newAttributes = nftTokenAttribute.filter((_, i) => i !== parseInt(index))
-		setNftTokenAttribute(newAttributes)
-	}
-
-    /**
-     * Add attribute to the attribue stack
-     */
-	const addAttribute = () => {
-		let newAttributes = deepClone(nftTokenAttribute)
-		setNftTokenAttribute(newAttributes.concat([{...defaultAttributes}]))
-	}
-
-    /**
-     * Update attribute `trait_type` or `value` change
-     * @param e Event handler
-     */
-    const handleAttributeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const target = e.target as HTMLButtonElement
-        const { name, value } = target
-		const index = target.getAttribute('data-index') as string
-
-		let newAttributes = deepClone(nftTokenAttribute)
-
-		if (name === 'trait_type') {
-			newAttributes[index]['trait_type'] = value;
-		}
-
-		if (name === 'value') {
-			newAttributes[index]['value'] = value
-		}
-
-		setNftTokenAttribute(newAttributes);
-	}
 
     /**
      * Verify the required form fields for token creation and enable modal
@@ -324,23 +235,14 @@ export default function CreateTokenForm() {
                         {/* Token Royalty */}
                         <div className="flex flex-col gap-3 mb-4">
                             <span>Royalty ({royaltyPercent}%)</span>
-                            <Input
-                                type="range"
-                                placeholder="1000 = 10%, 500 = 5%, 100 = 1%"
-                                max={100}
-                                min={0}
+                            <RangeInput
+                                max={50}
                                 step={1}
                                 onChange={e => {
                                     const value = Number(e.target.value)
                                     setRoyaltyPercent(value)
                                     // set contract royalty
                                     setNftTokenData({...nftTokenData, royalty: value * 100})
-                                }}
-                                value={royaltyPercent}
-                                autoComplete="off"
-                                className="h-4 bg-gray-300 rounded appearance-none focus:outline-none outline-none transition-all duration-700"
-                                style={{
-                                    background: `linear-gradient(to right, #f43f5e 0%, #a855f7 ${royaltyPercent}%, #06b6d4 ${royaltyPercent}%, #06b6d4 100%)`
                                 }}
                             />
                         </div>
@@ -396,57 +298,11 @@ export default function CreateTokenForm() {
                         <label className="block py-4 text-sm font-medium text-gray-900 dark:text-white ">
                             Attributes
                         </label>
-
-                        <div className="flex flex-col gap-4">
-                            {
-                                nftTokenAttribute.map(({trait_type, value}, i) => (
-                                    <div className="flex flex-row items-center" key={i}>
-                                        <InputField
-                                            data-index={i}
-                                            type="text"
-                                            name="trait_type"
-                                            placeholder="trait e.g Speed"
-                                            onChange={handleAttributeChange}
-                                            value={trait_type}
-                                            autoComplete="off"
-                                            className="rounded focus:transition-all duration-400"
-                                        />
-
-                                        <InputField
-                                            data-index={i}
-                                            type="text"
-                                            name="value"
-                                            placeholder="value e.g 98"
-                                            onChange={handleAttributeChange}
-                                            value={value}
-                                            autoComplete="off"
-                                            className="rounded focus:transition-all duration-400"
-                                        />
-
-                                        {
-                                            i !== 0 && 
-                                            <Button 
-                                                variant="secondary" 
-                                                className="rounded text-sm" 
-                                                data-index={i} 
-                                                onClick={removeAttribute}
-                                            >
-                                                <XLg className="h-3 w-3" />
-                                            </Button>
-                                        }
-                                        
-                                    </div>
-                                ))
-                            }
-
-                            <div className="my-2">
-                                <Button 
-                                    variant="gradient" 
-                                    className="rounded text-sm" 
-                                    onClick={addAttribute}
-                                >Add attribute</Button>
-                            </div>   
-                        </div>
+                        
+                        <AttributeForm 
+                            attributes={nftTokenAttribute}
+                            onChange={setNftTokenAttribute}
+                        />
                     </div>
                     
                     {/* Show account nft contracts */}
@@ -530,15 +386,15 @@ export default function CreateTokenForm() {
 
                 <div className="w-full flex flex-col gap-4">
                     {/* Input media/file  */}
-                    <div>
+                    <div className="md:w-[320px] md:h-[320px] h-[250px] w-[250px]">
                         {/* token Image */}
                         <label htmlFor="nftTokenImage" className="my-4 font-medium">Image</label>
                         {
                             nftTokenImage &&
-                            <ImagePreview 
-                                src={nftTokenImage}
-                                clickRef={tokenImageRef.current}
-                                previewClassName="md:w-[320px] md:h-[320px] h-[250px] w-[250px]"
+                            <MediaPreview 
+                                file={nftTokenImage}
+                                htmlFor="nftTokenImage"
+                                previewClassName=""
                             />
                         }
                         <div className={!!nftTokenImage ? "hidden" : ""}>
@@ -554,17 +410,17 @@ export default function CreateTokenForm() {
                         </div>
                     </div>
 
-                    <div>
+                    <div className="md:h-[250px] md:w-[500px] h-[250px] w-[444px]">
                         {/* Token Media */}
                         <label htmlFor="nftTokenMedia" className="my-4 text-sm font-medium">Media (optional)</label>
                         
                         {
                             nftTokenMedia &&
-                            <MediaRenderer 
+                            <MediaPreview 
                                 type={nftTokenData?.mediaType}
-                                src={nftTokenMedia}
-                                clickRef={tokenMediaRef.current}
-                                previewClassName="md:h-[250px] md:w-[500px] h-[250px] w-[444px]"
+                                file={nftTokenMedia}
+                                htmlFor="nftTokenMedia"
+                                previewClassName=""
                             />
                         }
                         <div className={!!nftTokenMedia ? "hidden" : ""}>

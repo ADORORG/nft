@@ -14,7 +14,6 @@ export async function validateContract(document: any) {
     }
 }
 
-
 /**
  * Create a new contract
  * @param contract - The contract data to create

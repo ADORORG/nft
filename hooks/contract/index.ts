@@ -1,7 +1,7 @@
 import type ContractType from "@/lib/types/contract";
 import { useCallback } from "react"
 import { getAddress } from "viem"
-import { usePublicClient, useWalletClient } from "wagmi"
+import { usePublicClient, useWalletClient, useNetwork } from "wagmi"
 import { promiseDelay } from "@/utils/main"
 import erc20Abi from "@/abi/erc20"
 
@@ -74,5 +74,10 @@ export function useERC20Approval() {
     return {
         requestERC20ApprovalAsync
     }
+}
+
+export function useChainById(id: number) {
+    const { chains } = useNetwork()
+    return chains.find(chain => chain.id === id)
 }
 

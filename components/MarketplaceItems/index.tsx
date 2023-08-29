@@ -2,10 +2,9 @@
 import type { PopulatedMarketOrderType } from "@/lib/types/market"
 import { useRouter } from "next/navigation"
 import { useAtom } from "jotai"
-import { ArrowLeftShort, ArrowRightShort } from "react-bootstrap-icons"
 import { marketFilterStore } from "@/store/form"
 import { MarketListingCard } from "@/components/Card"
-import Button from "@/components/Button"
+import NavigationButton from "@/components/NavigationButton"
 
 interface MarketplaceItems {
     orders: PopulatedMarketOrderType[],
@@ -51,32 +50,18 @@ export default function MarketplaceItems(props: MarketplaceItems) {
                 }
             </div>
             <div className="flex flex-row gap-4 my-4 mx-4">
-                <Button
-                    className="rounded flex items-center gap-1 hover:gap-2 transition-all"
-                    variant="gradient"
+                <NavigationButton 
+                    direction="left"
+                    text="Previous Page"
                     disabled={!previousPage}
                     onClick={() => router.push(`/marketplace/${previousPage}`)}
-                    rounded
-                >
-                    <ArrowLeftShort className="h-5 w-5" />
-                    <span>
-                        Previous Page
-                    </span>
-
-                </Button>
-
-                <Button
-                    className="rounded flex items-center gap-1 hover:gap-2 transition-all"
-                    variant="gradient"
+                />
+                <NavigationButton 
+                    direction="right"
+                    text="Next Page"
                     disabled={!nextPage}
                     onClick={() => router.push(`/marketplace/${nextPage}`)}
-                    rounded
-                >
-                    <span>
-                        Next Page
-                    </span>
-                    <ArrowRightShort className="h-5 w-5" />
-                </Button>
+                />
             </div>
         </div>
     )

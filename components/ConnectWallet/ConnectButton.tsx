@@ -3,7 +3,6 @@ import { useAtom } from "jotai"
 import { showWalletConnectModal } from "./store"
 import ConnectedWalletButton from "./ConnectedButton"
 import Button from "@/components/Button"
-import { HTMLAttributes } from "react"
 
 interface ConnectWalletButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     text?: string,
@@ -23,6 +22,7 @@ export default function ConnectWalletButton(props: ConnectWalletButtonProps) {
                 rounded 
                 className={`font-semibold ${className}`}
                 onClick={() => setShowModal(true)}
+                variant="gradient"
                 disabled={showModal}
                 {...otherProps}
             >

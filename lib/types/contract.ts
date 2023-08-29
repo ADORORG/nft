@@ -1,8 +1,8 @@
 import type { Types, /* Document */ } from 'mongoose'
-import type { EthereumAddress, NftContractSchemaType } from './common'
+import type { EthereumAddress, NftContractSchemaType, NftContractEditionType } from './common'
 import type AccountType from './account';
 
-export default interface ContractType /* extends Partial<Document> */ {
+export default interface NftContractType /* extends Partial<Document> */ {
     /** Contract document _id */
     _id?: Types.ObjectId;
     /** On-chain contract address */
@@ -11,13 +11,17 @@ export default interface ContractType /* extends Partial<Document> */ {
     chainId: number;
     /** Default contract royalty */
     royalty: number;
+    /** Default Royalty Receiver Address for this nft contract*/
+    royaltyReceiver?: EthereumAddress;
     /** 
      * Contract nftSchema type. One of `erc721` and `erc1155` 
     */
     nftSchema: NftContractSchemaType;
+    /** Edition of this nft contract. Open, limited, one-of-of, private */
+    nftEdition: NftContractEditionType;
     /** Signify if the contract is imported to this app */
     imported?: boolean;
-    /** The version of our NFT contract */
+    /** The version of this NFT contract as defined by this platform */
     version: string;
     /** The account that deployed this contract */
     owner?: EthereumAddress | AccountType;
@@ -28,6 +32,6 @@ export default interface ContractType /* extends Partial<Document> */ {
     updatedAt?: Date;
 }
 
-export interface PopulatedContractType extends ContractType {
+export interface PopulatedContractType extends NftContractType {
     owner: AccountType
 }

@@ -175,8 +175,7 @@ function MintToken({contract}: CreateTokenModalProps) {
             setMinting(false)
         }
     }
-
-
+    
     return (
         <div className="my-4 flex flex-col">
             <Button 
@@ -228,10 +227,10 @@ function UploadTokenData() {
         }
 
         // append image
-        formData.append("image", nftTokenImage)
+        formData.append("image", nftTokenImage as string)
 
         if (nftTokenMedia) {
-            formData.append("media", nftTokenMedia)
+            formData.append("media", nftTokenMedia as string)
         }
 
         return formData
@@ -295,7 +294,7 @@ function AddTokenToMarket({contract}: CreateTokenModalProps) {
                         replaceUrlParams(appRoutes.viewToken, {
                             chainId: contract.chainId.toString(),
                             contractAddress: contract.contractAddress,
-                            tokenId: nftTokenData?.tokenId.toString() || ""
+                            tokenId: nftTokenData?.tokenId?.toString() || ""
                         })
                     }
                 >

@@ -10,6 +10,7 @@ import {
     collectionCreatedStore
 } from "@/store/form"
 import { onlyAlphaNumeric } from "@/lib/utils/main"
+import { readSingleFileAsDataURL, validateFile } from "@/utils/file"
 import { collectionCategories } from "@/lib/app.config"
 import { useAuthStatus } from "@/hooks/account"
 import {
@@ -19,7 +20,7 @@ import {
 } from "@/components/Form"
 import { Select } from "@/components/Select"
 import { ConnectWalletButton } from "@/components/ConnectWallet"
-import { ImagePreview } from "@/components/MediaPreview"
+import { MediaPreview } from "@/components/MediaPreview"
 import { fetcher, getFetcherErrorMessage } from "@/utils/network"
 import TagList from "@/components/TagList"
 import Button from "@/components/Button"
@@ -32,6 +33,10 @@ export default function CreateCollectionForm() {
     const socialMediaFields = ["discord", "twitter"] as const
 	const requiredFormFields = ["name", "description", "category", "tags"] as const
 	const otherFormFields = ["externalUrl"] as const
+    /** Allowed Image type of token  */
+    const allowImageExtensions = ["jpg", "jpeg", "png", "gif", "webp", "svg"]
+    /** Optional media extension of token */
+	const allowMediaExtension = [...allowImageExtensions, "mp3", "3gp", "mp4", "webm", "mov"]
 
     const [isLoading, setIsLoading] = useState(false)
     const [isInvalidCollectionSlug, setIsInvalidCollectionSlug] = useState<boolean | undefined>()
@@ -40,9 +45,6 @@ export default function CreateCollectionForm() {
     const [collectionData, setCollectionData] = useAtom(collectionDataStore)
     const [collectionCreated, setCollectionCreated] = useAtom(collectionCreatedStore)
     const [collectionSlug, setCollectionSlug] = useState('')
-
-    const imageRef = useRef<HTMLInputElement>() as React.MutableRefObject<HTMLInputElement>
-    const bannerRef = useRef<HTMLInputElement>() as React.MutableRefObject<HTMLInputElement>
 
    /**
     * Check that collection slug (url) is not in use by another collection 
@@ -81,15 +83,6 @@ export default function CreateCollectionForm() {
         setCollectionData({...collectionData, [name]: value})
 	}
 
-    const readSingleFileChange = (file: Blob, fileResultHandler: (update: ArrayBuffer | string | null) => void ) => {
-        const reader = new FileReader();
-		reader.addEventListener("load", function() {
-			fileResultHandler(reader.result);
-		}, false)
-
-		if (file) reader.readAsDataURL(file);
-    }
-
     const handleSubmit = () => {
 		const noEmptyFields = requiredFormFields.every(field => collectionData && !!collectionData[field])
 
@@ -111,12 +104,12 @@ export default function CreateCollectionForm() {
             setIsLoading(true)
             const formData = new FormData()
             // append image and banner
-            formData.append("image", imageFile)
-            formData.append("banner", bannerFile)
+            formData.append("image", imageFile as string)
+            formData.append("banner", bannerFile as string)
 
             for (const field of requiredFormFields) {
                 if (collectionData && field in collectionData && collectionData[field]) {
-                    formData.append(field,  collectionData[field])
+                    formData.append(field,  collectionData[field] as string)
                 }
             }
 
@@ -149,8 +142,8 @@ export default function CreateCollectionForm() {
     }
 
     const resetForm = () => {
-		setImageFile("")
-		setBannerFile("")
+		setImageFile(null)
+		setBannerFile(null)
 		setCollectionData({})
         setCollectionCreated(false)
         setCollectionSlug("")
@@ -284,55 +277,59 @@ export default function CreateCollectionForm() {
                 </div>
                 <div className="w-full flex flex-col gap-4">
                     {/* Input media/file  */}
-                    <div>
+                    <div className="md:w-[320px] md:h-[320px] h-[250px] w-[250px]">
                         {/* Collection Image */}
                         <h4 className="my-4 font-medium">Image</h4>
                         {
                             imageFile &&
-                            <ImagePreview 
-                                src={imageFile}
-                                clickRef={imageRef.current}
-                                previewClassName="md:w-[320px] md:h-[320px] h-[250px] w-[250px]"
+                            <MediaPreview 
+                                type="image/*"
+                                file={imageFile}
+                                htmlFor="collectionImage"
+                                previewClassName=""
                             />
                         }
                         <div className={!!imageFile ? "hidden" : ""}>
                             <FileDropzone
-                                ref={imageRef}
+                                id="collectionImage"
                                 label="Collection Image"
-                                fileExtensionText="SVG, PNG, GIF, JPG (Max: 10MB)"
-                                accept=".jpg, .png, .svg, .gif"
+                                fileExtensionText={allowImageExtensions.join(", ")}
+                                accept={allowImageExtensions.map(x => "." + x).join(", ")}
                                 labelClassName="hover:transition-all duration-700"
                                 onChange={(event) => {
                                     if (event.target.files?.length) {
-                                        readSingleFileChange(event.target.files[0], setImageFile)
+                                        validateFile(event.target.files[0], {ext: allowImageExtensions})
+                                        setImageFile(event.target.files[0])
                                     }
                                 }}
                             />
                         </div>
                     </div>
 
-                    <div>
+                    <div className="md:h-[250px] md:w-[500px] h-[250px] w-[444px]">
                         {/* Collection Banner */}
                         <h4 className="my-4 text-sm font-medium">Banner</h4>
                         
                         {
                             bannerFile &&
-                            <ImagePreview 
-                                src={bannerFile}
-                                clickRef={bannerRef.current}
-                                previewClassName="md:h-[250px] md:w-[500px] h-[250px] w-[444px]"
+                            <MediaPreview
+                                type="image/*"
+                                file={bannerFile}
+                                htmlFor="collectionBanner"
+                                previewClassName=""
                             />
                         }
                         <div className={!!bannerFile ? "hidden" : ""}>
                             <FileDropzone
-                                ref={bannerRef}
+                                id="collectionBanner"     
                                 label="Collection Banner"
-                                fileExtensionText="SVG, PNG, GIF, JPG, MP4, 3GP (Max: 10MB)"
-                                accept=".jpg, .png, .svg, .gif, .mp4, .3gp"
+                                fileExtensionText={allowMediaExtension.join(", ")}
+                                accept={allowMediaExtension.map(x => "." + x).join(", ")}
                                 labelClassName="hover:transition-all duration-700"
                                 onChange={(event) => {
                                     if (event.target.files?.length) {
-                                        readSingleFileChange(event.target.files[0], setBannerFile)
+                                        validateFile(event.target.files[0], {ext: allowMediaExtension})
+                                        setBannerFile(event.target.files[0])
                                     }
                                 }}
                             />

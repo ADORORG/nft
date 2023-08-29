@@ -78,8 +78,8 @@ export const dbCollections = {
   currencies: 'nft_currencies',
   /** Nft Contracts deployed on the blockchain, ERC721 and ERC1155 */
   contracts: 'nft_contracts',
-  /** Nft contract (pre)sale events conducted on the platform, related to contracts and extends contracts (nft_contracts) */
-  nftContractEvents: 'nft_sale_contract_events',
+  /** Nft contract (pre)sale events conducted on the platform, related to contracts */
+  nftContractSaleEvents: 'nft_contract_sale_events',
   /** Authentication for performing actions such as email verification */
   authentication: 'nft_authentication',
 } as const
