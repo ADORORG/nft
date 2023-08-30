@@ -12,7 +12,7 @@ const { nftContractSaleEvents, collections: xcollections, contracts, accounts } 
 
 const NftContractSaleEventSchema = new Schema<NftContractSaleEventType>({
     feeRecipient: {type: String, required: true}, // Ethereum address
-    maxPurchasePerWallet: {type: Number, default: 0},
+    maxMintPerWallet: {type: Number, default: 0},
     start: {type: Number, required: true}, // Unix timestamp seconds
     end: {type: Number, required: true}, // Unix timestamp seconds
     price: {type: Number, required: true}, // in wei

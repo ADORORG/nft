@@ -8,7 +8,7 @@ interface SelectWithIconInterface {
     }[],
     defaultValue: string | number,
     buttonClassName?: string,
-    onChange: (value: string | number) => void
+    onChange: (value: string) => void
 }
 
 export default function SelectWithIcon(props: SelectWithIconInterface) {
@@ -20,7 +20,7 @@ export default function SelectWithIcon(props: SelectWithIconInterface) {
         setIsOpen(!isOpen)
     }
 
-    const handleSelect = (value: string | number) => {
+    const handleSelect = (value: string) => {
         onChange(value)
         setIsOpen(false)
     }
@@ -79,7 +79,7 @@ export default function SelectWithIcon(props: SelectWithIconInterface) {
                                         key={value + index.toString()}
                                         className="min-w-fit">
                                         <button
-                                            onClick={() => handleSelect(value)} 
+                                            onClick={() => handleSelect(value.toString())} 
                                             type="button" 
                                             className={`flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white ${buttonClassName}`}>
 

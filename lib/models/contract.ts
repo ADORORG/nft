@@ -7,11 +7,11 @@ const { contracts, accounts } = dbCollections;
 
 const ContractSchema = new Schema<ContractType>({
     contractAddress: {type: String, required: true, index: true},
-    chainId: {type: Number, required: true},
+    chainId: {type: Number, required: true, min: 0},
     royalty: {type: Number, default: 0},
     royaltyReceiver: {type: String},
     nftSchema: {type: String, required: true, enum: NFT_CONTRACT_SCHEMA, lowercase: true},
-    nftEdition: {type: String, required: true, enum: NFT_CONTRACT_EDITION, lowercase: true}, 
+    nftEdition: {type: String, required: true, enum: NFT_CONTRACT_EDITION, default: 'private', lowercase: true}, 
     // only require if not an imported contract
     version: {type: String, required: function() { return !(this as any).imported }},
     imported: {type: Boolean, default: false},

@@ -1,6 +1,6 @@
 "use client"
 import Link from "next/link"
-import { useState, useRef } from "react"
+import { useState } from "react"
 import { useAtom } from "jotai"
 import { toast } from "react-hot-toast"
 import {
@@ -13,6 +13,7 @@ import { onlyAlphaNumeric } from "@/lib/utils/main"
 import { readSingleFileAsDataURL, validateFile } from "@/utils/file"
 import { collectionCategories } from "@/lib/app.config"
 import { useAuthStatus } from "@/hooks/account"
+import { useMediaObjectUrl } from "@/hooks/media/useObjectUrl"
 import {
     FileDropzone,
     InputField,
@@ -45,7 +46,8 @@ export default function CreateCollectionForm() {
     const [collectionData, setCollectionData] = useAtom(collectionDataStore)
     const [collectionCreated, setCollectionCreated] = useAtom(collectionCreatedStore)
     const [collectionSlug, setCollectionSlug] = useState('')
-
+    const tempImageObjectUrl = useMediaObjectUrl(imageFile)
+    const tempBannerObjectUrl = useMediaObjectUrl(bannerFile)
    /**
     * Check that collection slug (url) is not in use by another collection 
     * @param slug - collection slug
@@ -104,8 +106,13 @@ export default function CreateCollectionForm() {
             setIsLoading(true)
             const formData = new FormData()
             // append image and banner
-            formData.append("image", imageFile as string)
-            formData.append("banner", bannerFile as string)
+            const [imageDataURL, bannerDataURL] = await Promise.all([
+                new Promise<string>(resolve => readSingleFileAsDataURL(imageFile as Blob, resolve as any)),
+                new Promise<string>(resolve => readSingleFileAsDataURL(bannerFile as Blob, resolve as any))
+            ])
+            
+            formData.append("image", imageDataURL)
+            formData.append("banner", bannerDataURL)
 
             for (const field of requiredFormFields) {
                 if (collectionData && field in collectionData && collectionData[field]) {
@@ -284,9 +291,9 @@ export default function CreateCollectionForm() {
                             imageFile &&
                             <MediaPreview 
                                 type="image/*"
-                                file={imageFile}
                                 htmlFor="collectionImage"
                                 previewClassName=""
+                                src={tempImageObjectUrl}
                             />
                         }
                         <div className={!!imageFile ? "hidden" : ""}>
@@ -314,9 +321,9 @@ export default function CreateCollectionForm() {
                             bannerFile &&
                             <MediaPreview
                                 type="image/*"
-                                file={bannerFile}
                                 htmlFor="collectionBanner"
                                 previewClassName=""
+                                src={tempBannerObjectUrl}
                             />
                         }
                         <div className={!!bannerFile ? "hidden" : ""}>

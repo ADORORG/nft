@@ -34,6 +34,5 @@ export async function createNftContractEvent(contract: NftContractEventType) {
     return new NftContractEventModel(
         contract
     ).save()
-    /** How do we annotate a discriminator return type from .save()? */
-    .then( (newContractSaleEvent: any) => newContractSaleEvent.populate(populate))
+    .then( (newContractSaleEvent) => newContractSaleEvent.populate(populate))
 }

@@ -1,6 +1,6 @@
 "use client"
 import Link from "next/link"
-import { useState, useRef } from "react"
+import { useState } from "react"
 import { useSearchParams } from "next/navigation"
 import { useAtom } from "jotai"
 import { toast } from "react-hot-toast"
@@ -14,6 +14,7 @@ import {
     nftTokenAttributeStore
 } from "@/store/form"
 import { validateFile } from "@/utils/file"
+import { useMediaObjectUrl } from "@/hooks/media/useObjectUrl"
 import {
     FileDropzone,
     InputField,
@@ -23,7 +24,7 @@ import {
 } from "@/components/Form"
 import { Select } from "@/components/Select"
 import { ConnectWalletButton } from "@/components/ConnectWallet"
-import { ImagePreview, MediaPreview } from "@/components/MediaPreview"
+import { MediaPreview } from "@/components/MediaPreview"
 import { useAccountCollection, useAccountContract } from "@/hooks/fetch"
 import AttributeForm from "@/components/AttributeForm"
 import QuickModal from "@/components/QuickModal"
@@ -66,13 +67,9 @@ export default function CreateTokenForm() {
     /** Modal for minting and uploading token data */
     const [showModal, setShowModal] = useState(false)
     const [royaltyPercent, setRoyaltyPercent] = useState(10)
+    const tempImageObjectUrl = useMediaObjectUrl(nftTokenImage)
+    const tempMediaObjectUrl = useMediaObjectUrl(nftTokenMedia)
 
-    /** 
-     * Ref for image and media, passed to media preview so the image/media could be replaced right from the preview 
-     * @todo use htmlFor (instead of ref hook) attribute to trigger media/image reselect
-    */
-    const tokenImageRef = useRef<HTMLInputElement>() as React.MutableRefObject<HTMLInputElement>
-    const tokenMediaRef = useRef<HTMLInputElement>() as React.MutableRefObject<HTMLInputElement>
     /**
      * Reset all the form field. This must be done before creating a new token
      */
@@ -392,15 +389,15 @@ export default function CreateTokenForm() {
                         {
                             nftTokenImage &&
                             <MediaPreview 
-                                file={nftTokenImage}
+                                type="image/*"
                                 htmlFor="nftTokenImage"
                                 previewClassName=""
+                                src={tempImageObjectUrl}
                             />
                         }
                         <div className={!!nftTokenImage ? "hidden" : ""}>
                             <FileDropzone
                                 id="nftTokenImage"
-                                ref={tokenImageRef}
                                 label="Token Image"
                                 fileExtensionText={allowImageExtensions.join(", ")}
                                 accept={allowImageExtensions.map(x => "." + x).join(", ")}
@@ -418,15 +415,14 @@ export default function CreateTokenForm() {
                             nftTokenMedia &&
                             <MediaPreview 
                                 type={nftTokenData?.mediaType}
-                                file={nftTokenMedia}
                                 htmlFor="nftTokenMedia"
                                 previewClassName=""
+                                src={tempMediaObjectUrl}
                             />
                         }
                         <div className={!!nftTokenMedia ? "hidden" : ""}>
                             <FileDropzone
                                 id="nftTokenMedia"
-                                ref={tokenMediaRef}
                                 label="Token Media"
                                 fileExtensionText={allowMediaExtension.join(", ")}
                                 accept={allowMediaExtension.map(x => "." + x).join(", ")}

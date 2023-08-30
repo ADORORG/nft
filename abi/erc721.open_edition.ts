@@ -36,7 +36,7 @@ const erc721OpenEditionAbi = [
 					},
 					{
 						"internalType": "uint256",
-						"name": "maxPurchase",
+						"name": "maxMintPerWallet",
 						"type": "uint256"
 					},
 					{
@@ -308,7 +308,7 @@ const erc721OpenEditionAbi = [
 			},
 			{
 				"internalType": "uint256",
-				"name": "maxPurchase",
+				"name": "maxMintPerWallet",
 				"type": "uint256"
 			},
 			{
@@ -628,7 +628,7 @@ const erc721OpenEditionAbi = [
 					},
 					{
 						"internalType": "uint256",
-						"name": "maxPurchase",
+						"name": "maxMintPerWallet",
 						"type": "uint256"
 					},
 					{
@@ -658,6 +658,24 @@ const erc721OpenEditionAbi = [
 			}
 		],
 		"name": "setConfiguration",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "royaltyReceiver_",
+				"type": "address"
+			},
+			{
+				"internalType": "uint96",
+				"name": "defaultRoyalty_",
+				"type": "uint96"
+			}
+		],
+		"name": "setDefaultRoyalty",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"

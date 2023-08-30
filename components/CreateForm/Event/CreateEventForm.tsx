@@ -5,10 +5,11 @@ import {
     nftSaleEventCreatedStore,
     nftEventContractDataStore,
     nftEventContractMediaStore,
-    nftEventContractDeployedStore,
+    // nftEventContractDeployedStore,
 } from "@/store/form"
 import { useAtom } from "jotai"
 import { useRouter } from "next/navigation"
+import { useMediaObjectUrl } from "@/hooks/media/useObjectUrl"
 import { toast } from "react-hot-toast"
 import QuickModal from "@/components/QuickModal"
 import NavigationButton from "@/components/NavigationButton"
@@ -39,7 +40,7 @@ export default function CreateEventForm({nftEdition}: CreateEventFormProps) {
     /** Media file object for this event */
     const [nftEventMedia, setNftEventMedia] = useAtom(nftEventContractMediaStore)
     /** Temporary object URL to the selected media */
-    const [tempMediaObjectUrl, setTempMediaObjectUrl] = useState("")
+    const tempMediaObjectUrl = useMediaObjectUrl(nftEventMedia)
     const [showCreateModal, setShowCreateModal] = useState(false)
 
     const confirmNavigateAway = () => {
@@ -57,30 +58,6 @@ export default function CreateEventForm({nftEdition}: CreateEventFormProps) {
         })
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [nftEdition])
-
-    useEffect(() => {
-        // Revoke the previous objectURL
-        if (tempMediaObjectUrl) {
-            URL.revokeObjectURL(tempMediaObjectUrl)
-        }
-
-        if (nftEventMedia instanceof File) {
-            // create a new objectURL
-            setTempMediaObjectUrl(URL.createObjectURL(nftEventMedia))
-        }
-        /**
-         * Cleanup the temporary object URL when the component unmount.
-         * This does not depend on 'tempMediaObjectUrl' intentionally.
-         */
-        return () => {
-            // revoke the previous objectURL
-            if (tempMediaObjectUrl) {
-                URL.revokeObjectURL(tempMediaObjectUrl)
-            }
-        }
-        // Only run this effect when the media file object changes
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [nftEventMedia])
 
     useEffect(() => {
         // Prevents the browser from immediately leaving the page
@@ -104,7 +81,6 @@ export default function CreateEventForm({nftEdition}: CreateEventFormProps) {
         setNftEventContractData({})
         setNftSaleEventData({})
         setNftEventMedia(null)
-        setTempMediaObjectUrl("")
     }
 
     const handleNextScreen = () => {
@@ -154,6 +130,8 @@ export default function CreateEventForm({nftEdition}: CreateEventFormProps) {
             if (nftSaleEventData.start >= nftSaleEventData.end) {
                 return false
             }
+        } else {
+            return false
         }
 
 
@@ -174,9 +152,6 @@ export default function CreateEventForm({nftEdition}: CreateEventFormProps) {
 
     const showCreateEventModal = () => {
         try {
-            toast.loading("Creating event...", {
-                position: "top-center"
-            })
             setShowCreateModal(true)
         } catch (error: any) {
             toast.error(error.message)

@@ -39,6 +39,8 @@ const CardList = () => {
           supply: 1,
           contract: {
             label: "some contract",
+            symbol: "SOME",
+            nftEdition: "open_edition",
             contractAddress: "0x",
             chainId: 5,
             nftSchema: "erc721",

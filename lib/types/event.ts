@@ -12,11 +12,11 @@ export default interface NftContractSaleEventType {
     /** Maximum allowed purchase per wallet for this sale event */
     maxMintPerWallet: number;
     /** Start time of this sale event in unix timestamp seconds */
-    start: number; // Unix timestamp seconds
-    /** End time of this sale event in unix timestamp seconds */
-    end: number; // Unix timestamp seconds
-    /** Price of each nft token in this sale event in wei */
-    price: number; // in wei
+    start: number;
+    /** End time of this sale event in unix timestamp milliseconds */
+    end: number;
+    /** Price of each nft token in this sale event in eth */
+    price: number;
     /** Total supply of nft tokens in this sale event. Unlimited for Open Edition */
     supply: number;
     /** Total nft tokens minted so far in this sale event */
@@ -50,9 +50,9 @@ export default interface NftContractSaleEventType {
     /** Token attribute */
     attributes?: AttributeType[];
     /** Event Media. It could be an image/audio/video */
-    media?: string;
+    media: string;
     /** The type of media content. Examples video/mp4, image/png */
-    mediaType?: string;
+    mediaType: string;
      /** The smart contract for this sale event.
       * It handles minting and fee payment */
     contract: Types.ObjectId | ContractType;

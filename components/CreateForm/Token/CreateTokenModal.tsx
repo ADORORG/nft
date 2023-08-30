@@ -15,6 +15,7 @@ import {
 } from "@/store/form"
 import { fetcher, getFetcherErrorMessage } from "@/utils/network"
 import { replaceUrlParams } from "@/utils/main"
+import { readSingleFileAsDataURL } from "@/utils/file"
 import { useContractChain } from "@/hooks/contract"
 import Stepper from "@/components/Stepper"
 import Button from "@/components/Button"
@@ -200,7 +201,7 @@ function UploadTokenData() {
     const [nftTokenData] = useAtom(nftTokenDataStore)
     const [nftTokenAttribute] = useAtom(nftTokenAttributeStore)
 
-    const tokenDataToFormData = () => {
+    const tokenDataToFormData = async () => {
         /** Stack of form fields */
         const requiredFormFields = ["name", "description", "xcollection", "contract", "tokenId"] as const
         const otherFormFields = ["supply", "royalty", "tags","backgroundColor", "redeemable", "redeemableContent", "externalUrl", "mediaType"] as const
@@ -226,11 +227,16 @@ function UploadTokenData() {
             formData.append("attributes", JSON.stringify(nftTokenAttribute))
         }
 
+        const [imageDataURL, bannerDataURL] = await Promise.all([
+            new Promise<string>(resolve => readSingleFileAsDataURL(nftTokenImage as Blob, resolve as any)),
+            nftTokenMedia ? new Promise<string>(resolve => readSingleFileAsDataURL(nftTokenMedia as Blob, resolve as any)) : ""
+        ])
+
         // append image
-        formData.append("image", nftTokenImage as string)
+        formData.append("image", imageDataURL)
 
         if (nftTokenMedia) {
-            formData.append("media", nftTokenMedia as string)
+            formData.append("media", bannerDataURL)
         }
 
         return formData
@@ -240,7 +246,7 @@ function UploadTokenData() {
         try {
             setUploading(true)
             // upload
-            const formData = tokenDataToFormData()
+            const formData = await tokenDataToFormData()
             await fetcher(apiRoutes.createToken, {
                 method: "POST",
                 body: formData

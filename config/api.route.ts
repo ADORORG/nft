@@ -13,7 +13,7 @@ export function getNftContractBaseURI(chainId: number) {
      * contractAddress = '0x'
      * uri = 'https://api.adors.org/contract/5/0x'
      */
-    return `https://api.adors.org/contract/${chainId}/`
+    return `https://nft.adors.org/contract/${chainId}/`
 }
 
 /** Backend api routes */
@@ -24,6 +24,8 @@ const apiRoutes = {
     createContract: "/api/create/contract",
     /** Create a new token */
     createToken: "/api/create/token",
+    /** Create primary sale event */
+    createEvent: "/api/create/event",
     /** Create market order */
     createMarketOrder: "/api/create/market",
     /** Create market auction bid */

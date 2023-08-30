@@ -43,8 +43,8 @@ export default interface NftTokenType /* extends Partial<Document> */ {
     views?: number;
     /** Token royalty */
     royalty?: number;
-    /** Is the nft token transferrable? */
-    transferrable: boolean;
+    /** Is the nft token transferrable? Default to true */
+    transferrable?: boolean;
     /**
      * The collection to which this token belongs.
      * 'collection' is a reserved keyword in Mongoose, hence, 'xcollection' is used

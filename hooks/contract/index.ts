@@ -5,7 +5,7 @@ import { usePublicClient, useWalletClient, useNetwork } from "wagmi"
 import { promiseDelay } from "@/utils/main"
 import erc20Abi from "@/abi/erc20"
 
-export function useContractChain(contract: ContractType) {
+export function useContractChain(contract: Pick<ContractType, "chainId">) {
     const {data: walletClient} = useWalletClient()
     return {
         ensureContractChainAsync: useCallback( async () => {

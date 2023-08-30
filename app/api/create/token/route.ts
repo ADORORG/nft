@@ -30,8 +30,7 @@ async function createNewToken(request: NextRequest, _: any, { user }: {user: Acc
     }
 
     /** 
-     * Ensure that image is a dataURI
-     * @todo Implement a more strict check for media dataURI  
+     * @todo Convert media to stream and upload to decentralized storage 
     */
     if (
         (!data.image && !data.image.startsWith('data:image'))
