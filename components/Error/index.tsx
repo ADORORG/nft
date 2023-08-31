@@ -17,11 +17,11 @@ export default function ErrorPage(props: ErrorPageProp) {
 
     return (
         <div className="min-h-screen bg-white dark:bg-gray-950 flex flex-col items-center justify-center">
-            <h1 className="text-3xl pb-6 text-gray-900 dark:text-white">Something went wrong!</h1>
+            <h1 className="text-lg pb-6 text-gray-900 dark:text-white">Something went wrong!</h1>
             {/* <p className="text-xl text-gray-600">Oops! Page not found.</p> */}
 
             <Button
-                className="px-4 py-2 text-xl"
+                className="px-4 py-2"
                 variant="secondary"
                 onClick={reset}
                 rounded

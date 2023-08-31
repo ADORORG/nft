@@ -21,9 +21,9 @@ export default function Button({
     ...props}: ButtonProps) {
     
     const variants: {[key in ButtonVariants]: string} = {
-        primary: "bg-primary-900 hover:bg-opacity-90 text-white",
-        secondary: "bg-secondary-900 hover:bg-opacity-90 text-white",
-        tertiary: "bg-tertiary-900 hover:bg-opacity-90 text-white",
+        primary: "bg-primary-900 hover:opacity-90 text-white",
+        secondary: "bg-secondary-900 hover:opacity-90 text-white",
+        tertiary: "bg-tertiary-900 hover:opacity-90 text-white",
         gradient: "bg-gradient-to-r from-primary-900 via-secondary-900 to-tertiary-900 text-white"
     }
 

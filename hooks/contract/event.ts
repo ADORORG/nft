@@ -1,4 +1,5 @@
 import type NftContractSaleEventType from "@/lib/types/event"
+import type { OnchainMintResponse } from "@/lib/types/common"
 import { useCallback } from "react"
 import { usePublicClient, useWalletClient } from "wagmi"
 import { parseUnits, getAddress, decodeEventLog } from "viem"
@@ -79,30 +80,47 @@ export function useOpenEditionSaleEvent() {
      * @param receiverAddress The address to receive the minted nft
      * @param totalAmount The total amount to pay for the minting
      * @param quantity The quantity to mint
-     * @returns The mint transaction hash
+     * @returns An array of tokenIds, to address and quantity
     */
     const mintBatchOpenEdition = useCallback(async (
         {
             contractAddress,
             receiverAddress,
             totalAmount,
-            quantity
+            quantity,
+            contractVersion
         }: {
+            /** The contract address to mint on */
             contractAddress: string,
+            /** The address to receive the minted nft */
             receiverAddress: string,
+            /** The total amount to pay for the minting in ETH (not Wei) */
             totalAmount: number,
-            quantity: number
+            /** The quantity to mint */
+            quantity: number,
+            /** The version of the contract */
+            contractVersion: string
         }
     ) => {
+        // Convert totalAmount to wei
+        const valueInWei = parseUnits(totalAmount.toString(), 18)
+        // Ensure that the account have enough ETH balance to pay for the minting
+        const balance = await publicClient.getBalance({
+            address: getAddress(session?.user.address as string)
+        })
 
-        const abiByVersion = erc721OpenEditionAbiMap[1]
+        if (balance < valueInWei) {
+            throw new Error("Not enough balance to mint")
+        }
+
+        const abiByVersion = erc721OpenEditionAbiMap[contractVersion as keyof typeof erc721OpenEditionAbiMap]
 
         const writeContractRequest = await publicClient?.simulateContract({
             account: getAddress(session?.user.address as string),
             abi: abiByVersion,
             address: getAddress(contractAddress),
             functionName: "batchMint",
-            // Fee for minting nft. Conver to wei
+            // cost for minting nft. Convert to wei
             value: parseUnits(totalAmount.toString(), 18),
             args: [
                 getAddress(receiverAddress),
@@ -112,11 +130,27 @@ export function useOpenEditionSaleEvent() {
 
         const minTxHash = await walletClient?.writeContract(writeContractRequest?.request)
         const txReceipt = await publicClient.waitForTransactionReceipt({hash: minTxHash as any})
-        console.log("txReceipt", txReceipt)
 
-        return {
-            minTxHash,
+        const mintData = []
+
+        for (const log of txReceipt.logs) {
+            const decodedLogs = decodeEventLog({
+                abi: abiByVersion,
+                data: log.data,
+                topics: log.topics
+            })
+
+            // On successful transaction, the logs will contain the tokenId and to (receiver address)
+            const thisLog = {
+                to: "to" in decodedLogs.args ? decodedLogs.args.to : "",
+                tokenId: "tokenId" in decodedLogs.args ? decodedLogs.args.tokenId.toString() : "",
+                quantity: 1
+            } as OnchainMintResponse
+
+            mintData.push(thisLog)
         }
+
+        return mintData
 
     }, [publicClient, walletClient, session?.user.address])
 

@@ -1,27 +1,42 @@
 import mongooseConnectPromise from '@/wrapper/mongoose_connect'
 import { Types } from 'mongoose'
 import { CustomRequestError } from '@/lib/error/request'
-import { validateContract, createContract, getContractById, createNftContractEvent, validateNftContractEvent } from '@/lib/handlers'
+import { validateContract, createContract, getContractById, createNftContractEvent, validateNftContractEvent, getCurrencyByQuery } from '@/lib/handlers'
 import { withRequestError, withSession } from '@/wrapper'
 import { dataUrlToReadableStream } from '@/lib/utils/file'
 import { uploadMediaToIPFS } from '@/lib/utils/pinata'
-
+import { zeroAddress } from '@/config/addresses'
 import { type NextRequest, NextResponse } from 'next/server'
 import type AccountType from '@/lib/types/account'
 import type NftContractSaleEventType from '@/lib/types/event'
-import type ContractType from '@/_cron/src/lib/types/contract'
+import type ContractType from '@/lib/types/contract'
 
 async function createNewEvent(request: NextRequest, _: any, { user }: {user: AccountType}) {
     const body = await request.json()
     // We expect Contract and Event data to be in the body
     let { contract, event }: {contract: ContractType, event: NftContractSaleEventType} = body
 
-    event.owner = user.address
-
     // Connect to mongoose
     await mongooseConnectPromise
-    let isNewContract = false
 
+    /**
+     * We do not provide an option to set the event currency on the frontend.
+     * We are manually fetching the default event currency using the event
+     * blockchain network default coin.
+    */
+    const currency = await getCurrencyByQuery({
+        address: zeroAddress,// use Zero address to  default currency
+        chainId: contract.chainId
+    })
+
+    if (!currency) {
+        throw new CustomRequestError('The blockchain currency needs to be created first.', 400)
+    }
+
+    event.owner = user.address
+    event.currency = currency
+
+    let isNewContract = false
     // If _id is in contract, we are using existing contract to create event
     if (contract._id) {
         // fetch the contract
@@ -54,16 +69,14 @@ async function createNewEvent(request: NextRequest, _: any, { user }: {user: Acc
 
      // validate the event
     const isValidEvent = await validateNftContractEvent(event)
-     if (!isValidEvent) {
-         throw new CustomRequestError('Event data is invalid', 400)
-     }
-
-    // Upload media to ipfs
+    if (!isValidEvent) {
+        throw new CustomRequestError('Event data is invalid', 400)
+    }
 
     /** 
+     * Upload media to ipfs
      * @todo Convert media to stream and upload to decentralized storage 
     */
-
     // Convert dataURI to readable stream
     const mediaId = `${contract.contractAddress}#media`
     const mediaStream = dataUrlToReadableStream(event.media, mediaId)

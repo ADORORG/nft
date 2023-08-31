@@ -1,6 +1,6 @@
 import { Schema, model, models, type Model } from 'mongoose';
 import { dbCollections } from '../app.config';
-import { NFT_CONTRACT_EDITION } from '../types/common'
+import { NFT_CONTRACT_EDITION, MARKET_SALE_TYPES } from '../types/common'
 /** 
  * Contract model is the base parent for this discriminator model.
  * This is the model for NFT Contract Sale Events where buyer pay to mint NFTs.
@@ -8,7 +8,7 @@ import { NFT_CONTRACT_EDITION } from '../types/common'
 */
 import type NftContractSaleEventType from '../types/event';
 
-const { nftContractSaleEvents, collections: xcollections, contracts, accounts } = dbCollections;
+const { nftContractSaleEvents, currencies, collections: xcollections, contracts, accounts } = dbCollections;
 
 const NftContractSaleEventSchema = new Schema<NftContractSaleEventType>({
     feeRecipient: {type: String, required: true}, // Ethereum address
@@ -18,7 +18,7 @@ const NftContractSaleEventSchema = new Schema<NftContractSaleEventType>({
     price: {type: Number, required: true}, // in wei
     supply: {type: Number, default: 0},
     supplyMinted: {type: Number},
-    weiRaised: {type: Number, default: 0},
+    ethRaised: {type: Number, default: 0},
     owner: {type: String, ref: accounts, required: true, index: true},    
 
     // The following properties are passed to the contract when firstly deployed.
@@ -37,6 +37,9 @@ const NftContractSaleEventSchema = new Schema<NftContractSaleEventType>({
     attributes: {type: Array, default: []},
     xcollection: {type: Schema.Types.ObjectId, ref: xcollections, index: true}, // 'collection' is a reserved keyword in Mongoose
     contract: {type: Schema.Types.ObjectId, ref: contracts, required: true, index: true},
+    // The currency accepted for this sale event
+    currency: {type: Schema.Types.ObjectId, ref: currencies, required: true},
+    saleType: {type: String, required: true, enum: MARKET_SALE_TYPES.filter(t => t !== 'offer'), default: 'fixed'},
 }, {
     collection: nftContractSaleEvents,
     timestamps: true

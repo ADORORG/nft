@@ -18,6 +18,8 @@ export function getNftContractBaseURI(chainId: number) {
 
 /** Backend api routes */
 const apiRoutes = {
+    /** Mint in a primary sale mint event */
+    mintOnEvent: "/api/event/mint/:eventDocId",
     /** Create a new collection */
     createCollection: "/api/create/collection",
     /** Create a new contract */

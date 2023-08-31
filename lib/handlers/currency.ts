@@ -22,7 +22,12 @@ export function createCurrency(currency: CryptocurrencyType) {
     return new CurrencyModel(currency).save()
 }
 
-
+/**
+ * Update Currency data
+ * @param _id 
+ * @param updateData 
+ * @returns 
+ */
 export function setCurrencyData(_id: Types.ObjectId | string, updateData: Partial<CryptocurrencyType>) {
     return CurrencyModel.findByIdAndUpdate(_id, updateData, {
         new: true
@@ -70,6 +75,16 @@ export function getCurrenciesByChainId(chainId: number) {
     .exec();
 }
 
+/**
+ * Get a single currency by query
+ * @param query - A filter query object
+ * @returns a currency document
+ */
+export function getCurrencyByQuery(query: Record<string, unknown>) {
+    return CurrencyModel.findOne(query)
+    .lean()
+    .exec()
+}
 
 /**
  * Get all the cryptocurrencies

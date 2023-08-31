@@ -4,6 +4,7 @@ import type { NftContractEditionType } from "@/lib/types/common"
  * Convert to royalty percent. Base default to 100.
  * @param value 
  * @returns 
+ * @example toRoyaltyPercent(49, 100) // 4900
  */
 export function toRoyaltyPercent(value: number, base: number = 100) {
     return value * base
@@ -13,6 +14,7 @@ export function toRoyaltyPercent(value: number, base: number = 100) {
  * Convert from royalty percent. Base default to 100.
  * @param value 
  * @returns 
+ * @example fromRoyaltyPercent(4900, 100) // 49
  */
 export function fromRoyaltyPercent(value: number, base: number = 100) {
     return Math.round(value / base)
@@ -24,7 +26,7 @@ export function getEventContractEditionData(event: NftContractEditionType, suppl
 
     switch (event) {
         case "open_edition":
-            editionStr = "Unlimited edition"
+            editionStr = "Open edition"
             supplyStr = "Unlimited"
         break;
         case "limited_edition":

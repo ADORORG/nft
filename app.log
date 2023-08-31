@@ -50,3 +50,7 @@
 {"code":11000,"index":0,"keyPattern":{"uid":1},"keyValue":{"uid":"ethereum#5"},"level":"error"}
 {"code":11000,"index":0,"keyPattern":{"uid":1},"keyValue":{"uid":"ethereum#5"},"level":"error"}
 {"code":11000,"index":0,"keyPattern":{"uid":1},"keyValue":{"uid":"ethereum#5"},"level":"error"}
+{"errorCode":400,"level":"error","name":"RequestError"}
+{"errorCode":400,"level":"error","name":"RequestError"}
+{"errorCode":400,"level":"error","name":"RequestError"}
+{"errorCode":400,"level":"error","name":"RequestError"}

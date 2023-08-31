@@ -2,7 +2,8 @@ import type { Types } from 'mongoose';
 import type AccountType from './account';
 import type CollectionType from './collection';
 import type ContractType from './contract';
-import type { EthereumAddress, AttributeType, NftContractEditionType } from './common'
+import type { CryptocurrencyType } from './currency';
+import type { EthereumAddress, AttributeType, MarketSaleType, NftContractEditionType } from './common'
 
 export default interface NftContractSaleEventType {
     /** The document objectId */
@@ -21,8 +22,8 @@ export default interface NftContractSaleEventType {
     supply: number;
     /** Total nft tokens minted so far in this sale event */
     supplyMinted: number;
-    /** Total wei raised so far in this sale event */
-    weiRaised: number;
+    /** Total eth raised so far in this sale event */
+    ethRaised: number;
      /** The creator of this sale event */
     owner: EthereumAddress | AccountType; 
     createdAt?: Date;
@@ -61,10 +62,15 @@ export default interface NftContractSaleEventType {
      * 'collection' is a reserved keyword in Mongoose, hence, 'xcollection' is used 
      */
     xcollection: Types.ObjectId | CollectionType;
+    /** Currency _id used in this sale event */
+    currency?: Types.ObjectId | CryptocurrencyType;
+    /** Type of sale, one of 'fixed', 'auction' 'offer' */
+    saleType: MarketSaleType;
 }
 
-export interface PopulatedNftContractEventType {
+export interface PopulatedNftContractEventType extends NftContractSaleEventType {
     xcollection: CollectionType;
-    contract: ContractType
-    owner: AccountType
+    contract: ContractType;
+    owner: AccountType;
+    currency: CryptocurrencyType;
 }

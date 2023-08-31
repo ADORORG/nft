@@ -15,6 +15,7 @@ export default function VideoPreview(props: MediaPreviewProps) {
                 :
                 <video
                     controls
+                    controlsList="nodownload"
                     src={src}
                     className={`${className}`}
                     {...otherProps}

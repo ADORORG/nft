@@ -1,4 +1,4 @@
-import type { Types, PopulateOptions } from 'mongoose'
+import type { Types, PopulateOptions, InsertManyOptions } from 'mongoose'
 import type { AnyBulkWriteOperation } from 'mongodb'
 import type { EthereumAddress } from '../types/common'
 import type NftTokenType from '../types/token'
@@ -15,12 +15,21 @@ export async function validateToken(document: any) {
 }
 
 /**
- * Perform a bulk operation on token collection
+ * Perform a bulk operation on token
  * @param bulkTokenOperation - Bulk operation
  * @returns - write result
  */
 export function bulkWriteToken(bulkTokenOperation: AnyBulkWriteOperation[]) {
     return TokenModel.bulkWrite(bulkTokenOperation)
+}
+
+/**
+ * Create many tokens
+ * @param tokens - An array of tokens
+ * @returns - An array of unpopulated tokens
+ */
+export async function createManyTokens(tokens: NftTokenType[], options: InsertManyOptions = {}) {
+    return TokenModel.insertMany(tokens, options)
 }
 
 /**

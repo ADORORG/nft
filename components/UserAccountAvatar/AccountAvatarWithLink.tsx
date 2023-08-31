@@ -9,10 +9,11 @@ interface AccountAvatarWithLinkProps {
     width?: number,
     height?: number,
     suffix?: number,
-    prefix?: number
+    prefix?: number,
+    className?: string,
 }
 
-const UserAccountAvatarWithLink: React.FC<AccountAvatarWithLinkProps> = ({account, width = 10, height = 10, suffix, prefix}) => {
+const UserAccountAvatarWithLink: React.FC<AccountAvatarWithLinkProps> = ({account, width = 10, height = 10, suffix, prefix, className}) => {
     const { address } = account
 
     return (
@@ -25,7 +26,7 @@ const UserAccountAvatarWithLink: React.FC<AccountAvatarWithLinkProps> = ({accoun
                 account={account} 
                 width={width}
                 height={height}
-                className="h-6 w-6 rounded border border-gray-100 dark:border-gray-800"
+                className={`rounded border border-gray-100 dark:border-gray-800 ${className}`}
             />
             &nbsp;
             {cutAddress(address, prefix, suffix)}

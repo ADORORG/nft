@@ -12,6 +12,8 @@ const appRoutes = {
     createToken: "/create/token",
     /** View a token and market data */
     viewToken: "/contract/:chainId/:contractAddress/:tokenId",
+    /** View an event data */
+    viewEvent: "/event/:eventDocId",
     /** Create ERC721 contract */
     createErc721: "/create/erc721",
     /** Create ERC1155 contract */

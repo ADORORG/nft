@@ -1,3 +1,4 @@
+import { useEffect } from "react"
 import { getCsrfToken, signIn, signOut, useSession } from "next-auth/react"
 import { Session } from "next-auth"
 import { SiweMessage } from "siwe"
@@ -17,7 +18,14 @@ export default function useAuthStatus() {
      * the website.
      * Thus, we want to ensure that the session returns `null` if wallet is not connected even if there's an active session
      */
-    const session = (isConnected ? data : null) as Session & {user: AccountType} | null
+    const session = (isConnected ? data : null) as (Session & {user: AccountType} | null)
+
+    useEffect(() => {
+        // if not connected and session is not null, sign out to clear the session
+        if (!isConnected && session !== null) {
+            signOut()
+        }
+    }, [isConnected, session])
 
     const handleLogin = async () => {
       const callbackUrl = window.location.href

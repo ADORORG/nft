@@ -1,4 +1,4 @@
-import type { Types, PipelineStage, PopulateOptions } from 'mongoose'
+import type { Types, PipelineStage, PopulateOptions, InsertManyOptions } from 'mongoose'
 import type { EthereumAddress } from '../types/common'
 import type { default as MarketOrderType, PopulatedMarketOrderType } from '../types/market'
 import type { TopTraderAccountType, TotalMarketValueByCryptoCurrencyType, TotalMarketValueInDollarType } from '../types/common'
@@ -13,6 +13,15 @@ export async function validateMarket(document: any) {
       // console.log(error)
       return false
   }
+}
+
+/**
+ * Create many market orders
+ * @param tokens - An array of market orders
+ * @returns - An array of unpopulated orders
+ */
+export async function createManyOrders(tokens: MarketOrderType[], options: InsertManyOptions = {}) {
+  return MarketOrderModel.insertMany(tokens, options)
 }
 
 /**

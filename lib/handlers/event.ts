@@ -1,3 +1,4 @@
+import type { Types } from 'mongoose'
 import type { PopulateOptions } from 'mongoose'
 import type NftContractEventType from '../types/event'
 import NftContractEventModel from '../models/event'
@@ -25,6 +26,14 @@ export async function createNftContractEvent(contract: NftContractEventType) {
             options: leanOption
         },
         {
+            path: 'contract',
+            options: leanOption
+        },
+        {
+            path: 'currency',
+            options: leanOption
+        },
+        {
             path: 'owner',
             select: '-email -roles -emailVerified -__v',
             options: leanOption
@@ -35,4 +44,107 @@ export async function createNftContractEvent(contract: NftContractEventType) {
         contract
     ).save()
     .then( (newContractSaleEvent) => newContractSaleEvent.populate(populate))
+}
+
+
+/**
+ * Get a event data by _id
+ * @param _id - Event objectId 
+ * @returns a populated event data
+ */
+export function getEventById(_id: Types.ObjectId | string) {
+    const leanOption = {lean: true}
+    const populate = [
+        {
+            path: 'xcollection',
+            options: leanOption
+        },
+        {
+            path: 'contract',
+            options: leanOption
+        },
+        {
+            path: 'currency',
+            options: leanOption
+        },
+        {
+            path: 'owner',
+            select: '-email -roles -emailVerified -__v',
+            options: leanOption
+        }
+    ] satisfies PopulateOptions[]
+
+    return NftContractEventModel.findById(_id)
+    .populate(populate)
+    .lean()
+    .exec()
+}
+
+
+/**
+ * Get a events data by query
+ * @param query - Filter object
+ * @returns - an array of populated events
+ */
+export async function getEventsByQuery(
+    query: Record<string, unknown>,
+    options: {
+        limit?: number,
+        skip?: number,
+        sort?: Record<string, any>,
+        select?: string
+    }) {
+    const {
+        limit = 100,
+        skip = 0,
+        sort = {createdAt: -1},
+        select = ''
+    } = options
+
+    const leanOption = {lean: true}
+    const populate = [
+        {
+            path: 'xcollection',
+            options: leanOption
+        },
+        {
+            path: 'contract',
+            options: leanOption
+        },
+        {
+            path: 'currency',
+            options: leanOption
+        },
+        {
+            path: 'owner',
+            select: '-email -roles -emailVerified -__v',
+            options: leanOption
+        }
+    ] satisfies PopulateOptions[]
+
+   
+    return NftContractEventModel.find({
+        ...query
+    })
+    .sort(sort)
+    .skip(skip)
+    .limit(limit)
+    .select(select)
+    .populate(populate)
+    .lean()
+    .exec()
+}
+
+/**
+ * Update Event data
+ * @param _id 
+ * @param updateData 
+ * @returns 
+ */
+export function setEventData(_id: Types.ObjectId | string, updateData: Record<string, unknown>) {
+    return NftContractEventModel.findByIdAndUpdate(_id, updateData, {
+        new: true
+    })
+    .lean()
+    .exec()
 }

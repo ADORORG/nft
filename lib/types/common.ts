@@ -86,3 +86,12 @@ export type MarketFilterType = {
     createdAt: 1 | -1,
     totalOrder: number
 }
+
+export type OnchainMintResponse = {
+    /** The minted token id */
+    tokenId: number | string,
+    /** The address that received the token */
+    to: string,
+    /** The quantity that was transferred to address. Always 1 for erc721 */
+    quantity: number
+}

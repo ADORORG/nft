@@ -15,6 +15,7 @@ export default function AudioPreview(props: MediaPreviewProps) {
                 :
                 <audio
                     controls
+                    controlsList="nodownload"
                     src={src}
                     className={`${className}`}
                     {...otherProps}

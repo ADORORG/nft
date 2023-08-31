@@ -1,8 +1,9 @@
 import type ContractType from "@/lib/types/contract";
 import { useCallback } from "react"
 import { getAddress } from "viem"
-import { usePublicClient, useWalletClient, useNetwork } from "wagmi"
+import { usePublicClient, useWalletClient, useBalance } from "wagmi"
 import { promiseDelay } from "@/utils/main"
+import { supportedChains } from "@/web3.config"
 import erc20Abi from "@/abi/erc20"
 
 export function useContractChain(contract: Pick<ContractType, "chainId">) {
@@ -77,7 +78,5 @@ export function useERC20Approval() {
 }
 
 export function useChainById(id: number) {
-    const { chains } = useNetwork()
-    return chains.find(chain => chain.id === id)
+    return supportedChains.find(chain => chain.id === id)
 }
-
