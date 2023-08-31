@@ -68,7 +68,13 @@ export default function MintCard(props: EventMintProps) {
             } else if (!mintedOffchain) {
                 await mintOffchain(mintData)
             } else {
-                toast("Already minted")
+                // Reset mint data
+                setQuantity(1)
+                setCost(eventData.price)
+                setMintData(null)
+                setMintedOnchain(false)
+                setMintedOffchain(false)
+
             }
 
             router.refresh()
@@ -111,7 +117,7 @@ export default function MintCard(props: EventMintProps) {
                 {
                     session?.user ? 
                     <Button
-                        disabled={mintedOffchain || loading || !relativeDate.future || (eventData.supply > 0 && eventData.supplyMinted >= eventData.supply)}
+                        disabled={loading || !relativeDate.future || (eventData.supply > 0 && eventData.supplyMinted >= eventData.supply)}
                         variant="gradient"
                         className="w-full"
                         loading={loading}
@@ -126,7 +132,7 @@ export default function MintCard(props: EventMintProps) {
                             "Finalize Mint" 
                             : 
                             mintedOffchain ?
-                            "Minted"
+                            "Mint More"
                             :
                             "Mint" 
                         : 

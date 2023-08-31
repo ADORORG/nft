@@ -14,11 +14,20 @@ export async function fetcher<R=AppRouterApiResponseType>(url: URL | string, opt
 }
 
 /**
- * Get error message from Error object
+ * Get error message from Error object.
+ * Initially used to get error message from fetch api request error.
+ * Hence, the name getFetcherErrorMessage
  * @param error 
  * @returns 
  */
 export function getFetcherErrorMessage(error: any): string {
     const message = error.body && error.body.message ? error.body.message : error.message
+    // Some error message from web3 client are ugly, however, they are separated by new line.
+    // We split the message and attempt to return the first & second line
+    const splitMessage = message.split('\n')
+
+    if (splitMessage.length > 1) {
+        return `${splitMessage[0]} ${splitMessage[1]}`
+    }
     return message
 }
