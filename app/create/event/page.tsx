@@ -9,19 +9,22 @@ export default function CreateEventIndex() {
             title: "Create Open Edition",
             description: "Create primary minting event with unlimited supply",
             href: appRoute.createOpenEdition,
-            icon: <UiChecks className="h-5 w-5" />
+            icon: <UiChecks className="h-5 w-5" />,
+            disabled: false,
         },
         {
             title: "Create Limited Edition",
             description: "Create primary minting event with limited supply",
             href: appRoute.createLimitedEdition,
-            icon: <UiChecksGrid className="h-5 w-5" />
+            icon: <UiChecksGrid className="h-5 w-5" />,
+            disabled: true,
         },
         {
             title: "Create One-of-One",
             description: "Create primary minting event with single supply",
             href:appRoute.createOneOfOne,
-            icon: <Icon1Square className="h-5 w-5" />
+            icon: <Icon1Square className="h-5 w-5" />,
+            disabled: true,
         }
     ]
 
@@ -37,6 +40,7 @@ export default function CreateEventIndex() {
                         className="w-full"
                     >
                         <Button
+                            disabled={event.disabled}
                             className="flex flex-col md:flex-row gap-6 items-center p-4 w-full"
                             variant="gradient"
                             rounded

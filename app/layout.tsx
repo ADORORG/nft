@@ -88,9 +88,13 @@ export const topNav = {
   name: AppInfo.name,
   logoUrl: AppInfo.logoUrl,
   navLink: [
-    {
+    /* {
       name: "Explore",
       href: appRoutes.explore
+    }, */
+    {
+      name: "Events",
+      href: appRoutes.events
     },
     {
       name: "Marketplace",

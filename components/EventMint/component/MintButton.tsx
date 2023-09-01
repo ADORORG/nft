@@ -23,7 +23,8 @@ export default function MintButton({eventData, quantity}: EventMintProps & {quan
     const { session } = useAuthStatus()
     const { ensureContractChainAsync } = useContractChain({chainId: eventData.contract.chainId})
     const { mintBatchOpenEdition } = useOpenEditionSaleEvent()
-    const relativeDate = dateToRelativeDayAndHour(new Date(eventData.end))
+    const relativeStartDate = dateToRelativeDayAndHour(new Date(eventData.start))
+    const relativeEndDate = dateToRelativeDayAndHour(new Date(eventData.end))
 
     const mintOnchain = async () => {
         const result = await mintBatchOpenEdition({
@@ -84,7 +85,8 @@ export default function MintButton({eventData, quantity}: EventMintProps & {quan
                     disabled={
                         quantity <= 0 ||
                         loading || 
-                        !relativeDate.future || 
+                        !relativeEndDate.future ||
+                        relativeStartDate.future ||
                         (eventData.supply > 0 && eventData.supplyMinted >= eventData.supply)
                     }
                     variant="gradient"
@@ -95,7 +97,10 @@ export default function MintButton({eventData, quantity}: EventMintProps & {quan
                 >
                     
                     {
-                        relativeDate.future ? 
+                        relativeStartDate.future ?
+                        "Not Started"
+                        :
+                        relativeEndDate.future ? 
                             mintedOnchain && !mintedOffchain? 
                             "Finalize Mint" 
                             : 

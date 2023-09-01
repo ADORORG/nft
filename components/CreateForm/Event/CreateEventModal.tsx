@@ -9,12 +9,14 @@ import {
 } from "@/store/form"
 import { useAtom } from "jotai"
 import { toast } from "react-hot-toast"
+import { useRouter } from "next/navigation"
 import { useOpenEditionSaleEvent } from "@/hooks/contract/event"
 import { useContractChain } from "@/hooks/contract"
 import { readSingleFileAsDataURL } from "@/utils/file"
 import { fetcher, getFetcherErrorMessage } from "@/utils/network"
 import { ERC721_OPEN_EDITION_VERSION } from "@/solidity/erc721.open_edition.compiled"
 import apiRoutes, { getNftContractBaseURI,  } from "@/config/api.route"
+import appRoutes from "@/config/app.route"
 import Button from "@/components/Button"
 
 
@@ -24,7 +26,8 @@ interface CreateOnchainReturnType {
     version?: string,
 }
 
-export default function CreateEventModal() {
+export default function CreateEventModal({resetForm}: {resetForm: () => void}) {
+    const router = useRouter()
     const [loading, setLoading] = useState(false)
     const [nftEventContractData, setNftEventContractData] = useAtom(nftEventContractDataStore)
     const [nftSaleEventData/* , setNftSaleEventData */] = useAtom(nftSaleEventDataStore)
@@ -138,7 +141,9 @@ export default function CreateEventModal() {
             } else {
                 // navigate to the event page
             }
-
+            
+            resetForm()
+            router.push(appRoutes.events)
         } catch (error: any) {
             console.log("Creating event error", error)
             toast.error(getFetcherErrorMessage(error))

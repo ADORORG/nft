@@ -34,7 +34,10 @@ async function createNewEvent(request: NextRequest, _: any, { user }: {user: Acc
     }
 
     event.owner = user.address
+    /** @todo - Implement currency select on the frontend */
     event.currency = currency
+    /** @todo - Implement fixed & auction sale on the frontend */
+    event.saleType = 'fixed'
 
     let isNewContract = false
     // If _id is in contract, we are using existing contract to create event

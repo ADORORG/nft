@@ -219,6 +219,8 @@ export default function CreateEventForm({nftEdition}: CreateEventFormProps) {
                 modalTitle="Create Mint Event"
                 modalBody={CreateEventModal}
                 backdrop={false}
+                // modalBody props
+                resetForm={resetForm}
             />
         </div>
     )

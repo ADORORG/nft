@@ -10,7 +10,8 @@ import MintButton from "./MintButton"
 export default function MintCard(props: EventMintProps) {
     const { eventData } = props
     const [quantity, setQuantity] = useState(1)
-    const relativeDate = dateToRelativeDayAndHour(new Date(eventData.end))
+    const relativeStartDate = dateToRelativeDayAndHour(new Date(eventData.start))
+    const relativeEndDate = dateToRelativeDayAndHour(new Date(eventData.end))
     const { session } = useAuthStatus()
     const accountPurchaseCount = useAccountPurchaseCount({
         contractAddress: eventData.contract.contractAddress, 
@@ -86,12 +87,27 @@ export default function MintCard(props: EventMintProps) {
                 
                 {/* End date */}
                 <div className="flex flex-row justify-between items-center border-t border-gray-300 dark:border-gray-700">
-                    <span>
-                        {relativeDate.future ? "Ending:" : "Ended:"} 
-                    </span>
-                    <span>
-                        {relativeDate.days} {relativeDate.hours}h
-                    </span>
+                    {
+                        relativeStartDate.future ? 
+                        <>
+                            <span>
+                                Starts
+                            </span>
+                            <span>
+                                {relativeStartDate.days} {relativeStartDate.hours}
+                            </span>
+                        </>
+                        :
+                        <>
+                            <span>
+                                {relativeEndDate.future ? "Ending:" : "Ended:"} 
+                            </span>
+                            <span>
+                                {relativeEndDate.days} {relativeEndDate.hours}
+                            </span>
+                        </>
+                    }
+                    
                 </div>
             </div>
         </div>

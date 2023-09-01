@@ -28,7 +28,7 @@ async function mintOnSaleEvent(request: NextRequest, { params }: {params: {event
     const owners = await Promise.all(mintData.map(mint => {
         if (mint.to.toLowerCase() === user.address.toLowerCase()) {
             // return current session user
-            return user
+            return {_id: user.address, address: user.address}
         }
         // return a promise to fetch the owner from the database
         return setAccountDetails(mint.to, {address: mint.to})
@@ -51,14 +51,13 @@ async function mintOnSaleEvent(request: NextRequest, { params }: {params: {event
             transferrable: mintEventData.transferrable,
             contract: mintEventData.contract,
             xcollection: mintEventData.xcollection,
-            owner: owners[index]
+            owner: owners[index]._id as string,
         } satisfies NftTokenType
     }), {
         // Do not validate because we are manually creating the token
         lean: true
     })
-
-    // Create the market order for this minted tokens
+    // Create the market order for the minted tokens
     await createManyOrders(tokens.map(token => {
         return {
             token: token._id,
@@ -66,7 +65,7 @@ async function mintOnSaleEvent(request: NextRequest, { params }: {params: {event
             soldPrice: mintEventData.price.toString(),
             saleType: 'fixed',
             quantity: 1,
-            seller: mintEventData.owner,
+            seller: mintEventData.owner._id as string,
             buyer: token.owner,
             permitType: 'onchain',
             status: 'sold',

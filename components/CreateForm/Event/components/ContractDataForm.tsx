@@ -70,10 +70,16 @@ export default function EventContracDataForm(props: EventDataFormProps) {
                             className="w-full rounded focus:transition-all duration-700"
                         >
                             <Select.Option value="create">Create new contract</Select.Option>
-                            {
-                                accountContracts && accountContracts.length > 0 ? 
+                            {   
+                                // Only show contracts if nftEdition is either 'one_of_one' or 'limited_edition'
+                                // Open edition & generative series requires new contract creation
+                                ["one_of_one", "limited_edition"].includes(props.eventData.nftEdition || "") &&
+                                accountContracts && 
+                                accountContracts.length > 0 ? 
                                 accountContracts
+                                // Only show contracts on the current chainId
                                 .filter(contract => contract.chainId === contractData.chainId)
+                                .filter(contract => ["one_of_one", "limited_edition"].includes(contract.nftEdition))
                                 .map(contract => (
                                     <Select.Option 
                                         key={contract._id?.toString()} 
