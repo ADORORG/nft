@@ -1,7 +1,6 @@
 import type EventMintProps from "../types"
 import { useState } from "react"
 import { dateToRelativeDayAndHour } from "@/utils/date"
-import { useAccountPurchaseCount } from "@/hooks/contract/event"
 import { useAuthStatus } from "@/hooks/account"
 import { InputField } from "@/components/Form"
 import ProgressBar from "@/components/ProgressBar"
@@ -12,14 +11,10 @@ export default function MintCard(props: EventMintProps) {
     const [quantity, setQuantity] = useState(1)
     const relativeStartDate = dateToRelativeDayAndHour(new Date(eventData.start))
     const relativeEndDate = dateToRelativeDayAndHour(new Date(eventData.end))
-    const { session } = useAuthStatus()
-    const accountPurchaseCount = useAccountPurchaseCount({
-        contractAddress: eventData.contract.contractAddress, 
-        accountAddress: session?.user?.address
-    })
+    const accountPurchaseCount = 0
 
     return (
-        <div className="bg-gray-200 dark:bg-gray-900 p-3 rounded shadow-xl">
+        <div className="bg-gray-100 dark:bg-gray-900 dark:shadow-lg p-3 rounded">
             <div className="flex flex-col gap-4">
                 {/* Price and Input form */}
                 <div className="flex flex-row justify-between items-center">

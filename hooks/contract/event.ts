@@ -180,7 +180,7 @@ export function useEditionConfiguration({contractAddress}: {contractAddress: str
                 endTime: Number(editionConfig[7]),
             }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
         }
 
         return null

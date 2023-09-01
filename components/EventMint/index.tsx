@@ -7,16 +7,15 @@ import MintCard from "./component/MintCard"
 import { MediaSkeleton } from "@/components/Skeleton"
 import { MediaPreview } from "@/components/MediaPreview"
 import { UserAccountAvatarWithLink } from "@/components/UserAccountAvatar"
-import { useEditionConfiguration } from "@/hooks/contract/event"
 import { cutString, replaceUrlParams } from "@/utils/main"
 import { IPFS_GATEWAY } from "@/lib/app.config"
 import appRoutes from "@/config/app.route"
 
 export function EventMintExpanded(props: EventMintProps) {
-    // Get the contract configuration from the blockchain.
-    // Overwrite the blockchain configuration with the one from the database.
-    const configuration = useEditionConfiguration({contractAddress: props.eventData.contract.contractAddress})
-    const eventData = configuration ? {...props.eventData, ...configuration} : props.eventData
+    /**
+     * @todo - Get the contract configuration from the blockchain.
+     */
+    const { eventData } = props
 
     return (
         <div className="max-w-4xl mx-auto flex flex-col gap-6">
@@ -57,11 +56,10 @@ export function EventMintExpanded(props: EventMintProps) {
 }
 
 export function EventMintCollapsed(props: EventMintProps) {
-    // Get the contract configuration from the blockchain.
-    // Overwrite the blockchain configuration with the one from the database.
-    const configuration = useEditionConfiguration({contractAddress: props.eventData.contract.contractAddress})
-    const eventData = configuration ? {...props.eventData, ...configuration} : props.eventData
-
+    /**
+     * @todo - Get the contract configuration from the blockchain.
+     */
+    const { eventData } = props
     return (
         <div className="max-w-xl flex flex-col justify-between gap-4 bg-gray-100 dark:bg-gray-800 p-4 rounded drop-shadow-xl">
             <div className="flex flex-col md:flex-row justify-between items-center">
