@@ -1,10 +1,14 @@
+"use client"
 import type { PopulatedNftTokenType} from "@/lib/types/token"
-import Image from "@/components/Image"
+import { MediaSkeleton } from "@/components/Skeleton"
+// import Image from "@/components/Image"
+import MediaPreview from "@/components/MediaPreview"
 import UserAccountAvatar from "@/components/UserAccountAvatar"
 import CollectionAvatar from "@/components/CollectionAvatar"
 import Button from "@/components/Button"
 import Link from "next/link"
 import appRoutes from "@/config/app.route"
+import { IPFS_GATEWAY } from "@/lib/app.config"
 import { replaceUrlParams, cutString } from "@/utils/main"
 
 type NftTokenProps = {
@@ -12,7 +16,7 @@ type NftTokenProps = {
 }
 
 export default function NftTokenCard(props: NftTokenProps) {
-    const { tokenId, name, image = "", owner, contract, xcollection } = props.token
+    const { tokenId, name, image = "", media, mediaType, owner, contract, xcollection } = props.token
     /**
      * @todo Fix card sizes base on size (lg | md) passed as prop
      */
@@ -20,14 +24,34 @@ export default function NftTokenCard(props: NftTokenProps) {
         <div className={`w-56 h-80 rounded p-4 bg-gray-100 dark:bg-gray-900 hover:bg-opacity-60 transition drop-shadow-xl`}>
             <div className="flex flex-col justify-between gap-2 h-72">
                 <div className={`bg-transparent flex justify-center items-center h-2/3`}>
-                    <Image 
-                        className={`h-full w-auto`} 
-                        src={image}
-                        alt=""
-                        data={`${contract.contractAddress}${tokenId}`}
-                        width={400}
-                        // height={`${sizes[size].imageHeight}`}
+                    {/* Check if there's a media, show the media, otherwise display the image */}
+                    <MediaPreview
+                        src={`${IPFS_GATEWAY}${media || image}`}
+                        type={mediaType || "image/*"}
+                        loadingComponent={<MediaSkeleton className="w-full h-full" />}
+                        previewClassName="flex justify-center items-center w-full h-full"
+                        className="max-w-56 max-h-80"
                     />
+                   {/*  {
+                        media && mediaType ? 
+                        <MediaPreview
+                            src={`${IPFS_GATEWAY}${media}`}
+                            type={mediaType}
+                            loadingComponent={<MediaSkeleton className="w-full h-full" />}
+                            previewClassName="flex justify-center items-center w-full h-full"
+                            className="max-w-[260px] max-h-[270px]"
+                        />
+                        :
+                        <Image 
+                            className={`h-full w-auto`} 
+                            src={image}
+                            alt=""
+                            data={`${contract.contractAddress}${tokenId}`}
+                            width={400}
+                            // height={`${sizes[size].imageHeight}`}
+                        />
+                    }
+                     */}
                 </div>
 
                 <div className="w-full flex flex-col py-2 lg:py-4 justify-end">

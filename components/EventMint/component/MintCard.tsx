@@ -14,7 +14,7 @@ export default function MintCard(props: EventMintProps) {
     const accountPurchaseCount = 0
 
     return (
-        <div className="bg-gray-100 dark:bg-gray-900 dark:shadow-lg p-3 rounded">
+        <div className="bg-gray-100 dark:bg-gray-900 shadow-lg p-3 rounded">
             <div className="flex flex-col gap-4">
                 {/* Price and Input form */}
                 <div className="flex flex-row justify-between items-center">

@@ -18,7 +18,7 @@ export function EventMintExpanded(props: EventMintProps) {
     const { eventData } = props
 
     return (
-        <div className="max-w-4xl mx-auto flex flex-col gap-6">
+        <div className="max-w-4xl mx-auto flex flex-col gap-8">
             <div className="flex flex-col self-center gap-4 w-[250px] md:w-[350px]">
                 <h1 className="text-2xl self-center font-semibold break-all">{eventData.contract.label}</h1>
                 <div className="self-center">
@@ -30,7 +30,7 @@ export function EventMintExpanded(props: EventMintProps) {
             </div>
 
             <div className="flex justify-center">
-                <div className="w-[250px] h-[250px] md:w-[350px] md:h-[350px] rounded p-1 flex justify-center items-center bg-gray-200 dark:bg-gray-900">
+                <div className="w-[250px] md:w-[350px] flex justify-center items-center bg-gray-200 dark:bg-gray-900">
                     <MediaPreview
                         src={`${IPFS_GATEWAY}${eventData.media}`}
                         type={eventData.mediaType}
@@ -81,7 +81,8 @@ export function EventMintCollapsed(props: EventMintProps) {
                         src={`${IPFS_GATEWAY}${eventData.media}`}
                         type={eventData.mediaType}
                         loadingComponent={<MediaSkeleton className="w-full h-full" />}
-                        previewClassName="w-full h-full"
+                        previewClassName="flex justify-center items-center w-full h-full"
+                        className="max-w-[260px] max-h-[270px]"
                     />
                 </div>
             </div>

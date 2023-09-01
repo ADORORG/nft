@@ -3,7 +3,7 @@ import MediaPreview from "@/components/MediaPreview"
 import MediaTypeIcon from "@/components/MediaTypeIcon"
 import QuickModal from "@/components/QuickModal"
 import { MediaSkeleton } from "@/components/Skeleton"
-
+import { IPFS_GATEWAY } from "@/lib/app.config"
 import type TokenPageProps from "./types"
 
 export default function TokenMediaModal(props: TokenPageProps) {
@@ -33,11 +33,12 @@ export default function TokenMediaModal(props: TokenPageProps) {
                 modalTitle={`${props.token?.name} #${props.token.tokenId}`}
                 modalBody={MediaPreview}
                 // MediaPreview props
-                src={media}
+                src={IPFS_GATEWAY + media}
                 type={mediaType}
-                previewClassName="lg:w-[480px] w-[320px] flex flex-col justify-center"
                 modalBodyClassName="lg:w-[410px] w-[310px]"
-                loadingComponent={<MediaSkeleton />}
+                loadingComponent={<MediaSkeleton className="h-[250px] w-[250px]" />}
+                previewClassName="flex flex-col items-center w-full h-full"
+                className="max-h-[300px] max-w-[300px]"
             />
         </>
     )

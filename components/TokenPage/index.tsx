@@ -14,7 +14,7 @@ export default function SingleTokenPage(props: TokenPageProps) {
     return (
         <div className="w-[320px] md:w-[480px] text-gray-900 dark:text-white">
             <TokenImage token={props.token} />
-            <TokenMediaModal token={props.token} />
+            {/* <TokenMediaModal token={props.token} /> */}
             <TokenTextContent token={props.token} />
             <TokenLink token={props.token} />
             <TokenAttributes token={props.token} />

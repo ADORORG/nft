@@ -14,7 +14,6 @@ import { type NextRequest, NextResponse } from 'next/server'
  */
 async function createNewMarketOrder(request: NextRequest, _: any) {
     const body = await request.json()
-    // console.log('body', body)
     const isValidOrder = await validateMarket(body)
     if (!isValidOrder) {
         throw new CustomRequestError('Market order is invalid', 400)
