@@ -23,7 +23,6 @@ export default function MintButton({eventData, quantity}: EventMintProps & {quan
     const { session } = useAuthStatus()
     const { ensureContractChainAsync } = useContractChain({chainId: eventData.contract.chainId})
     const { mintBatchOpenEdition } = useOpenEditionSaleEvent()
-
     const relativeDate = dateToRelativeDayAndHour(new Date(eventData.end))
 
     const mintOnchain = async () => {
@@ -32,7 +31,6 @@ export default function MintButton({eventData, quantity}: EventMintProps & {quan
             quantity,
             totalAmount: quantity * eventData.price,
             receiverAddress: session?.user?.address as string,
-            contractVersion: eventData.contract.version,
         })
 
         setMintedOnchain(true)
@@ -84,6 +82,7 @@ export default function MintButton({eventData, quantity}: EventMintProps & {quan
                 session?.user ? 
                 <Button
                     disabled={
+                        quantity <= 0 ||
                         loading || 
                         !relativeDate.future || 
                         (eventData.supply > 0 && eventData.supplyMinted >= eventData.supply)
@@ -109,7 +108,7 @@ export default function MintButton({eventData, quantity}: EventMintProps & {quan
                     }
                 </Button>
                 :
-                <ConnectWalletButton text="Connect & Mint"/>
+                <ConnectWalletButton className="w-full" text="Connect & Mint"/>
             }
         </div>
     )

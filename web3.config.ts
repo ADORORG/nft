@@ -12,6 +12,7 @@ import {
   arbitrum,
   goerli,
   bsc,
+  baseGoerli,
   type Chain
 } from "wagmi/chains"
 import { alchemyProvider } from "wagmi/providers/alchemy"
@@ -51,6 +52,7 @@ const supportedChains = [
     } satisfies Chain,
     // testnet
     goerli,
+    baseGoerli
 ]
 
 const { chains, publicClient } = configureChains(

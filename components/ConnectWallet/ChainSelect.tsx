@@ -26,6 +26,7 @@ const chainIcons: Record<number, React.FC<React.SVGAttributes<SVGElement>>> = {
     137: PolygonIcon,
     250: FantomIcon,
     8453: BaseIcon,
+    84531: BaseIcon,
     43114: AvalancheIcon,
     42161: ArbitrumIcon,
     1666600000: HarmonyIcon,

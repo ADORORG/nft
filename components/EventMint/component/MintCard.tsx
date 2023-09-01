@@ -1,6 +1,8 @@
 import type EventMintProps from "../types"
 import { useState } from "react"
 import { dateToRelativeDayAndHour } from "@/utils/date"
+import { useAccountPurchaseCount } from "@/hooks/contract/event"
+import { useAuthStatus } from "@/hooks/account"
 import { InputField } from "@/components/Form"
 import ProgressBar from "@/components/ProgressBar"
 import MintButton from "./MintButton"
@@ -9,6 +11,11 @@ export default function MintCard(props: EventMintProps) {
     const { eventData } = props
     const [quantity, setQuantity] = useState(1)
     const relativeDate = dateToRelativeDayAndHour(new Date(eventData.end))
+    const { session } = useAuthStatus()
+    const accountPurchaseCount = useAccountPurchaseCount({
+        contractAddress: eventData.contract.contractAddress, 
+        accountAddress: session?.user?.address
+    })
 
     return (
         <div className="bg-gray-200 dark:bg-gray-900 p-3 rounded shadow-xl">
@@ -29,8 +36,14 @@ export default function MintCard(props: EventMintProps) {
                         <InputField
                             name="quantity"
                             type="number"
-                            min="1"
-                            max={eventData.maxMintPerWallet || undefined}
+                            min={1}
+                            max={
+                                eventData.maxMintPerWallet &&
+                                eventData.maxMintPerWallet > 0 ?
+                                eventData.maxMintPerWallet - accountPurchaseCount
+                                : 
+                                undefined
+                            }
                             value={quantity}
                             onChange={e => setQuantity(parseInt(e.target.value))}
                             className="rounded"
@@ -48,7 +61,7 @@ export default function MintCard(props: EventMintProps) {
                 {
                     eventData.maxMintPerWallet && (
                         <p>
-                            Max mints: {eventData.maxMintPerWallet}
+                            Max mints: {accountPurchaseCount}/{eventData.maxMintPerWallet}
                         </p>
                     )
                 }

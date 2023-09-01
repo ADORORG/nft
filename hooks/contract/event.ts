@@ -1,11 +1,11 @@
 import type NftContractSaleEventType from "@/lib/types/event"
 import type { OnchainMintResponse } from "@/lib/types/common"
-import { useCallback } from "react"
+import { useCallback, useMemo, useEffect, useState } from "react"
 import { usePublicClient, useWalletClient } from "wagmi"
-import { parseUnits, getAddress, decodeEventLog } from "viem"
+import { parseUnits, getAddress, decodeEventLog, formatEther } from "viem"
 import { useAuthStatus } from "@/hooks/account"
 import { convertToUnixTimestampSeconds } from "@/utils/date"
-import { default as latestERC721OpenEdition, erc721OpenEditionAbiMap } from "@/abi/erc721.open_edition"
+import { default as latestERC721OpenEdition } from "@/abi/erc721.open_edition"
 import { ERC721_OPEN_EDITION_BYTECODE } from "@/solidity/erc721.open_edition.compiled"
 
 export function useOpenEditionSaleEvent() {
@@ -87,8 +87,7 @@ export function useOpenEditionSaleEvent() {
             contractAddress,
             receiverAddress,
             totalAmount,
-            quantity,
-            contractVersion
+            quantity
         }: {
             /** The contract address to mint on */
             contractAddress: string,
@@ -98,8 +97,6 @@ export function useOpenEditionSaleEvent() {
             totalAmount: number,
             /** The quantity to mint */
             quantity: number,
-            /** The version of the contract */
-            contractVersion: string
         }
     ) => {
         // Convert totalAmount to wei
@@ -113,11 +110,9 @@ export function useOpenEditionSaleEvent() {
             throw new Error("Not enough balance to mint")
         }
 
-        const abiByVersion = erc721OpenEditionAbiMap[contractVersion as keyof typeof erc721OpenEditionAbiMap]
-
         const writeContractRequest = await publicClient?.simulateContract({
             account: getAddress(session?.user.address as string),
-            abi: abiByVersion,
+            abi: latestERC721OpenEdition,
             address: getAddress(contractAddress),
             functionName: "batchMint",
             // cost for minting nft. Convert to wei
@@ -133,9 +128,10 @@ export function useOpenEditionSaleEvent() {
 
         const mintData = []
 
+        // Decode the logs to get the tokenId and to (receiver address)
         for (const log of txReceipt.logs) {
             const decodedLogs = decodeEventLog({
-                abi: abiByVersion,
+                abi: latestERC721OpenEdition,
                 data: log.data,
                 topics: log.topics
             })
@@ -154,10 +150,71 @@ export function useOpenEditionSaleEvent() {
 
     }, [publicClient, walletClient, session?.user.address])
 
+
     return {
         deployedContractOpenEdition,
         mintBatchOpenEdition
     }
+}
+
+export function useEditionConfiguration({contractAddress}: {contractAddress: string}) {
+    const publicClient = usePublicClient()
+    const [config, setConfig] = useState<Record<string, unknown> | null>(null)
+
+    const openEditionConfig = useMemo(async () => {
+        const editionConfig = await publicClient.readContract({
+            abi: latestERC721OpenEdition,
+            address: getAddress(contractAddress),
+            functionName: "editionConfig"
+        })
+
+        return {
+            feeRecipient: editionConfig[0],
+            royaltyReceiver: editionConfig[1],
+            royalty: Number(editionConfig[2]),
+            maxMintPerWallet: Number(editionConfig[3]),
+            transferrable: editionConfig[4],
+            price: formatEther(editionConfig[5]),
+            startTime: Number(editionConfig[6]),
+            endTime: Number(editionConfig[7]),
+        }
+    }, [publicClient, contractAddress])
+
+    useEffect(() => {
+        openEditionConfig.then((config) => {
+            setConfig(config)
+        })
+    }, [openEditionConfig])
+
+    return config
+}
+
+export function useAccountPurchaseCount({contractAddress, accountAddress}: {contractAddress: string, accountAddress?: string}) {
+    const publicClient = usePublicClient()
+    const [count, setCount] = useState(0)
+    const accountPurchaseCount = useMemo(async () => {
+        let accountPurchaseCount: Number | bigint = 0
+
+        if (accountAddress) {
+            accountPurchaseCount = await publicClient.readContract({
+                abi: latestERC721OpenEdition,
+                address: getAddress(contractAddress),
+                functionName: "userPurchases",
+                args: [getAddress(accountAddress as string)]
+            })
+        }
+
+        return Number(accountPurchaseCount)
+
+    }, [publicClient, contractAddress, accountAddress])
+
+    useEffect(() => {
+        accountPurchaseCount.then((count) => {
+            setCount(count)
+        })
+    }, [accountPurchaseCount])
+
+    return count
 }
 
 /** Hook used for Limited Edition and One-of-One */

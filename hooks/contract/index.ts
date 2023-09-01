@@ -1,7 +1,7 @@
 import type ContractType from "@/lib/types/contract";
 import { useCallback } from "react"
 import { getAddress } from "viem"
-import { usePublicClient, useWalletClient, useBalance } from "wagmi"
+import { usePublicClient, useWalletClient } from "wagmi"
 import { promiseDelay } from "@/utils/main"
 import { supportedChains } from "@/web3.config"
 import erc20Abi from "@/abi/erc20"
