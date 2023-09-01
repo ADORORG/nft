@@ -1,4 +1,4 @@
-import type { NftContractSchemaType } from "@/_cron/src/lib/types/common"
+import type { NftContractSchemaType } from "@/lib/types/common"
 import { useState } from "react"
 import { 
     nftSaleEventDataStore,
