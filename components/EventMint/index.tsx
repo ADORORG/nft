@@ -15,8 +15,20 @@ export function EventMintExpanded(props: EventMintProps) {
 
     return (
         <div className="max-w-4xl mx-auto flex flex-col gap-6">
+            <div className="flex flex-col self-center gap-4 w-[250px] md:w-[350px]">
+                {/* <div className="w-[250px] md:w-[350px]"> */}
+                    <h1 className="text-xl self-center font-semibold break-all">{props.eventData.xcollection.name}</h1>
+                    <div className="self-center">
+                        <UserAccountAvatarWithLink 
+                            account={props.eventData.owner}
+                            className="w-4 h-4 text-sm"
+                        />
+                    </div>
+                {/* </div> */}
+            </div>
+
             <div className="flex justify-center">
-                <div className="w-[250px] h-[250px] md:w-[350px] h-[350px] rounded p-1 flex justify-center items-center bg-gray-200 dark:bg-gray-900">
+                <div className="w-[250px] h-[250px] md:w-[350px] md:h-[350px] rounded p-1 flex justify-center items-center bg-gray-200 dark:bg-gray-900">
                     <MediaPreview
                         src={`${IPFS_GATEWAY}${props.eventData.media}`}
                         type={props.eventData.mediaType}
