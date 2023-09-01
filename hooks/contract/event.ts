@@ -162,22 +162,29 @@ export function useEditionConfiguration({contractAddress}: {contractAddress: str
     const [config, setConfig] = useState<Record<string, unknown> | null>(null)
 
     const openEditionConfig = useMemo(async () => {
-        const editionConfig = await publicClient.readContract({
-            abi: latestERC721OpenEdition,
-            address: getAddress(contractAddress),
-            functionName: "editionConfig"
-        })
-
-        return {
-            feeRecipient: editionConfig[0],
-            royaltyReceiver: editionConfig[1],
-            royalty: Number(editionConfig[2]),
-            maxMintPerWallet: Number(editionConfig[3]),
-            transferrable: editionConfig[4],
-            price: formatEther(editionConfig[5]),
-            startTime: Number(editionConfig[6]),
-            endTime: Number(editionConfig[7]),
+        try {
+            const editionConfig = await publicClient.readContract({
+                abi: latestERC721OpenEdition,
+                address: getAddress(contractAddress),
+                functionName: "editionConfig"
+            })
+    
+            return {
+                feeRecipient: editionConfig[0],
+                royaltyReceiver: editionConfig[1],
+                royalty: Number(editionConfig[2]),
+                maxMintPerWallet: Number(editionConfig[3]),
+                transferrable: editionConfig[4],
+                price: formatEther(editionConfig[5]),
+                startTime: Number(editionConfig[6]),
+                endTime: Number(editionConfig[7]),
+            }
+        } catch (error) {
+            console.log(error)
         }
+
+        return null
+        
     }, [publicClient, contractAddress])
 
     useEffect(() => {
