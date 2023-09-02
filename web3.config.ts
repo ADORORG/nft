@@ -23,7 +23,6 @@ const supportedChains = [
     mainnet, 
     polygon, 
     optimism, 
-    arbitrum, 
     bsc,
     /** Add base mainnet */
     {
