@@ -23,26 +23,31 @@ export function fromRoyaltyPercent(value: number, base: number = 100) {
 export function getEventContractEditionData(event: NftContractEditionType, supply = 0) {
     let editionStr = ""
     let supplyStr = ""
+    let contractStr = "Private"
 
     switch (event) {
         case "open_edition":
             editionStr = "Open edition"
             supplyStr = "Unlimited"
+            contractStr = "Open edition"
         break;
         case "limited_edition":
         case "generative_series":
             editionStr = `${supply} editions`
             supplyStr = `${supply} / ${supply}`
+            contractStr = "Limited edition"
         break;
 
         case "one_of_one":
             editionStr = "One of one"
             supplyStr = "1 / 1"
+            contractStr = "Limited edition"
         break;
     }
 
     return {
         editionStr,
-        supplyStr
+        supplyStr,
+        contractStr
     }
 }

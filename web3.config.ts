@@ -5,11 +5,11 @@ import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet"
 import { LedgerConnector } from "wagmi/connectors/ledger"
 import { MetaMaskConnector } from "wagmi/connectors/metaMask"
 import { SafeConnector } from "wagmi/connectors/safe"
+import { WalletConnectConnector } from "wagmi/connectors/walletConnect"
 import {
   mainnet,
   polygon,
   optimism,
-  arbitrum,
   goerli,
   bsc,
   baseGoerli,
@@ -23,7 +23,6 @@ const supportedChains = [
     mainnet, 
     polygon, 
     optimism, 
-    bsc,
     /** Add base mainnet */
     {
         id: 8453,
@@ -49,6 +48,7 @@ const supportedChains = [
             }
         }
     } satisfies Chain,
+    bsc,
     // testnet
     goerli,
     baseGoerli
@@ -89,12 +89,20 @@ const safeConnector = new SafeConnector({
     chains
 })
 
+const walletConnectConnector = new WalletConnectConnector({
+    chains,
+    options: {
+        projectId: "c959e4e094bf2538d3f364baddf2c92c"
+    }
+})
+
 const supportedWalletConnectors = {
     Coinbase: coinbaseConnector, 
     Metamask: metaMaskConnector, 
     Ledger: ledgerConnector, 
     Safe: safeConnector,
-    Injected: injectedConnector
+    Injected: injectedConnector,
+    WalletConnect: walletConnectConnector
 }
 
 const wagmiConfig = createConfig({

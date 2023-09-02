@@ -7,6 +7,7 @@ import MintCard from "./component/MintCard"
 import { MediaSkeleton } from "@/components/Skeleton"
 import { MediaPreview } from "@/components/MediaPreview"
 import { UserAccountAvatarWithLink } from "@/components/UserAccountAvatar"
+import { getChainIcon } from "@/components/ConnectWallet/ChainIcons"
 import { cutString, replaceUrlParams } from "@/utils/main"
 import { IPFS_GATEWAY } from "@/lib/app.config"
 import appRoutes from "@/config/app.route"
@@ -16,11 +17,14 @@ export function EventMintExpanded(props: EventMintProps) {
      * @todo - Get the contract configuration from the blockchain.
      */
     const { eventData } = props
-
+    const ChainIcon = getChainIcon(eventData.contract.chainId)
     return (
         <div className="max-w-4xl mx-auto flex flex-col gap-8">
             <div className="flex flex-col self-center gap-4 w-[250px] md:w-[350px]">
-                <h1 className="text-2xl self-center font-semibold break-all">{eventData.contract.label}</h1>
+                <h1 className="text-2xl self-center font-semibold break-all">
+                    <ChainIcon className="w-6 h-6 mr-2 inline-block" />
+                    {eventData.contract.label}
+                </h1>
                 <div className="self-center">
                     <UserAccountAvatarWithLink 
                         account={eventData.owner}
@@ -30,12 +34,13 @@ export function EventMintExpanded(props: EventMintProps) {
             </div>
 
             <div className="flex justify-center">
-                <div className="w-[250px] md:w-[350px] flex justify-center items-center bg-gray-200 dark:bg-gray-900">
+                <div className="max-w-[250px] md:w-[450px] flex justify-center items-center">
                     <MediaPreview
                         src={`${IPFS_GATEWAY}${eventData.media}`}
                         type={eventData.mediaType}
-                        loadingComponent={<MediaSkeleton className="w-full h-full" />}
+                        loadingComponent={<MediaSkeleton className="w-[250px] h-[250px]" />}
                         previewClassName="w-full h-full"
+                        className="w-[250px] md:w-[450px]"
                     />
                 </div>
             </div>
@@ -60,10 +65,15 @@ export function EventMintCollapsed(props: EventMintProps) {
      * @todo - Get the contract configuration from the blockchain.
      */
     const { eventData } = props
+    const ChainIcon = getChainIcon(eventData.contract.chainId )
+
     return (
         <div className="max-w-xl flex flex-col justify-between gap-4 bg-gray-100 dark:bg-gray-800 p-4 rounded drop-shadow-xl">
             <div className="flex flex-col md:flex-row justify-between items-center">
-                <h1 className="text-xl font-semibold break-all">{cutString(eventData.contract.label, 24)}</h1>
+                <h1 className="text-xl font-semibold break-all">
+                    <ChainIcon className="w-5 h-5 text-gray-100 mr-1 inline-block" />
+                    {cutString(eventData.contract.label, 24)}
+                </h1>
                 <div className="">
                     <UserAccountAvatarWithLink 
                         account={eventData.owner}
@@ -82,14 +92,14 @@ export function EventMintCollapsed(props: EventMintProps) {
                         type={eventData.mediaType}
                         loadingComponent={<MediaSkeleton className="w-full h-full" />}
                         previewClassName="flex justify-center items-center w-full h-full"
-                        className="max-w-[260px] max-h-[270px]"
+                        className="w-[260px] max-h-[270px]"
                     />
                 </div>
             </div>
 
             <div className="p-3">
-                <p className="min-h-[70px]">
-                    {cutString(eventData.xcollection.description.repeat(15), 120)}
+                <p className="min-h-[70px] break-all">
+                    {cutString(eventData.xcollection.description, 120)}
                 </p>
                 <p className="text-end">
                 <Link

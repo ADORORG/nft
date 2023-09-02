@@ -6,22 +6,26 @@ import MediaPreview from "@/components/MediaPreview"
 import UserAccountAvatar from "@/components/UserAccountAvatar"
 import CollectionAvatar from "@/components/CollectionAvatar"
 import Button from "@/components/Button"
+import { getChainIcon } from "@/components/ConnectWallet/ChainIcons"
 import Link from "next/link"
 import appRoutes from "@/config/app.route"
 import { IPFS_GATEWAY } from "@/lib/app.config"
 import { replaceUrlParams, cutString } from "@/utils/main"
-
 type NftTokenProps = {
     token: PopulatedNftTokenType, 
 }
 
 export default function NftTokenCard(props: NftTokenProps) {
     const { tokenId, name, image = "", media, mediaType, owner, contract, xcollection } = props.token
+    const ChainIcon = getChainIcon(contract.chainId)
     /**
      * @todo Fix card sizes base on size (lg | md) passed as prop
      */
     return (
         <div className={`w-56 h-80 rounded p-4 bg-gray-100 dark:bg-gray-900 hover:bg-opacity-60 transition drop-shadow-xl`}>
+            <div className="absolute z-10 top-1 left-1 bg-gray-300 dark:bg-gray-600 p-1 rounded">
+                <ChainIcon className="h-5 w-5" />
+            </div>
             <div className="flex flex-col justify-between gap-2 h-72">
                 <div className={`bg-transparent flex justify-center items-center h-2/3`}>
                     {/* Check if there's a media, show the media, otherwise display the image */}
@@ -30,7 +34,7 @@ export default function NftTokenCard(props: NftTokenProps) {
                         type={mediaType || "image/*"}
                         loadingComponent={<MediaSkeleton className="w-full h-full" />}
                         previewClassName="flex justify-center items-center w-full h-full"
-                        className="max-w-56 max-h-80"
+                        className="w-56 max-h-80"
                     />
                    {/*  {
                         media && mediaType ? 

@@ -75,7 +75,9 @@ export default function Navbar({ topNav }:{ topNav: TopNavProps }) {
                     <ThemeSwitcher />
                   </div>
                   <div className="lg:ml-4 mt-4 lg:mt-0">
-                    <NetworkChainSelect />
+                    <NetworkChainSelect 
+                      switchOnChange
+                    />
                   </div>
                   
                   <div className="lg:ml-4 mt-4 lg:mt-0">

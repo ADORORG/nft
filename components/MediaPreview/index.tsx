@@ -1,3 +1,4 @@
+"use client"
 import ImagePreview from "./Image"
 import VideoPreview from "./Video"
 import AudioPreview from "./Audio"

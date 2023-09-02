@@ -4,7 +4,7 @@ import TokenLink from "./TokenLink"
 import RedeemableButton from "./RedeemableButton"
 import TokenAttributes from "./TokenAttributes"
 import TokenImage from "./TokenImage"
-import TokenMediaModal from "./TokenMediaModal"
+// import TokenMediaModal from "./TokenMediaModal"
 import TokenTextContent from "./TokenTextContent"
 import { useAuthStatus } from "@/hooks/account"
 

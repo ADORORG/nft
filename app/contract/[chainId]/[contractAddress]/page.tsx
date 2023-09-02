@@ -5,6 +5,7 @@ import Banner from "@/components/Banner"
 import AccountAvatar from "@/components/UserAccountAvatar"
 import Tag from "@/components/Tag"
 import { NftTokenCard } from "@/components/Card"
+import { getEventContractEditionData } from "@/utils/contract"
 import Link from "next/link"
 import appRoute from "@/config/app.route"
 // Server
@@ -41,7 +42,7 @@ export default async function Page({params}: {params: PageProps}) {
         symbol,
         nftSchema,
     } = contract
-
+ 
     return (
         <div className="bg-white dark:bg-gray-950">
             <div className="container mx-auto py-6">
@@ -80,7 +81,7 @@ export default async function Page({params}: {params: PageProps}) {
                     </Banner.Body>
                     <Banner.Tags>
                         <Tag className="text-lg px-2 py-1 mx-3">
-                                Minting: Private
+                                Minting: {getEventContractEditionData(contract.nftEdition).contractStr}
                         </Tag>
                         <Tag className="text-lg px-2 py-1">
                                 Chain: {chainId}

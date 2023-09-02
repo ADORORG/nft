@@ -14,7 +14,7 @@ export default function TokenImage(props: TokenPageProps) {
                 type={mediaType || "image/*"}
                 loadingComponent={<MediaSkeleton className="h-[250px] w-[250px]" />}
                 previewClassName="flex flex-col items-center w-full h-full"
-                className="max-h-[350px] max-w-[350px]"
+                className="h-[350px] max-w-[300px]"
             />
             {/* <Image 
                 src={props.token.image}
