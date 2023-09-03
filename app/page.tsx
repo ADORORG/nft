@@ -1,9 +1,11 @@
+import type { PopulatedNftContractEventType } from "@/lib/types/event"
 import HeroSection from "../components/LandingPage/Hero/Hero"
 import MarketValueSummary from "../components/LandingPage/MarketValue"
 import SupportedBlockchainNetwork from "../components/LandingPage/SupportedNetwork"
 import TopCreator from "../components/LandingPage/TopCreator"
 import StepsToBeACreator from "../components/LandingPage/StepToCreate"
 import JoinOurCommunity from "../components/LandingPage/JoinCommunity"
+import FeaturedEvents from "../components/LandingPage/FeaturedEvents"
 import { TrendingAuction, TrendingFixedOrder } from "../components/LandingPage/TrendingItem"
 import { getSettledPromiseValue } from "@/utils/main"
 // server side
@@ -12,6 +14,7 @@ import {
   getTrendingMarketOrders,
   getTopTradersAccountMarketValue,
   getTotalMarketValueInDollar,
+  getEventsByQuery
 } from "@/lib/handlers"
 
 async function getServerSideData() {
@@ -21,18 +24,19 @@ async function getServerSideData() {
    * @todo - Implement a way to mark/determine an order as featured/trending
    */
   const marketOrdersPromise = getTrendingMarketOrders({status: "active"}, 10)
-
+  const saleEventsPromise = getEventsByQuery({}, {limit: 8}) as Promise<PopulatedNftContractEventType[]>
   // fetch top traders
   const topTradersPromise = getTopTradersAccountMarketValue({}, 8)
   // fetch market value and order count
   const marketValuePromise = getTotalMarketValueInDollar({})
 
-  const [marketOrders, topTraders, marketValue] = await Promise.allSettled([marketOrdersPromise, topTradersPromise, marketValuePromise])
+  const [marketOrders, topTraders, marketValue, saleEvents] = await Promise.allSettled([marketOrdersPromise, topTradersPromise, marketValuePromise, saleEventsPromise])
 
   return {
     marketOrders: getSettledPromiseValue(marketOrders, []),
     topTraders: getSettledPromiseValue(topTraders, []),
-    marketValue: getSettledPromiseValue(marketValue, [])
+    marketValue: getSettledPromiseValue(marketValue, []),
+    saleEvents: getSettledPromiseValue(saleEvents, []),
   }
 }
 
@@ -41,10 +45,11 @@ async function getServerSideData() {
  * @returns 
  */
 export default async function LandingPage() {
-  const {marketOrders, topTraders, marketValue} = await getServerSideData()
+  const {marketOrders, topTraders, marketValue, saleEvents} = await getServerSideData()
   return (
     <div className="">
       <HeroSection marketOrders={marketOrders} />
+      <FeaturedEvents events={saleEvents} />
       <MarketValueSummary 
         marketValue={
           marketValue && 

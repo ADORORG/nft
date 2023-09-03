@@ -1,13 +1,17 @@
 "use client"
 import type EventMintProps from "./types"
+import { useState } from "react"
 import Link from "next/link"
 import EventDetails from "./component/EventDetails"
 import ExternalLink from "./component/ExternalLink"
 import MintCard from "./component/MintCard"
+import Button from "@/components/Button"
+import QuickModal from "@/components/QuickModal"
 import { MediaSkeleton } from "@/components/Skeleton"
 import { MediaPreview } from "@/components/MediaPreview"
 import { UserAccountAvatarWithLink } from "@/components/UserAccountAvatar"
 import { getChainIcon } from "@/components/ConnectWallet/ChainIcons"
+import { useChainById } from "@/hooks/contract"
 import { cutString, replaceUrlParams } from "@/utils/main"
 import { IPFS_GATEWAY } from "@/lib/app.config"
 import appRoutes from "@/config/app.route"
@@ -114,6 +118,59 @@ export function EventMintCollapsed(props: EventMintProps) {
                 </Link>
                 </p>
             </div>
+        </div>
+    )
+}
+
+export function EventMintCardSmall(props: EventMintProps) {
+    const [showModal, setShowModal] = useState(false)
+    const { eventData } = props
+    const ChainIcon = getChainIcon(eventData.contract.chainId)
+    const chain = useChainById(eventData.contract.chainId)
+
+    const MintModal = () => (
+        <div className="w-[300px] md:w-[350px]">
+            <MintCard eventData={eventData} />
+        </div>
+    )
+
+    return (
+        <div>
+            <div className="flex flex-col w-[280px] bg-gray-100 dark:bg-gray-800 p-2">
+                <div className="flex self-center w-[280px] h-[270px] rounded">
+                    <MediaPreview
+                        src={`${IPFS_GATEWAY}${eventData.media}`}
+                        type={eventData.mediaType}
+                        loadingComponent={<MediaSkeleton className="w-full h-full" />}
+                        previewClassName="flex justify-center items-center w-full h-full"
+                        className="w-[260px] max-h-[260px]"
+                    />
+                </div>
+                <div className="flex flex-col py-2">
+                    <h1 className="text-xl font-semibold break-all">
+                        <ChainIcon className="w-5 h-5 text-gray-100 mr-1 inline-block" />
+                        {cutString(eventData.contract?.label, 20)}
+                    </h1>
+                </div>
+
+                <div className="w-full my-2">
+                    <Button
+                        variant="gradient"
+                        className="w-full font-semibold"
+                        onClick={() => setShowModal(true)}
+                        rounded
+                    >
+                        Collect ({eventData.price} {chain?.nativeCurrency.symbol})
+                    </Button>
+                </div>
+            </div>
+
+            <QuickModal
+                show={showModal}
+                onHide={() => setShowModal(false)}
+                modalTitle={`Collect ${eventData.contract.label}`}
+                modalBody={MintModal}
+            />
         </div>
     )
 }

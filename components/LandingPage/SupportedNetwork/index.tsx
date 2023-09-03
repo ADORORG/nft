@@ -3,9 +3,9 @@ import Image from "next/image"
 export default function SupportedBlockchainNetwork() {
     const networks = [
         "/network/ethereum.png",
-        "/network/bitcoin.png",
+        "/network/base.png",
         "/network/polygon.png",
-        "/network/arbitrum.png",
+        "/network/optimism.png",
     ]
     return (
         <div className="bg-white dark:bg-gray-950 pt-10">
@@ -15,7 +15,7 @@ export default function SupportedBlockchainNetwork() {
                         networks.map((network, index) => (
                             <div key={network + index}>
                                 <Image  
-                                    className="w-[250px] opacity-40 px-4"
+                                    className="w-[250px] h-[60px] opacity-40 px-4"
                                     src={network}
                                     alt=""
                                     width={180}
