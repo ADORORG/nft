@@ -6,7 +6,9 @@ import { parseUnits, getAddress, decodeEventLog, formatEther } from "viem"
 import { useAuthStatus } from "@/hooks/account"
 import { convertToUnixTimestampSeconds } from "@/utils/date"
 import { default as latestERC721OpenEdition } from "@/abi/erc721.open_edition"
+import { default as latestERC721LimitedEdition } from "@/abi/erc721.limited_edition"
 import { ERC721_OPEN_EDITION_BYTECODE } from "@/solidity/erc721.open_edition.compiled"
+import { ERC721_LIMITED_EDITION_BYTECODE } from "@/solidity/erc721.limited_edition.compiled"
 
 export function useOpenEditionSaleEvent() {
     const {data: walletClient} = useWalletClient()
@@ -45,7 +47,7 @@ export function useOpenEditionSaleEvent() {
             >
         }
     ) => {
-        const contract = await walletClient?.deployContract({
+        const deployTxhash = await walletClient?.deployContract({
             account: getAddress(session?.user.address as string),
             abi: latestERC721OpenEdition,
             bytecode: ERC721_OPEN_EDITION_BYTECODE,
@@ -53,10 +55,10 @@ export function useOpenEditionSaleEvent() {
                 contractName,
                 contractSymbol,
                 baseURI,
+                getAddress(evenConfig.royaltyReceiver),
+                BigInt(evenConfig.royalty),
                 {
                     feeRecipient: getAddress(evenConfig.feeRecipient),
-                    royaltyReceiver: getAddress(evenConfig.royaltyReceiver),
-                    royalty: BigInt(evenConfig.royalty),
                     maxMintPerWallet: BigInt(evenConfig.maxMintPerWallet),
                     startTime: BigInt(convertToUnixTimestampSeconds(evenConfig.start)),
                     endTime: BigInt(convertToUnixTimestampSeconds(evenConfig.end)),
@@ -66,7 +68,7 @@ export function useOpenEditionSaleEvent() {
             ]
         })
 
-        const txReceipt = await publicClient.waitForTransactionReceipt({hash: contract as any})
+        const txReceipt = await publicClient.waitForTransactionReceipt({hash: deployTxhash as any})
         // wait for transaction to be mined and get the contract address
 
         return {
@@ -150,14 +152,13 @@ export function useOpenEditionSaleEvent() {
 
     }, [publicClient, walletClient, session?.user.address])
 
-
     return {
         deployedContractOpenEdition,
         mintBatchOpenEdition
     }
 }
 
-export function useEditionConfiguration({contractAddress}: {contractAddress: string}) {
+export function useOpenEditionConfiguration({contractAddress}: {contractAddress: string}) {
     const publicClient = usePublicClient()
     const [config, setConfig] = useState<Record<string, unknown> | null>(null)
 
@@ -171,13 +172,11 @@ export function useEditionConfiguration({contractAddress}: {contractAddress: str
     
             return {
                 feeRecipient: editionConfig[0],
-                royaltyReceiver: editionConfig[1],
-                royalty: Number(editionConfig[2]),
-                maxMintPerWallet: Number(editionConfig[3]),
-                transferrable: editionConfig[4],
-                price: formatEther(editionConfig[5]),
-                startTime: Number(editionConfig[6]),
-                endTime: Number(editionConfig[7]),
+                maxMintPerWallet: Number(editionConfig[1]),
+                transferrable: editionConfig[2],
+                price: formatEther(editionConfig[3]),
+                startTime: Number(editionConfig[4]),
+                endTime: Number(editionConfig[5]),
             }
         } catch (error) {
             // console.log(error)
@@ -206,7 +205,7 @@ export function useAccountPurchaseCount({contractAddress, accountAddress}: {cont
             accountPurchaseCount = await publicClient.readContract({
                 abi: latestERC721OpenEdition,
                 address: getAddress(contractAddress),
-                functionName: "userPurchases",
+                functionName: "walletMints",
                 args: [getAddress(accountAddress as string)]
             })
         }
@@ -226,10 +225,204 @@ export function useAccountPurchaseCount({contractAddress, accountAddress}: {cont
 
 /** Hook used for Limited Edition and One-of-One */
 export function useLimitedEditionSaleEvent() {
+    const {data: walletClient} = useWalletClient()
+    const publicClient = usePublicClient()
+    const { session } = useAuthStatus()
+
     /** Deploy a new contract */
-    const deployedContract = useCallback(async () => {}, [])
+    const deployedContractLimitedEdition = useCallback(async ({
+        contractName,
+        contractSymbol,
+        baseURI,
+        eventConfig
+    }: {
+        contractName: string,
+        contractSymbol: string,
+        baseURI: string,
+        eventConfig: Pick<
+            NftContractSaleEventType,
+            "supply" |
+            "feeRecipient" |
+            "royaltyReceiver" |
+            "royalty" |
+            "maxMintPerWallet" |
+            "start" |
+            "end" |
+            "price" |
+            "transferrable"
+        >
+    }) => {
+        const deployTxhash = await walletClient?.deployContract({
+            account: getAddress(session?.user.address as string),
+            abi: latestERC721LimitedEdition,
+            bytecode: ERC721_LIMITED_EDITION_BYTECODE,
+            args: [
+                contractName,
+                contractSymbol,
+                baseURI,
+                BigInt(eventConfig.supply),
+                {
+                    feeRecipient: getAddress(eventConfig.feeRecipient),
+                    royaltyReceiver: getAddress(eventConfig.royaltyReceiver),
+                    royaltyFraction: BigInt(eventConfig.royalty),
+                    maxMintPerWallet: BigInt(eventConfig.maxMintPerWallet),
+                    startTime: BigInt(convertToUnixTimestampSeconds(eventConfig.start)),
+                    endTime: BigInt(convertToUnixTimestampSeconds(eventConfig.end)),
+                    price: parseUnits((eventConfig.price.toString()), 18),
+                    transferrable: eventConfig.transferrable
+                }
+            ]
+        })
+
+        // wait for transaction to be mined and get the contract address
+        const txReceipt = await publicClient.waitForTransactionReceipt({hash: deployTxhash as any})
+
+        const decodedLogs = decodeEventLog({
+            abi: latestERC721LimitedEdition,
+            data: txReceipt.logs[0].data,
+            topics: txReceipt.logs[0].topics
+        })
+
+        console.log('decodedLogs', decodedLogs)
+
+        return {
+            partitionId: decodedLogs.eventName === "NewPartition" ? Number(decodedLogs.args.partitionId) : null,
+            contractAddress: txReceipt.contractAddress,
+        }
+
+    }, [publicClient, walletClient, session?.user.address])
     /** Create an edition in the same contract */
-    const createTokenId = useCallback(async () => {}, [])
+    const createPartition = useCallback(async ({
+        contractAddress,
+        eventConfig
+    }: {
+        contractAddress: string,
+        eventConfig: Pick<
+            NftContractSaleEventType,
+            "supply" |
+            "feeRecipient" |
+            "royaltyReceiver" |
+            "royalty" |
+            "maxMintPerWallet" |
+            "start" |
+            "end" |
+            "price" |
+            "transferrable"
+        >   
+    }) => {
+
+        const createPartitionRequest = await publicClient?.simulateContract({
+            account: getAddress(session?.user.address as string),
+            abi: latestERC721LimitedEdition,
+            address: getAddress(contractAddress),
+            functionName: "createPartition",
+            args: [
+                BigInt(eventConfig.supply),
+                {
+                    maxMintPerWallet: BigInt(eventConfig.maxMintPerWallet),
+                    transferrable: eventConfig.transferrable,
+                    price: parseUnits((eventConfig.price.toString()), 18),
+                    startTime: BigInt(convertToUnixTimestampSeconds(eventConfig.start)),
+                    endTime: BigInt(convertToUnixTimestampSeconds(eventConfig.end)),
+                    feeRecipient: getAddress(eventConfig.feeRecipient),
+                    royaltyReceiver: getAddress(eventConfig.royaltyReceiver),
+                    royaltyFraction: BigInt(eventConfig.royalty),
+                }
+            ]
+        })
+
+        const createTxhash = await walletClient?.writeContract(createPartitionRequest?.request)
+        const txReceipt = await publicClient.waitForTransactionReceipt({hash: createTxhash as any})
+
+        const decodedLogs = decodeEventLog({
+            abi: latestERC721LimitedEdition,
+            data: txReceipt.logs[0].data,
+            topics: txReceipt.logs[0].topics
+        })
+
+        return {
+            partitionId: decodedLogs.eventName === "NewPartition" ? Number(decodedLogs.args.partitionId) : null,
+        }
+
+    }, [publicClient, walletClient, session?.user.address])
+
+
     /** Mint a limited edition */
-    const mintLimitedEdition = useCallback(async () => {}, [])
+    const mintLimitedEdition = useCallback(async (
+        {
+            contractAddress,
+            partitionId,
+            receiverAddress,
+            totalAmount,
+            quantity
+        }: {
+            /** The contract address to mint on */
+            contractAddress: string,
+            /** The limited edition partition id to mint on */
+            partitionId: number,
+            /** The address to receive the minted nft */
+            receiverAddress: string,
+            /** The total amount to pay for the minting in ETH (not Wei) */
+            totalAmount: number,
+            /** The quantity to mint */
+            quantity: number,
+        }
+    ) => {
+        // Convert totalAmount to wei
+        const valueInWei = parseUnits(totalAmount.toString(), 18)
+        // Ensure that the account have enough ETH balance to pay for the minting
+        const balance = await publicClient.getBalance({
+            address: getAddress(session?.user.address as string)
+        })
+
+        if (balance < valueInWei) {
+            throw new Error("Not enough balance to mint")
+        }
+
+        const writeContractRequest = await publicClient?.simulateContract({
+            account: getAddress(session?.user.address as string),
+            abi: latestERC721LimitedEdition,
+            address: getAddress(contractAddress),
+            functionName: "batchMint",
+            // cost for minting nft. Convert to wei
+            value: parseUnits(totalAmount.toString(), 18),
+            args: [
+                BigInt(partitionId),
+                getAddress(receiverAddress),
+                BigInt(quantity)
+            ]
+        })
+
+        const minTxHash = await walletClient?.writeContract(writeContractRequest?.request)
+        const txReceipt = await publicClient.waitForTransactionReceipt({hash: minTxHash as any})
+
+        const mintData = []
+
+        // Decode the logs to get the tokenId and to (receiver address)
+        for (const log of txReceipt.logs) {
+            const decodedLogs = decodeEventLog({
+                abi: latestERC721OpenEdition,
+                data: log.data,
+                topics: log.topics
+            })
+
+            // On successful transaction, the logs will contain the tokenId and to (receiver address)
+            const thisLog = {
+                to: "to" in decodedLogs.args ? decodedLogs.args.to : "",
+                tokenId: "tokenId" in decodedLogs.args ? decodedLogs.args.tokenId.toString() : "",
+                quantity: 1
+            } as OnchainMintResponse
+
+            mintData.push(thisLog)
+        }
+
+        return mintData
+
+    }, [publicClient, walletClient, session?.user.address])
+
+    return {
+        deployedContractLimitedEdition,
+        createPartition,
+        mintLimitedEdition
+    }
 }

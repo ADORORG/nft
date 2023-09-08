@@ -162,7 +162,7 @@ function MintToken({contract}: CreateTokenModalProps) {
                     break
                 case "erc1155":
                     tokenId = (mintLog.args as any)?.id?.toString()
-                    break;
+                    break
             }
             
             setNftTokenData({...nftTokenData, tokenId})

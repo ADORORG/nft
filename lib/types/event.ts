@@ -24,8 +24,13 @@ export default interface NftContractSaleEventType {
     supplyMinted: number;
     /** Total eth raised so far in this sale event */
     ethRaised: number;
-     /** The creator of this sale event */
+    /** The creator of this sale event */
     owner: EthereumAddress | AccountType; 
+    /** Partition id of a limited edition
+     * in a partitioned contract.
+     * Partitioned contracts: ERC721_Partitioned, ERC1155
+    */
+    partitionId?: number;
     createdAt?: Date;
     updatedAt?: Date;
 
