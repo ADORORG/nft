@@ -1119,8 +1119,8 @@ abstract contract ERC2981 is IERC2981, ERC165 {
         address receiver,
         uint96 feeNumerator
     ) internal virtual {
-        require(feeNumerator <= MAX_ROYALTY, "ERC2981: MAX royalty fee is 1000 - 10%");
-        require(receiver != address(0), "ERC2981: Invalid parameters");
+        require(feeNumerator <= MAX_ROYALTY, "ERC2981: Royalty exceeds the maximum royalty amount");
+        require(receiver != address(0), "ERC2981: Invalid royalty receiver");
         _tokenRoyaltyInfo[tokenId] = RoyaltyInfo(receiver, feeNumerator);
     }
 
@@ -1690,50 +1690,112 @@ contract ERC721Permit is IERC721Permit, ERC721, EIP712 {
 }
 
 /**
- * @title ERC721OpenEdition
+ * @title Partitioned ERC721
  * @author - https://github.com/wisdomabioye
- * ERC721OpenEdition - ERC721 contract with configuration
+ * ERC721Partitioned - ERC721 partitioned with each partition having its configuration
  */
-contract ERC721OpenEdition is ERC721Permit, Ownable {
+contract ERC721Partitioned is ERC721Permit, Ownable {
     using Strings for address;
     using Counters for Counters.Counter;
-    Counters.Counter private _tokenIds;
-    string public baseURI;
 
-    struct Configuration {
+    uint256 public currentTokenId;
+    Counters.Counter public currentPartitionId;
+    string public baseURI;
+    
+    struct PartitionBoundary {
+        uint256 startId;
+        uint256 endId;
+        uint256 currentId;
+    }
+
+    struct PartitionConfiguration {
+        // Maximum purchase per wallet
+        uint256 maxMintPerWallet;
+        // If this partition is transferrable
+        bool transferrable;
+        // Price in wei
+        uint256 price;
+        // Sale start time
+        uint256 startTime;
+        // Sale end time
+        uint256 endTime;
         // Fee recipient: configurable
         address feeRecipient;
-        // Maximum purchase per wallet: configurable
+        // Royalty receiver: configurable
+        address royaltyReceiver;
+        // Royalty for this Edition: configurable
+        uint96 royaltyFraction;
+    }
+
+    struct Partition {
+        uint256 startId;
+        uint256 endId;
+        uint256 currentId;
+        // Maximum purchase per wallet
         uint256 maxMintPerWallet;
-        // If Edition is transferrable: configurable
+        // If this partition is transferrable
         bool transferrable;
-        // Price in wei: configurable
+        // Price in wei
         uint256 price;
-        // Sale start time: configurable
+        // Sale start time
         uint256 startTime;
-        // Sale end time: configurable
+        // Sale end time
         uint256 endTime;
+        // Fee recipient: configurable
+        address feeRecipient;
+        // Royalty receiver: configurable
+        address royaltyReceiver;
+        // Royalty for this Edition: configurable
+        uint96 royaltyFraction;
     }
     
-    Configuration public editionConfig;
-    mapping(address _account => uint256 _mints) public walletMints;
+    mapping(uint256 _partitionId => Partition _partition) public partitions;
+    mapping(uint256 _partitionId => mapping(address _wallet => uint256 _mints)) public walletMints;
+    // How can we have '_tokenId => uint256 _partitionId' without keeping the record of every tokenId?
+    // How could we achieve '1-20 => partitionId'?
+    mapping(uint256 _tokenId => uint256 _partitionId) public tokenIdPartition;
+    event NewPartition(uint256 indexed partitionId);
 
     constructor(
         string memory name_, 
         string memory symbol_, 
-        string memory baseURI_,
-        address royaltyReceiver_,
-        uint96 royaltyFraction_,
-        Configuration memory initConfig_
+        string memory baseURI_, 
+        uint256 supply_,
+        PartitionConfiguration memory initConfig_
     ) 
         ERC721Permit(name_, symbol_) {
             baseURI = string(abi.encodePacked(baseURI_, (address(this)).toHexString(), "/"));
-            _setDefaultRoyalty(royaltyReceiver_, royaltyFraction_);
-            editionConfig = initConfig_;
+            createPartition(supply_, initConfig_);
     }
 
-    function setFeeRecipient(address _feeRecipient) public onlyOwner {
-        editionConfig.feeRecipient = _feeRecipient;
+    function createPartition(uint256 _supply, PartitionConfiguration memory _config) public onlyOwner {
+        require(_config.royaltyFraction < _feeDenominator(), "Royalty value is too high");
+        currentPartitionId.increment();
+
+        partitions[currentPartitionId.current()] = Partition({
+            startId: currentTokenId + 1,
+            endId: currentTokenId + _supply,
+            currentId: currentTokenId,
+            // configuration
+            maxMintPerWallet: _config.maxMintPerWallet,
+            transferrable: _config.transferrable,
+            price: _config.price,
+            startTime: _config.startTime,
+            endTime: _config.endTime,
+            feeRecipient: _config.feeRecipient,
+            royaltyReceiver: _config.royaltyReceiver,
+            royaltyFraction: _config.royaltyFraction
+        });
+
+        currentTokenId += _supply;
+        emit NewPartition(currentPartitionId.current());
+    }
+
+    function setPartitionConfig(uint256 _partitionId, address _feeRecipient, address _royaltyReceiver, uint96 _royaltyFraction) public onlyOwner {
+        require(_royaltyFraction < _feeDenominator(), "Royalty value is too high");
+        partitions[_partitionId].feeRecipient = _feeRecipient;
+        partitions[_partitionId].royaltyReceiver = _royaltyReceiver;
+        partitions[_partitionId].royaltyFraction = _royaltyFraction;
     }
 
     function batchTransfer(address[] memory recipients, uint256[] memory tokenIds) public {
@@ -1743,63 +1805,59 @@ contract ERC721OpenEdition is ERC721Permit, Ownable {
         }
     }
     
-    function mint(address to_) public payable returns (uint256) {
-        uint256 value = msg.value;
-        require(value >= editionConfig.price, "Insufficient funds");
+    function mint(uint256 partitionId_, address to_) public payable {
+        require(msg.value >= partitions[partitionId_].price, "Insufficient funds");
         require(
-            editionConfig.startTime <= block.timestamp
+            partitions[partitionId_].startTime <= block.timestamp
             &&
-            editionConfig.endTime >= block.timestamp
+            partitions[partitionId_].endTime >= block.timestamp
             , 
-            "Sale is not active"
+            "Mint is not active"
         );
         require(
-            editionConfig.maxMintPerWallet == 0 
+            partitions[partitionId_].maxMintPerWallet == 0 
             ||
-            walletMints[to_] < editionConfig.maxMintPerWallet, 
-            "Maximum purchase per wallet reached"
+            walletMints[partitionId_][to_] < partitions[partitionId_].maxMintPerWallet, 
+            "Maximum mint per wallet reached"
         );
 
-        payable(editionConfig.feeRecipient).transfer(value);
-        
-        walletMints[to_] += 1;
-        _tokenIds.increment();
+        partitions[partitionId_].currentId += 1;
+        require(partitions[partitionId_].currentId <= partitions[partitionId_].endId, "Minted out");
+        _mint(to_, partitions[partitionId_].currentId);
+        tokenIdPartition[partitions[partitionId_].currentId] = partitionId_;
 
-        uint256 newItemId = _tokenIds.current();
-        _mint(to_, newItemId);
-        return newItemId;
+        payable(partitions[partitionId_].feeRecipient).transfer(msg.value);
+        walletMints[partitionId_][to_] += 1;
     }
 
-    function batchMint(address to, uint256 amount) public payable {
-        uint256 value = msg.value;
-        require(value >= editionConfig.price * amount, "Insufficient funds");
+    function batchMint(uint256 partitionId_, address to_, uint256 amount_) public payable {
+        require(msg.value >= partitions[partitionId_].price * amount_, "Insufficient funds");
         require(
-            editionConfig.startTime <= block.timestamp
+            partitions[partitionId_].startTime <= block.timestamp
             &&
-            editionConfig.endTime >= block.timestamp
+            partitions[partitionId_].endTime >= block.timestamp
             , 
-            "Sale is not active"
+            "Mint is not active"
         );
         require(
-            editionConfig.maxMintPerWallet == 0
+            partitions[partitionId_].maxMintPerWallet == 0 
             ||
-            walletMints[to] + amount <= editionConfig.maxMintPerWallet, 
-            "Maximum purchase per wallet reached"
+            walletMints[partitionId_][to_] + amount_ <= partitions[partitionId_].maxMintPerWallet, 
+            "Maximum mint per wallet reached"
         );
 
-        payable(editionConfig.feeRecipient).transfer(value);
-        
-        walletMints[to] += amount;
-
-        for (uint256 i = 0; i < amount; i++) {
-            _tokenIds.increment();
-            uint256 newItemId = _tokenIds.current();
-            _mint(to, newItemId);
+        partitions[partitionId_].currentId += amount_;
+        require(partitions[partitionId_].currentId <= partitions[partitionId_].endId, "Minted out");
+        payable(partitions[partitionId_].feeRecipient).transfer(msg.value);
+      
+        for (uint256 i = partitions[partitionId_].currentId; i > partitions[partitionId_].currentId - amount_; i--) {
+            tokenIdPartition[i] = partitionId_;
+            _mint(to_, i);
         }
     }
 
     function burn(uint256 tokenId) public {
-        require(editionConfig.transferrable, "Edition is not transferrable");
+        require(partitions[tokenIdPartition[tokenId]].transferrable, "Partition is not transferrable");
         _burn(tokenId);
         _resetTokenRoyalty(tokenId);
     }
@@ -1812,12 +1870,17 @@ contract ERC721OpenEdition is ERC721Permit, Ownable {
         baseURI = baseURI_;
     }
 
-    function _transfer(address from, address to, uint256 tokenId) internal virtual override {
-        require(editionConfig.transferrable, "Edition is not transferrable");
+    function _transfer(address from, address to, uint256 tokenId) internal override {
+        require(partitions[tokenIdPartition[tokenId]].transferrable, "Partition is not transferrable");
         super._transfer(from, to, tokenId);
     }
 
     function setDefaultRoyalty(address royaltyReceiver_, uint96 defaultRoyalty_) public onlyOwner {
         _setDefaultRoyalty(royaltyReceiver_, defaultRoyalty_);
+    }
+
+    function royaltyInfo(uint256 _tokenId, uint256 _salePrice) public view override returns (address, uint256) {        
+        uint256 royaltyAmount = (_salePrice * partitions[tokenIdPartition[_tokenId]].royaltyFraction) / _feeDenominator();
+        return (partitions[tokenIdPartition[_tokenId]].royaltyReceiver, royaltyAmount);
     }
 }
