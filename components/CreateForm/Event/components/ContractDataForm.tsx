@@ -3,9 +3,9 @@ import { useState } from "react"
 import { useNetwork } from "wagmi"
 import { useAccountContract, useAccountCollection } from "@/hooks/fetch"
 import { useAuthStatus } from "@/hooks/account"
+import { nftEditionChecker } from "@/utils/contract"
 import { Select } from "@/components/Select"
 import { InputField } from "@/components/Form"
-import { nftEditionChecker } from "@/utils/contract"
 
 export default function EventContracDataForm(props: EventDataFormProps) {
     const [selectedContractOption, setSelectedContractOption] = useState<string>("create")

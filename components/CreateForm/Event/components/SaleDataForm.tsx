@@ -1,6 +1,7 @@
 import type { EventDataFormProps } from "../types"
 import { useState, useEffect } from "react"
 import { toRoyaltyPercent, fromRoyaltyPercent } from "@/utils/contract"
+import { nftEditionChecker } from "@/utils/contract"
 import { useChainById } from "@/hooks/contract"
 import { useAuthStatus } from "@/hooks/account"
 import { InputField, RangeInput, SwitchCheckbox } from "@/components/Form"
@@ -12,6 +13,7 @@ export default function SaleEventMetadataForm(props: EventDataFormProps) {
     const {eventData, contractData} = props
     const chain = useChainById(contractData.chainId as number)
     const { session } = useAuthStatus()
+    const nftEditionType = nftEditionChecker(eventData.nftEdition)
 
     useEffect(() => {
         if (session?.user.address && !eventData?.feeRecipient) {
@@ -116,16 +118,21 @@ export default function SaleEventMetadataForm(props: EventDataFormProps) {
                 className="rounded focus:transition-all duration-700"
                 labelClassName="my-3"
             />
-            <InputField
-                label="Limit mints per wallet (0 = unlimited)"
-                type="number"
-                min="0"
-                name="maxMintPerWallet"
-                onChange={handleEventDataChange}
-                value={eventData?.maxMintPerWallet || "0"}
-                className="rounded focus:transition-all duration-700"
-                labelClassName="my-3"
-            />
+
+            {
+                !nftEditionType.isOneOfOne &&
+                <InputField
+                    label="Limit mints per wallet (0 = unlimited)"
+                    type="number"
+                    min="0"
+                    name="maxMintPerWallet"
+                    onChange={handleEventDataChange}
+                    value={eventData?.maxMintPerWallet || "0"}
+                    className="rounded focus:transition-all duration-700"
+                    labelClassName="my-3"
+                />
+            }
+            
             <Bordered className="flex flex-col md:flex-row justify-between md:items-center">
                 <span>Minted tokens can be transferred</span>
                 <SwitchCheckbox
