@@ -23,6 +23,7 @@ async function createNewEvent(request: NextRequest, _: any, { user }: {user: Acc
      * We do not provide an option to set the event currency on the frontend.
      * We are manually fetching the default event currency using the event
      * blockchain network default coin.
+     * @todo - Enable currency selection on the frontend and in smart contract
     */
     const currency = await getCurrencyByQuery({
         address: zeroAddress,// use Zero address to  default currency

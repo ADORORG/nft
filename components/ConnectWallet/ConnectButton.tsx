@@ -9,7 +9,7 @@ interface ConnectWalletButtonProps extends React.ButtonHTMLAttributes<HTMLButton
 }
 
 export default function ConnectWalletButton(props: ConnectWalletButtonProps) {
-    const { text = "Connect Wallet", className, ...otherProps } = props
+    const { text = "Connect Account", className, ...otherProps } = props
     const [showModal, setShowModal] = useAtom(showWalletConnectModal)
     const { isConnected } = useAccount()
 

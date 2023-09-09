@@ -39,7 +39,7 @@ export default interface NftContractSaleEventType {
     // When changed by the owner, these properties will be updated here but not in the contract.
     // This is because we could have multiple sale events for a single contract.
     
-    /** Royalty for token minted in this sale event*/
+    /** Royalty for token minted in this sale event in base 10000*/
     royalty: number;
     /** Royalty Receiver Address for the nft minted in this event*/
     royaltyReceiver: EthereumAddress;

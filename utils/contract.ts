@@ -51,3 +51,30 @@ export function getEventContractEditionData(event: NftContractEditionType, suppl
         contractStr
     }
 }
+
+/**
+ * Determine the edition and supply type
+ * @param editionType 
+ * @returns 
+ */
+export function nftEditionChecker(editionType?: NftContractEditionType) {
+
+    const isOneOfOne = editionType === "one_of_one"
+    const isLimitedEdition = editionType === "limited_edition"
+    const isOpenEdition = editionType === "open_edition"
+    const isGenerative = editionType === "generative_series"
+
+    return {
+        /** True for one_of_one edition */
+        isOneOfOne,
+        /** True for limited_edition edition */
+        isLimitedEdition,
+        /** True for open_edition edition */
+        isOpenEdition,
+        /** True for generative_series edition */
+        isGenerative,
+        /** True for generative_series or limited_edition edition */
+        isLimitedSupply: isGenerative || isLimitedEdition
+    }
+
+}

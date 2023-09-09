@@ -17,14 +17,14 @@ export default function CreateEventIndex() {
             description: "Create primary minting event with limited supply",
             href: appRoute.createLimitedEdition,
             icon: <UiChecksGrid className="h-5 w-5" />,
-            disabled: true,
+            disabled: false,
         },
         {
             title: "Create One-of-One",
             description: "Create primary minting event with single supply",
             href:appRoute.createOneOfOne,
             icon: <Icon1Square className="h-5 w-5" />,
-            disabled: true,
+            disabled: false,
         }
     ]
 

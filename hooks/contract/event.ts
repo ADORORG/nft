@@ -19,7 +19,7 @@ export function useOpenEditionSaleEvent() {
      * @param contractName The name of the contract
      * @param contractSymbol The symbol of the contract
      * @param baseURI The base URI of the contract
-     * @param evenConfig The configuration of the contract
+     * @param eventConfig The configuration of the contract
      * @returns The deployed contract address
      * @note - 'price' is expected in ETH and will be converted to wei in this function.
      * @note - 'end' and 'start' are expected in milliseconds and will be converted to unix timestamp seconds in this function.
@@ -29,12 +29,12 @@ export function useOpenEditionSaleEvent() {
             contractName,
             contractSymbol,
             baseURI,
-            evenConfig
+            eventConfig
         }: {
             contractName: string,
             contractSymbol: string,
             baseURI: string,
-            evenConfig: Pick<
+            eventConfig: Pick<
                 NftContractSaleEventType,
                 "feeRecipient" |
                 "royaltyReceiver" |
@@ -55,15 +55,15 @@ export function useOpenEditionSaleEvent() {
                 contractName,
                 contractSymbol,
                 baseURI,
-                getAddress(evenConfig.royaltyReceiver),
-                BigInt(evenConfig.royalty),
+                getAddress(eventConfig.royaltyReceiver),
+                BigInt(eventConfig.royalty),
                 {
-                    feeRecipient: getAddress(evenConfig.feeRecipient),
-                    maxMintPerWallet: BigInt(evenConfig.maxMintPerWallet),
-                    startTime: BigInt(convertToUnixTimestampSeconds(evenConfig.start)),
-                    endTime: BigInt(convertToUnixTimestampSeconds(evenConfig.end)),
-                    price: parseUnits((evenConfig.price.toString()), 18),
-                    transferrable: evenConfig.transferrable
+                    feeRecipient: getAddress(eventConfig.feeRecipient),
+                    maxMintPerWallet: BigInt(eventConfig.maxMintPerWallet),
+                    startTime: BigInt(convertToUnixTimestampSeconds(eventConfig.start)),
+                    endTime: BigInt(convertToUnixTimestampSeconds(eventConfig.end)),
+                    price: parseUnits((eventConfig.price.toString()), 18),
+                    transferrable: eventConfig.transferrable
                 }
             ]
         })
@@ -138,14 +138,16 @@ export function useOpenEditionSaleEvent() {
                 topics: log.topics
             })
 
-            // On successful transaction, the logs will contain the tokenId and to (receiver address)
-            const thisLog = {
-                to: "to" in decodedLogs.args ? decodedLogs.args.to : "",
-                tokenId: "tokenId" in decodedLogs.args ? decodedLogs.args.tokenId.toString() : "",
-                quantity: 1
-            } as OnchainMintResponse
+            if (decodedLogs.eventName === "Transfer") {
+                // On successful transaction, the logs will contain the tokenId and to (receiver address)
+                const thisLog = {
+                    to: decodedLogs.args.to,
+                    tokenId: decodedLogs.args.tokenId.toString(),
+                    quantity: 1
+                } as OnchainMintResponse
 
-            mintData.push(thisLog)
+                mintData.push(thisLog)
+            }
         }
 
         return mintData
@@ -277,16 +279,23 @@ export function useLimitedEditionSaleEvent() {
         // wait for transaction to be mined and get the contract address
         const txReceipt = await publicClient.waitForTransactionReceipt({hash: deployTxhash as any})
 
-        const decodedLogs = decodeEventLog({
-            abi: latestERC721LimitedEdition,
-            data: txReceipt.logs[0].data,
-            topics: txReceipt.logs[0].topics
-        })
+        let partitionId: bigint | null = null
 
-        console.log('decodedLogs', decodedLogs)
+        for (const log of txReceipt.logs) {
+            const decodedLogs = decodeEventLog({
+                abi: latestERC721LimitedEdition,
+                data: log.data,
+                topics: log.topics
+            })
 
+            if (decodedLogs.eventName === "NewPartition") {
+                partitionId = decodedLogs.args.partitionId
+                break
+            }
+        }
+        
         return {
-            partitionId: decodedLogs.eventName === "NewPartition" ? Number(decodedLogs.args.partitionId) : null,
+            partitionId: Number(partitionId),
             contractAddress: txReceipt.contractAddress,
         }
 
@@ -334,21 +343,29 @@ export function useLimitedEditionSaleEvent() {
         const createTxhash = await walletClient?.writeContract(createPartitionRequest?.request)
         const txReceipt = await publicClient.waitForTransactionReceipt({hash: createTxhash as any})
 
-        const decodedLogs = decodeEventLog({
-            abi: latestERC721LimitedEdition,
-            data: txReceipt.logs[0].data,
-            topics: txReceipt.logs[0].topics
-        })
+        let partitionId: bigint | null = null
+
+        for (const log of txReceipt.logs) {
+            const decodedLogs = decodeEventLog({
+                abi: latestERC721LimitedEdition,
+                data: log.data,
+                topics: log.topics
+            })
+
+            if (decodedLogs.eventName === "NewPartition") {
+                partitionId = decodedLogs.args.partitionId
+                break
+            }
+        }
 
         return {
-            partitionId: decodedLogs.eventName === "NewPartition" ? Number(decodedLogs.args.partitionId) : null,
+            partitionId: Number(partitionId)
         }
 
     }, [publicClient, walletClient, session?.user.address])
 
-
     /** Mint a limited edition */
-    const mintLimitedEdition = useCallback(async (
+    const mintBatchLimitedEdition = useCallback(async (
         {
             contractAddress,
             partitionId,
@@ -406,14 +423,16 @@ export function useLimitedEditionSaleEvent() {
                 topics: log.topics
             })
 
-            // On successful transaction, the logs will contain the tokenId and to (receiver address)
-            const thisLog = {
-                to: "to" in decodedLogs.args ? decodedLogs.args.to : "",
-                tokenId: "tokenId" in decodedLogs.args ? decodedLogs.args.tokenId.toString() : "",
-                quantity: 1
-            } as OnchainMintResponse
+            if (decodedLogs.eventName === "Transfer") {
+                // On successful transaction, the logs will contain the tokenId and to (receiver address)
+                const thisLog = {
+                    to: decodedLogs.args.to,
+                    tokenId: decodedLogs.args.tokenId.toString(),
+                    quantity: 1
+                } as OnchainMintResponse
 
-            mintData.push(thisLog)
+                mintData.push(thisLog)
+            }
         }
 
         return mintData
@@ -423,6 +442,6 @@ export function useLimitedEditionSaleEvent() {
     return {
         deployedContractLimitedEdition,
         createPartition,
-        mintLimitedEdition
+        mintBatchLimitedEdition
     }
 }

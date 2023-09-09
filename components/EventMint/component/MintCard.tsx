@@ -1,7 +1,8 @@
 import type EventMintProps from "../types"
 import { useState } from "react"
 import { dateToRelativeDayAndHour } from "@/utils/date"
-import { useAuthStatus } from "@/hooks/account"
+import { nftEditionChecker } from "@/utils/contract"
+// import { useAuthStatus } from "@/hooks/account"
 import { InputField } from "@/components/Form"
 import ProgressBar from "@/components/ProgressBar"
 import MintButton from "./MintButton"
@@ -11,6 +12,7 @@ export default function MintCard(props: EventMintProps) {
     const [quantity, setQuantity] = useState(1)
     const relativeStartDate = dateToRelativeDayAndHour(new Date(eventData.start))
     const relativeEndDate = dateToRelativeDayAndHour(new Date(eventData.end))
+    const nftEditionType = nftEditionChecker(eventData.nftEdition)
     const accountPurchaseCount = 0
 
     return (
@@ -74,7 +76,12 @@ export default function MintCard(props: EventMintProps) {
                     </div>
 
                     <ProgressBar
-                        progress={eventData.supplyMinted / eventData.supply * 100}
+                        progress={
+                            nftEditionType.isOpenEdition ?
+                            100
+                            :
+                            ((eventData.supplyMinted || 0) / eventData.supply) * 100
+                        }
                         variant="gradient"
                         size="sm"
                     />

@@ -5,6 +5,7 @@ import { useAccountContract, useAccountCollection } from "@/hooks/fetch"
 import { useAuthStatus } from "@/hooks/account"
 import { Select } from "@/components/Select"
 import { InputField } from "@/components/Form"
+import { nftEditionChecker } from "@/utils/contract"
 
 export default function EventContracDataForm(props: EventDataFormProps) {
     const [selectedContractOption, setSelectedContractOption] = useState<string>("create")
@@ -13,6 +14,7 @@ export default function EventContracDataForm(props: EventDataFormProps) {
     const { accountContracts } = useAccountContract(session?.user.address)
     const { accountCollections } = useAccountCollection(session?.user.address)
     const {contractData, eventData} = props
+    const nftEditionType = nftEditionChecker(props.eventData.nftEdition)
 
     const handleContractChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         let {name, value} = e.target
@@ -73,13 +75,17 @@ export default function EventContracDataForm(props: EventDataFormProps) {
                             {   
                                 // Only show contracts if nftEdition is either 'one_of_one' or 'limited_edition'
                                 // Open edition & generative series requires new contract creation
-                                ["one_of_one", "limited_edition"].includes(props.eventData.nftEdition || "") &&
+                                (nftEditionType.isOneOfOne || nftEditionType.isLimitedEdition) &&
                                 accountContracts && 
                                 accountContracts.length > 0 ? 
                                 accountContracts
                                 // Only show contracts on the current chainId
                                 .filter(contract => contract.chainId === contractData.chainId)
-                                .filter(contract => ["one_of_one", "limited_edition"].includes(contract.nftEdition))
+                                .filter(contract => (
+                                    nftEditionChecker(contract.nftEdition).isOneOfOne 
+                                    ||
+                                    nftEditionChecker(contract.nftEdition).isLimitedEdition 
+                                ))
                                 .map(contract => (
                                     <Select.Option 
                                         key={contract._id?.toString()} 
@@ -129,7 +135,7 @@ export default function EventContracDataForm(props: EventDataFormProps) {
                 {/* Supply (Edition size) */}
                 {
                     // open_edition is unlimited supply, one-of-one is always a single supply
-                    ["limited_edition", "generative_series"].includes(eventData?.nftEdition || "") && (
+                    nftEditionType.isLimitedSupply && (
                         <InputField
                             label="Supply (Edition size)"
                             type="number"

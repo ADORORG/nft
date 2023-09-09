@@ -8,7 +8,7 @@ export async function validateNftContractEvent(document: any) {
         await NftContractEventModel.validate(document)
         return true
     } catch(error) {
-        // console.log(error)
+        console.log(error)
         return false
     }
 }
