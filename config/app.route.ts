@@ -15,7 +15,7 @@ const appRoutes = {
     /** View an event data */
     viewEvent: "/event/:eventDocId",
     /** View list of events */
-    events: "/event",
+    events: "/events/minting_now",
     /** Create ERC721 contract */
     createErc721: "/create/erc721",
     /** Create ERC1155 contract */

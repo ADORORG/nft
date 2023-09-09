@@ -13,6 +13,7 @@ import { UserAccountAvatarWithLink } from "@/components/UserAccountAvatar"
 import { getChainIcon } from "@/components/ConnectWallet/ChainIcons"
 import { useChainById } from "@/hooks/contract"
 import { cutString, replaceUrlParams } from "@/utils/main"
+import { nftEditionChecker } from "@/utils/contract"
 import { IPFS_GATEWAY } from "@/lib/app.config"
 import appRoutes from "@/config/app.route"
 
@@ -22,12 +23,13 @@ export function EventMintExpanded(props: EventMintProps) {
      */
     const { eventData } = props
     const ChainIcon = getChainIcon(eventData.contract.chainId)
+
     return (
         <div className="max-w-4xl mx-auto flex flex-col gap-8">
             <div className="flex flex-col self-center gap-4 w-[250px] md:w-[350px]">
                 <h1 className="text-2xl self-center font-semibold break-all">
                     <ChainIcon className="w-6 h-6 mr-2 inline-block" />
-                    {eventData.contract.label}
+                    {eventData.tokenName || eventData.contract.label}
                 </h1>
                 <div className="self-center">
                     <UserAccountAvatarWithLink 
@@ -76,7 +78,7 @@ export function EventMintCollapsed(props: EventMintProps) {
             <div className="flex flex-col md:flex-row justify-between items-center">
                 <h1 className="text-xl font-semibold break-all">
                     <ChainIcon className="w-5 h-5 text-gray-100 mr-1 inline-block" />
-                    {cutString(eventData.contract.label, 24)}
+                    {cutString(eventData.tokenName || eventData.contract.label, 24)}
                 </h1>
                 <div className="">
                     <UserAccountAvatarWithLink 
@@ -122,6 +124,86 @@ export function EventMintCollapsed(props: EventMintProps) {
     )
 }
 
+export function EventMintCollapsedSmall(props: EventMintProps) {
+    const [showModal, setShowModal] = useState(false)
+    const { eventData } = props
+    const ChainIcon = getChainIcon(eventData.contract.chainId )
+    const chain = useChainById(eventData.contract.chainId)
+    const nftEditionType = nftEditionChecker(eventData.nftEdition)
+
+    const MintModal = () => (
+        <div className="w-[300px] md:w-[350px]">
+            <MintCard eventData={eventData} />
+        </div>
+    )
+
+    return (
+        <div>
+            <div className="flex flex-col md:flex-row gap-4 bg-gray-100 dark:bg-gray-800 p-4 rounded drop-shadow-xl">
+                <div className="flex items-center p-2 w-[200px] h-[210px] bg-gray-200 dark:bg-gray-900 rounded">
+                    <MediaPreview
+                        src={`${IPFS_GATEWAY}${eventData.media}`}
+                        type={eventData.mediaType}
+                        loadingComponent={<MediaSkeleton className="w-full h-full" />}
+                        previewClassName="flex justify-center items-center w-full h-full"
+                        className="w-[200px] max-h-[210px]"
+                    />
+                </div>
+                <div className="flex flex-col gap-3 w-[200px] h-[210px] justify-between">
+                    <div className="">
+                        <h1 className="text-xl font-semibold break-all mb-2" title={eventData.tokenName || eventData.contract.label}>
+                            <Link
+                                className=""
+                                href={
+                                    replaceUrlParams(appRoutes.viewEvent, {
+                                        eventDocId: eventData._id?.toString() as string
+                                    })
+                                }
+                            >
+                                <ChainIcon className="w-5 h-5 text-gray-100 mr-1 inline-block" />
+                                {cutString(eventData.tokenName || eventData.contract.label, 24)}
+                            </Link>
+                            
+                        </h1>
+                        <UserAccountAvatarWithLink 
+                            account={eventData.owner}
+                            className="w-4 h-4 text-sm"
+                        />
+                    </div>
+                    <p className="break-all">
+                        {cutString(eventData.xcollection.description, 40)}
+                    </p>
+                    <div className="w-full my-2">
+                        <Button
+                            disabled={eventData.end < Date.now()}
+                            variant="gradient"
+                            className="w-full font-semibold"
+                            onClick={() => setShowModal(true)}
+                            rounded
+                        >
+                            {
+                                eventData.end < Date.now() ?
+                                "Ended" :
+                                nftEditionType.isLimitedSupply && eventData.supplyMinted >= eventData.supply ?
+                                "Minted out" :
+                                `Collect (${eventData.price} ${chain?.nativeCurrency.symbol})`
+                            }
+                            
+                        </Button>
+                    </div>
+                </div>
+
+            </div>
+            <QuickModal
+                show={showModal}
+                onHide={() => setShowModal(false)}
+                modalTitle={`Collect ${eventData.tokenName || eventData.contract.label}`}
+                modalBody={MintModal}
+            />
+        </div>
+    )
+}
+
 export function EventMintCardSmall(props: EventMintProps) {
     const [showModal, setShowModal] = useState(false)
     const { eventData } = props
@@ -149,7 +231,7 @@ export function EventMintCardSmall(props: EventMintProps) {
                 <div className="flex flex-col py-2">
                     <h1 className="text-xl font-semibold break-all">
                         <ChainIcon className="w-5 h-5 text-gray-100 mr-1 inline-block" />
-                        {cutString(eventData.contract?.label, 20)}
+                        {cutString(eventData.tokenName || eventData.contract?.label, 20)}
                     </h1>
                 </div>
 
@@ -168,7 +250,7 @@ export function EventMintCardSmall(props: EventMintProps) {
             <QuickModal
                 show={showModal}
                 onHide={() => setShowModal(false)}
-                modalTitle={`Collect ${eventData.contract.label}`}
+                modalTitle={`Collect ${eventData.tokenName || eventData.contract.label}`}
                 modalBody={MintModal}
             />
         </div>

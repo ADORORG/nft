@@ -3,7 +3,7 @@ import type { NftContractEditionType } from "@/lib/types/common"
 import { useChainById } from "@/hooks/contract"
 import { useAccountContract, useAccountCollection } from "@/hooks/fetch"
 import { useAuthStatus } from "@/hooks/account"
-import { fromRoyaltyPercent, getEventContractEditionData } from "@/utils/contract"
+import { fromRoyaltyPercent, getEventContractEditionData, nftEditionChecker } from "@/utils/contract"
 
 export default function ReviewEventData(props: EventDataFormProps) {
     const { session } = useAuthStatus()
@@ -14,11 +14,12 @@ export default function ReviewEventData(props: EventDataFormProps) {
     const chain = useChainById(chainId as number)
 
     const {
+        tokenName,
         maxMintPerWallet, 
         start, 
         end, 
         price, 
-        // nftEdition, 
+        nftEdition, 
         supply,
         feeRecipient,
         royalty,
@@ -27,18 +28,27 @@ export default function ReviewEventData(props: EventDataFormProps) {
         xcollection,
     } = eventData
 
+    const nftEditionType = nftEditionChecker(nftEdition)
     const editionDescription = getEventContractEditionData(props.eventData?.nftEdition as NftContractEditionType, supply)
     const selectedContract = accountContracts?.find(c => c?._id?.toString() === _id?.toString())
     const selectedCollection = accountCollections?.find(c => c?._id?.toString() === xcollection?.toString())
 
-    const fieldClassName = "flex flex-row justify-between items-center border-b border-gray-300 dark:border-gray-700"
-    const notSet = <span>Not set</span>
+    const fieldClassName = "flex flex-row justify-between items-start pb-2 border-b border-gray-300 dark:border-gray-700"
+    const notSet = <span className="border border-rose-500 p-1 text-rose-500 text-[12px] rounded">Not set</span>
 
     return (
         <div className={`${props.className}`}>
             <p className={fieldClassName}>
+                <span>Event Name</span>
+                <span>
+                    {tokenName || notSet}
+                </span>
+            </p>
+            <p className={fieldClassName}>
                 <span>Network</span>
-                <span>{chain?.name || notSet}</span>
+                <span>
+                    {chain?.name || notSet}
+                </span>
             </p>
             <p className={fieldClassName}>
                 <span>Contract</span>
@@ -54,7 +64,15 @@ export default function ReviewEventData(props: EventDataFormProps) {
             </p>
             <p className={fieldClassName}>
                 <span>Supply</span>
-                <span>{editionDescription.supplyStr || notSet}</span>
+                <span>
+                    {
+                        nftEditionType.isLimitedSupply 
+                        ?  
+                        Number(supply) > 0 ? editionDescription.editionStr  : notSet 
+                        : 
+                        editionDescription.editionStr
+                    }
+                </span>
             </p>
             <p className={fieldClassName}>
                 <span>Collection</span>
@@ -62,7 +80,7 @@ export default function ReviewEventData(props: EventDataFormProps) {
             </p>
             <p className={fieldClassName}>
                 <span>Price</span>
-                <span>{price || notSet} {chain?.nativeCurrency?.name} {chain?.nativeCurrency?.symbol}</span>
+                <span>{price || notSet} {chain?.nativeCurrency?.symbol}</span>
             </p>
             <p className={fieldClassName}>
                 <span>Start date</span>
@@ -74,7 +92,7 @@ export default function ReviewEventData(props: EventDataFormProps) {
             </p>
             <p className={fieldClassName}>
                 <span>Mint Per Wallet</span>
-                <span>{maxMintPerWallet || notSet}</span>
+                <span>{maxMintPerWallet || "No max"}</span>
             </p>
             <p className={fieldClassName}>
                 <span>Payout Address</span>

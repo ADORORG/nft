@@ -52,6 +52,7 @@ export default function AttributeAndMedia(props: EventDataFormProps) {
                         src={props.tempMediaObjectUrl}
                         htmlFor="eventMedia"
                         previewClassName="h-[250px] w-[250px] md:h-[350px] md:w-[350px]"
+                        className="max-h-[250px] max-h-[350px]"
                     />
                 }
                 <div className={!!props.tempMediaObjectUrl ? "hidden h-0" : ""}>

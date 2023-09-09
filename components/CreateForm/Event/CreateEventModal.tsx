@@ -12,6 +12,8 @@ import { toast } from "react-hot-toast"
 import { useRouter } from "next/navigation"
 import { useOpenEditionSaleEvent, useLimitedEditionSaleEvent } from "@/hooks/contract/event"
 import { useContractChain } from "@/hooks/contract"
+import { useAccountContract } from "@/hooks/fetch"
+import { useAuthStatus } from "@/hooks/account"
 import { readSingleFileAsDataURL } from "@/utils/file"
 import { fetcher, getFetcherErrorMessage } from "@/utils/network"
 import { nftEditionChecker } from "@/utils/contract"
@@ -44,6 +46,8 @@ export default function CreateEventModal({resetForm}: {resetForm: () => void}) {
     const { ensureContractChainAsync } = useContractChain({chainId: nftEventContractData.chainId as number})
     const { deployedContractOpenEdition } = useOpenEditionSaleEvent()
     const { deployedContractLimitedEdition, createPartition } = useLimitedEditionSaleEvent()
+    const { session } = useAuthStatus()
+    const { accountContracts } = useAccountContract(session?.user.address)
     const nftEditionType = nftEditionChecker(nftSaleEventData.nftEdition)
     
     const handleCreateOnchain = async () => {
@@ -86,7 +90,7 @@ export default function CreateEventModal({resetForm}: {resetForm: () => void}) {
             })
 
         } else if (nftEditionType.isLimitedEdition || nftEditionType.isOneOfOne) {
-            // create a new nft id with the supplied edition
+            // create a new nft partition id with the supplied edition
             // if it's a new contract, deploy it otherwise create a new partition  
             if (!nftEventContractData._id) {
                 // Existing contract not selected, deploy a new one
@@ -114,8 +118,12 @@ export default function CreateEventModal({resetForm}: {resetForm: () => void}) {
                 })
             } else {
                 // create partition
+                /** Get the contract address.
+                 * If a contract is selected, the contract list must have been fetched
+                 */
+                const selectedContract = accountContracts?.find(c => c?._id?.toString() === nftEventContractData._id?.toString())
                 const { partitionId } = await createPartition({
-                    contractAddress: nftEventContractData.label as string,
+                    contractAddress: selectedContract?.contractAddress as string,
                     eventConfig
                 })
                 

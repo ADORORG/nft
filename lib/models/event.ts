@@ -13,11 +13,11 @@ const { nftContractSaleEvents, currencies, collections: xcollections, contracts,
 const NftContractSaleEventSchema = new Schema<NftContractSaleEventType>({
     feeRecipient: {type: String, required: true}, // Ethereum address
     maxMintPerWallet: {type: Number, default: 0},
-    start: {type: Number, required: true}, // Unix timestamp seconds
-    end: {type: Number, required: true}, // Unix timestamp seconds
+    start: {type: Number, required: true, index: true}, // Unix timestamp milliseconds
+    end: {type: Number, required: true, index: true}, // Unix timestamp milliseconds
     price: {type: Number, required: true}, // in wei
     supply: {type: Number, default: 0},
-    supplyMinted: {type: Number},
+    supplyMinted: {type: Number, default: 0},
     ethRaised: {type: Number, default: 0},
     owner: {type: String, ref: accounts, required: true, index: true},    
     partitionId: {type: Number, min: 1, required: function() { return ['generative_series', 'limited_edition', 'one_of_one'].includes((this as any).nftEdition) }},
@@ -31,6 +31,7 @@ const NftContractSaleEventSchema = new Schema<NftContractSaleEventType>({
     nftEdition: {type: String, required: true, enum: NFT_CONTRACT_EDITION.filter(edition => edition !== 'private'), lowercase: true},
     // Token minted in this sale event will have the following properties.
     // These properties will be saved to the token model when a token is minted.
+    tokenName: {type: String, required: true},
     transferrable: {type: Boolean, default: true},
     media: {type: String, required: true},
     mediaType: {type: String, required: true},

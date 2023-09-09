@@ -24,7 +24,10 @@ async function getServerSideData() {
    * @todo - Implement a way to mark/determine an order as featured/trending
    */
   const marketOrdersPromise = getTrendingMarketOrders({status: "active"}, 10)
-  const saleEventsPromise = getEventsByQuery({}, {limit: 8}) as Promise<PopulatedNftContractEventType[]>
+  const saleEventsPromise = getEventsByQuery({
+    start: {$lte: Date.now()},
+    end: {$gte: Date.now()}
+  }, {limit: 8}) as Promise<PopulatedNftContractEventType[]>
   // fetch top traders
   const topTradersPromise = getTopTradersAccountMarketValue({}, 8)
   // fetch market value and order count

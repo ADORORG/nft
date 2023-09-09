@@ -11,6 +11,7 @@ import { useAtom } from "jotai"
 import { useRouter } from "next/navigation"
 import { useMediaObjectUrl } from "@/hooks/media/useObjectUrl"
 import { toast } from "react-hot-toast"
+import { nftEditionChecker } from "@/utils/contract"
 import QuickModal from "@/components/QuickModal"
 import NavigationButton from "@/components/NavigationButton"
 import Button from "@/components/Button"
@@ -42,6 +43,7 @@ export default function CreateEventForm({nftEdition}: CreateEventFormProps) {
     /** Temporary object URL to the selected media */
     const tempMediaObjectUrl = useMediaObjectUrl(nftEventMedia)
     const [showCreateModal, setShowCreateModal] = useState(false)
+    const nftEditionType = nftEditionChecker(nftEdition)
 
     const confirmNavigateAway = () => {
         const confirmNavigateAway = window.confirm("Your changes will not saved. Are you sure you want to leave this page?")
@@ -54,7 +56,8 @@ export default function CreateEventForm({nftEdition}: CreateEventFormProps) {
     useEffect(() => {
         setNftSaleEventData({
             ...nftSaleEventData,
-            nftEdition
+            nftEdition,
+            supply: nftEditionType.isOneOfOne ? 1 : nftSaleEventData.supply
         })
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [nftEdition])
@@ -107,7 +110,7 @@ export default function CreateEventForm({nftEdition}: CreateEventFormProps) {
 
         const eventDataFields = [
             "feeRecipient", "price", "start", "end", "royalty",
-            "royaltyReceiver", "mediaType"
+            "royaltyReceiver", "mediaType", "tokenName"
         ] as const
         
         // If an existing contract is not selected, validate the new contract field
@@ -136,7 +139,7 @@ export default function CreateEventForm({nftEdition}: CreateEventFormProps) {
 
 
         // If edition is any of this type, validate the supply
-        if (["limited_edition", "generative_series"].includes(nftSaleEventData.nftEdition as any)) {
+        if (nftEditionType.isLimitedSupply) {
             if (!nftSaleEventData.supply) {
                 return false
             }

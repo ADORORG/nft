@@ -12,7 +12,7 @@ export default interface NftContractSaleEventType {
     feeRecipient: EthereumAddress; // Ethereum address
     /** Maximum allowed purchase per wallet for this sale event */
     maxMintPerWallet: number;
-    /** Start time of this sale event in unix timestamp seconds */
+    /** Start time of this sale event in unix timestamp milliseconds */
     start: number;
     /** End time of this sale event in unix timestamp milliseconds */
     end: number;
@@ -35,7 +35,6 @@ export default interface NftContractSaleEventType {
     updatedAt?: Date;
 
     // The following properties are passed to the contract when firstly deployed.
-    // However, they are configurable by the contract owner.
     // When changed by the owner, these properties will be updated here but not in the contract.
     // This is because we could have multiple sale events for a single contract.
     
@@ -50,7 +49,8 @@ export default interface NftContractSaleEventType {
 
     // Token minted in this sale event will have the following properties.
     // These properties will be saved to the token model when a token is minted.
-   
+    /** Every tokens minted in this event will have this name */
+    tokenName: string,
     /** Is the nft token from this sale event transferrable? */
     transferrable: boolean;
     /** Token attribute */

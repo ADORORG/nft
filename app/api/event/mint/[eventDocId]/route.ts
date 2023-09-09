@@ -39,8 +39,8 @@ async function mintOnSaleEvent(request: NextRequest, { params }: {params: {event
         return {
             tokenId: Number(mint.tokenId),
             supply: mint.quantity,
-            // Use contract name/label as token name
-            name: mintEventData.contract.label,
+            // Use event tokenName as token name
+            name: mintEventData.tokenName,
             // Use xcollection to which this event belong as the description
             description: mintEventData.xcollection.description,
             image: mintEventData.media,

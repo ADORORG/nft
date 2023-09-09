@@ -71,7 +71,9 @@ export default function RenderCreateOption() {
                             isConnected &&
                             accountContracts &&
                             accountContracts.length &&
-                            accountContracts.map(contract => (
+                            // Only show contracts that are private edition or not edition
+                            accountContracts.filter(contract => !contract.nftEdition || contract.nftEdition === "private")
+                            .map(contract => (
                                 <Select.Option 
                                     key={contract._id?.toString()}
                                     value={contract._id?.toString()}>{contract.label}-{contract.nftSchema}</Select.Option>

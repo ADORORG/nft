@@ -29,6 +29,18 @@ export default function SaleEventMetadataForm(props: EventDataFormProps) {
     return (
         <div className={`${props.className}`}>
             <InputField
+                label={<span>Event name <br/><small>Minted tokens will have this name</small></span>}
+                type="text"
+                name="tokenName"
+                placeholder="My NFT"
+                onChange={handleEventDataChange}
+                value={eventData?.tokenName || ""}
+                className="rounded focus:transition-all duration-700"
+                labelClassName="my-3"
+                autoComplete="off"
+            />
+
+            <InputField
                 label={`Price (${chain?.nativeCurrency?.symbol || `ETH`})`}
                 type="number"
                 min="0"

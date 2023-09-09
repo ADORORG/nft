@@ -17,10 +17,11 @@ export default function PreviewEventData(props: EventDataFormProps) {
                     type={props.eventData?.mediaType}
                     src={props.tempMediaObjectUrl}
                     previewClassName="h-[250px] w-[250px] flex justify-center items-center"
+                    className="h-[250px]"
                 />
             </Bordered>
             <div>
-                <h5>{props.contractData.label || "{Name}"}</h5>
+                <h5>{props.eventData.tokenName || "{Name}"}</h5>
                 <h6 className="opacity-60">
                     {editionDescription.editionStr}
                 </h6>

@@ -10,9 +10,19 @@ export function useContractChain(contract: Pick<ContractType, "chainId">) {
     const {data: walletClient} = useWalletClient()
     return {
         ensureContractChainAsync: useCallback( async () => {
-            await walletClient?.switchChain({id: contract.chainId})
-            // Delay for one second to allow chain change propagate
-            await promiseDelay(1000)
+            try {
+                await walletClient?.switchChain({id: contract.chainId})
+                // Delay for one second to allow chain change propagate
+                await promiseDelay(1000)
+
+            } catch (error: any) {
+                if (error?.name?.includes("SwitchChainError")) {
+                    await walletClient?.addChain({chain: supportedChains.find(c => c.id === contract.chainId) as any})
+                } else {
+                    throw new Error(error)
+                }
+            }
+           
         }, [walletClient, contract]) 
     }
 }

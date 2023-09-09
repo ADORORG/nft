@@ -16,6 +16,7 @@ export default function EventDetails(props: EventMintProps) {
         "Royalty": fromRoyaltyPercent(eventData.royalty) + "%",
         "Royalty Receiver": cutAddress(eventData.royaltyReceiver),
         "Transferrable": eventData.transferrable ? "Yes" : "No",
+        "Partition": eventData.partitionId || "None",
     }
 
     return (
