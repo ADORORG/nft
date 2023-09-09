@@ -4,7 +4,6 @@ import Link from "next/link"
 import { cutString, replaceUrlParams } from "@/utils/main"
 import { CryptoCurrencyDisplay, CryptoToFiat } from "@/components/Currency"
 import { MediaSkeleton } from "@/components/Skeleton"
-import Image from "@/components/Image"
 import CountdownTimer from "@/components/Countdown"
 import UserAccountAvatar from "@/components/UserAccountAvatar"
 import CollectionAvatar from "@/components/CollectionAvatar"
@@ -49,7 +48,7 @@ export default function MarketListingCard({marketOrder, size = "md"}: MarketList
                     type={mediaType || "image/*"}
                     loadingComponent={<MediaSkeleton className="w-72 h-64" />}
                     previewClassName="flex justify-center items-center w-full h-full"
-                    className="w-72 max-h-64"
+                    className="max-w-72 max-h-64"
                 />
                 {/* <Image 
                    className={`h-full w-auto`} 

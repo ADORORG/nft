@@ -25,7 +25,7 @@ export function EventMintExpanded(props: EventMintProps) {
     const ChainIcon = getChainIcon(eventData.contract.chainId)
 
     return (
-        <div className="max-w-4xl mx-auto flex flex-col gap-8">
+        <div className="max-w-4xl mx-auto flex flex-col gap-8 py-6">
             <div className="flex flex-col self-center gap-4 w-[250px] md:w-[350px]">
                 <h1 className="text-2xl self-center font-semibold break-all">
                     <ChainIcon className="w-6 h-6 mr-2 inline-block" />
@@ -98,7 +98,7 @@ export function EventMintCollapsed(props: EventMintProps) {
                         type={eventData.mediaType}
                         loadingComponent={<MediaSkeleton className="w-full h-full" />}
                         previewClassName="flex justify-center items-center w-full h-full"
-                        className="w-[260px] max-h-[270px]"
+                        className="max-w-[260px] max-h-[270px]"
                     />
                 </div>
             </div>
@@ -146,7 +146,7 @@ export function EventMintCollapsedSmall(props: EventMintProps) {
                         type={eventData.mediaType}
                         loadingComponent={<MediaSkeleton className="w-full h-full" />}
                         previewClassName="flex justify-center items-center w-full h-full"
-                        className="w-[200px] max-h-[210px]"
+                        className="max-w-[200px] max-h-[210px]"
                     />
                 </div>
                 <div className="flex flex-col gap-3 w-[200px] h-[210px] justify-between">
@@ -225,7 +225,7 @@ export function EventMintCardSmall(props: EventMintProps) {
                         type={eventData.mediaType}
                         loadingComponent={<MediaSkeleton className="w-full h-full" />}
                         previewClassName="flex justify-center items-center w-full h-full"
-                        className="w-[260px] max-h-[260px]"
+                        className="max-w-[260px] max-h-[260px]"
                     />
                 </div>
                 <div className="flex flex-col py-2">

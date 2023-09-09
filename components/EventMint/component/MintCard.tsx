@@ -2,18 +2,21 @@ import type EventMintProps from "../types"
 import { useState } from "react"
 import { dateToRelativeDayAndHour } from "@/utils/date"
 import { nftEditionChecker } from "@/utils/contract"
-// import { useAuthStatus } from "@/hooks/account"
 import { InputField } from "@/components/Form"
 import ProgressBar from "@/components/ProgressBar"
 import MintButton from "./MintButton"
+import MintCompleted from "./MintCompleted"
 
 export default function MintCard(props: EventMintProps) {
     const { eventData } = props
     const [quantity, setQuantity] = useState(1)
+    const [mintDone, setMintDone] = useState(false)
     const relativeStartDate = dateToRelativeDayAndHour(new Date(eventData.start))
     const relativeEndDate = dateToRelativeDayAndHour(new Date(eventData.end))
     const nftEditionType = nftEditionChecker(eventData.nftEdition)
     const accountPurchaseCount = 0
+    
+    if (mintDone) return (<MintCompleted eventData={props.eventData} />)
 
     return (
         <div className="bg-gray-100 dark:bg-gray-900 shadow-lg p-3 rounded">
@@ -53,6 +56,7 @@ export default function MintCard(props: EventMintProps) {
                 <MintButton
                     eventData={eventData}
                     quantity={quantity}
+                    done={setMintDone}
                 />
 
                 {/* Max mint per wallet */}

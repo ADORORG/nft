@@ -34,7 +34,7 @@ export default function NftTokenCard(props: NftTokenProps) {
                         type={mediaType || "image/*"}
                         loadingComponent={<MediaSkeleton className="w-full h-full" />}
                         previewClassName="flex justify-center items-center w-full h-full"
-                        className="max-w-56 h-52"
+                        className="max-w-56 max-h-52"
                     />
                    {/*  {
                         media && mediaType ? 

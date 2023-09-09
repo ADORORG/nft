@@ -9,7 +9,6 @@ export default function ConfettiAnimation() {
                 width={width}
                 height={height}
                 run={true}
-
             />
         </div>
     )

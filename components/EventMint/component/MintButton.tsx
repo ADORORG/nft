@@ -1,7 +1,6 @@
 import type EventMintProps from "../types"
 import type { OnchainMintResponse } from "@/lib/types/common"
 import { useState } from "react"
-import { useRouter } from "next/navigation"
 import { toast } from "react-hot-toast"
 import { useContractChain } from "@/hooks/contract"
 import { useOpenEditionSaleEvent, useLimitedEditionSaleEvent } from "@/hooks/contract/event"
@@ -15,8 +14,7 @@ import Button from "@/components/Button"
 import apiRoutes from "@/config/api.route"
 
 
-export default function MintButton({eventData, quantity}: EventMintProps & {quantity: number}) {
-    const router = useRouter()
+export default function MintButton({eventData, quantity, done}: EventMintProps & {quantity: number, done?: (success: boolean) => void}) {
     const [mintData, setMintData] = useState<OnchainMintResponse[] | null>(null)
     const [loading, setLoading] = useState(false)
     const [mintedOnchain, setMintedOnchain] = useState(false)
@@ -80,8 +78,8 @@ export default function MintButton({eventData, quantity}: EventMintProps & {quan
                 setMintedOnchain(false)
                 setMintedOffchain(false)
             }
-
-            router.refresh()
+                
+            done?.(true)
         } catch (error: any) {
             toast.error(getFetcherErrorMessage(error))
         } finally {
@@ -89,6 +87,7 @@ export default function MintButton({eventData, quantity}: EventMintProps & {quan
         }
     }
 
+    const mintedOut = ((nftEditionType.isLimitedSupply || nftEditionType.isOneOfOne) && eventData.supplyMinted >= eventData.supply)
     return (
         <div>
             {
@@ -99,7 +98,7 @@ export default function MintButton({eventData, quantity}: EventMintProps & {quan
                         loading || 
                         !relativeEndDate.future ||
                         relativeStartDate.future ||
-                        (eventData.supply > 0 && eventData.supplyMinted >= eventData.supply)
+                        mintedOut
                     }
                     variant="gradient"
                     className="w-full"
@@ -111,6 +110,9 @@ export default function MintButton({eventData, quantity}: EventMintProps & {quan
                     {
                         relativeStartDate.future ?
                         "Not Started"
+                        :
+                        mintedOut ?
+                        "Minted Out"
                         :
                         relativeEndDate.future ? 
                             mintedOnchain && !mintedOffchain? 
