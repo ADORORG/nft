@@ -9,7 +9,6 @@ import {
 } from "@/store/form"
 import { useAtom } from "jotai"
 import { toast } from "react-hot-toast"
-import { useRouter } from "next/navigation"
 import { useOpenEditionSaleEvent, useLimitedEditionSaleEvent } from "@/hooks/contract/event"
 import { useContractChain } from "@/hooks/contract"
 import { useAccountContract } from "@/hooks/fetch"
@@ -17,13 +16,11 @@ import { useAuthStatus } from "@/hooks/account"
 import { readSingleFileAsDataURL } from "@/utils/file"
 import { fetcher, getFetcherErrorMessage } from "@/utils/network"
 import { nftEditionChecker } from "@/utils/contract"
-import { replaceUrlParams } from "@/utils/main"
 import { ERC721_OPEN_EDITION_VERSION } from "@/solidity/erc721.open_edition.compiled"
 import { ERC721_LIMITED_EDITION_VERSION } from "@/solidity/erc721.limited_edition.compiled"
 import apiRoutes, { getNftContractBaseURI,  } from "@/config/api.route"
-import appRoutes from "@/config/app.route"
 import Button from "@/components/Button"
-
+import EventCreatedCompleted from "./components/EventCreatedCompleted"
 
 interface CreateOnchainReturnType {
     contractAddress?: string,
@@ -33,8 +30,8 @@ interface CreateOnchainReturnType {
 }
 
 export default function CreateEventModal({resetForm}: {resetForm: () => void}) {
-    const router = useRouter()
     const [loading, setLoading] = useState(false)
+    const [newEventId, setNewEventId] = useState<string|null>(null)
     const [nftEventContractData, setNftEventContractData] = useAtom(nftEventContractDataStore)
     const [nftSaleEventData, setNftSaleEventData] = useAtom(nftSaleEventDataStore)
     /** Media file object for this event */
@@ -177,9 +174,6 @@ export default function CreateEventModal({resetForm}: {resetForm: () => void}) {
         })
 
         if (result.success) {
-            setNftSaleEventCreated(true)
-            toast.success(result.message)
-
             return result
         }
     }
@@ -205,14 +199,21 @@ export default function CreateEventModal({resetForm}: {resetForm: () => void}) {
             resetForm()
 
             if (offchainCreateResult) {
-                router.push(replaceUrlParams(appRoutes.viewEvent, {eventDocId: offchainCreateResult.data._id}))
+                setNftSaleEventCreated(true)
+                setNewEventId(offchainCreateResult.data._id)
+                toast.success(offchainCreateResult.message)
             }
+
         } catch (error: any) {
             console.log("Creating event error", error)
             toast.error(getFetcherErrorMessage(error))
         } finally {
             setLoading(false)
         }
+    }
+
+    if (newEventId && nftSaleEventCreated) {
+        return <EventCreatedCompleted eventId={newEventId} />
     }
 
     return (
