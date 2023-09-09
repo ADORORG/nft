@@ -41,6 +41,11 @@ const nextConfig = {
                 destination: '/marketplace/1',
                 permanent: true,
             },
+            {
+                source: '/events',
+                destination: '/events/minting_now',
+                permanent: true
+            }
         ]
     },
 }
