@@ -35,6 +35,10 @@ const Modal: ModalComponent = (props) =>{
         } else {
             document.documentElement.classList.remove("overflow-hidden");
         }
+
+        return () => {
+            document.documentElement.classList.remove("overflow-hidden");
+        }
     }, [show])
     
     if (!show) return null
