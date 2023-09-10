@@ -6,7 +6,7 @@ import { getTotalMarketValueInDollar } from "@/lib/handlers"
 async function getServerSideData() {
     await mongoooseConnectionPromise
     // Fetch market value and order count
-    return getTotalMarketValueInDollar({})
+    return getTotalMarketValueInDollar({status: "active"})
 }
 
 export default async function Page() {

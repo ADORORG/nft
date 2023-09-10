@@ -31,7 +31,7 @@ export default function MarketplaceItems(props: MarketplaceItems) {
                     .filter(o => (
                         // Filter nft schema
                         (!nftSchema || nftSchema === "all" || nftSchema === o.token.contract.nftSchema)
-                        ||
+                        &&
                         // Filter by saleType
                         (!saleType || saleType === "all" || saleType === o.saleType)
                     ))

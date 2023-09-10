@@ -1,4 +1,5 @@
 import type EventMintProps from "../types"
+import Link from "next/link"
 import { RocketTakeoff } from "react-bootstrap-icons"
 import { useRouter } from "next/navigation"
 import { replaceUrlParams } from "@/utils/main"
@@ -21,27 +22,25 @@ export default function MintCompleted(props: EventMintProps) {
                 <h2 className="text-2xl">Congratulations!!</h2>
 
                 <div className="flex flex-col w-full gap-2">
-                    <Button
-                        variant="gradient"
-                        className="w-full"
-                        onClick={() => {
-                            router.push(replaceUrlParams(appRoutes.viewCollection, {slug: props.eventData.xcollection.slug}))
-                        }}
-                        rounded
-                    >
-                        View Collection
-                    </Button>
+                    <Link href={replaceUrlParams(appRoutes.viewCollection, {slug: props.eventData.xcollection.slug})}>
+                        <Button
+                            variant="gradient"
+                            className="w-full"
+                            rounded
+                        >
+                            View Collection
+                        </Button>
+                    </Link>
 
-                    <Button
-                        variant="gradient"
-                        className="w-full"
-                        onClick={() => {
-                            router.push(replaceUrlParams(appRoutes.viewAccount, {address: session?.user?.address as string}))
-                        }}
-                        rounded
-                    >
-                        View Account
-                    </Button>
+                    <Link href={replaceUrlParams(appRoutes.viewAccount, {address: session?.user?.address as string})}>
+                        <Button
+                            variant="gradient"
+                            className="w-full"
+                            rounded
+                        >
+                            View Account
+                        </Button>
+                    </Link>
                 </div>
                 
             </div>

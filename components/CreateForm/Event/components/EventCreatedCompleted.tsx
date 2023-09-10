@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { RocketTakeoff } from "react-bootstrap-icons"
 import { useRouter } from "next/navigation"
 import { replaceUrlParams } from "@/utils/main"
@@ -18,16 +19,15 @@ export default function MintCompleted({eventId}: {eventId: string}) {
                 <h2 className="text-2xl">Congratulations!! <br/> Event Created!</h2>
 
                 <div className="flex flex-col w-full gap-2">
-                    <Button
-                        variant="gradient"
-                        className="w-full"
-                        onClick={() => {
-                            router.push(replaceUrlParams(appRoutes.viewEvent, {eventDocId: eventId}))
-                        }}
-                        rounded
-                    >
-                        View Event
-                    </Button>
+                    <Link href={replaceUrlParams(appRoutes.viewEvent, {eventDocId: eventId})}>
+                        <Button
+                            variant="gradient"
+                            className="w-full"
+                            rounded
+                        >
+                            View Event
+                        </Button>
+                    </Link>
                 </div>
                 
             </div>

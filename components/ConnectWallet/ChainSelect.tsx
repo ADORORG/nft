@@ -1,3 +1,4 @@
+"use client"
 import { useEffect } from "react"
 import { SelectWithIcon } from "@/components/Select"
 import { supportedChains } from "@/web3.config"
