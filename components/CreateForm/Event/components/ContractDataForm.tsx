@@ -174,6 +174,19 @@ export default function EventContracDataForm(props: EventDataFormProps) {
                     }
                 </Select>
             </div>
+            <div>
+                <InputField
+                    label={<span>Redeemable Content <br/><small>Provide a content only accessible by holders</small></span>}
+                    type="text"
+                    name="redeemableContent"
+                    placeholder="e.g. Discord invite link or secret code"
+                    onChange={handleEventDataChange}
+                    value={eventData?.redeemableContent || ""}
+                    className="rounded focus:transition-all duration-700"
+                    labelClassName="my-3"
+                    autoComplete="off"
+                />
+            </div>
         </div>
     )
 }
