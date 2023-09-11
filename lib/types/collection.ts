@@ -13,6 +13,10 @@ export default interface CollectionType /* extends Partial<Document> */ {
     description: string;
     /** Collection image URI or ipfs hash */
     image: string; // ipfs hash
+    /** Collection media */
+    media?: string; // ipfs hash
+    /** Collection media type */
+    mediaType?: string;
     /** Collection banner URI or ipfs hash */
     banner?: string; // ipfs hash
     /** Comma or white-space separated collection tags string */

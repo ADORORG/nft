@@ -1,5 +1,6 @@
+import type { PopulatedCollectionType } from "@/lib/types/collection"
 import type { PageProps } from "../../types"
-import { NftTokenCard } from "@/components/Card"
+import { CollectionCard } from "@/components/Card"
 import Pagination from "@/components/Pagination"
 import appRoute from "@/config/app.route"
 import { replaceUrlParams } from "@/utils/main"
@@ -25,7 +26,7 @@ async function getServerSideData({address, pageNumber}: {address: string, pageNu
         })
     ])
     return {
-        collections,
+        collections: collections as PopulatedCollectionType[],
         collectionCount
     } 
 }
@@ -36,13 +37,15 @@ export default async function Page({address, pagination: pageNumber}: PageProps)
     return (
         <div>
             {/* Collection tokens */}
-            <div className="flex flex-row justify-center md:justify-start flex-wrap gap-4 my-4 pt-8">
+            <div className="flex flex-row justify-center md:justify-start flex-wrap gap-4 my-4 py-8">
                 {   
                     collections &&
                     collections.length ?
                     collections.map(collection => (
-                        <div key={collection._id.toString()}>not implemented</div>
-                        
+                        <CollectionCard
+                            key={collection?._id?.toString()}
+                            collection={collection}     
+                        />                        
                     ))
                     :
                     <p className="text-center">Nothing&apos;s here</p>
