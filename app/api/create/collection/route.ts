@@ -33,20 +33,26 @@ async function createNewCollection(request: NextRequest, _: any, { user }: {user
      * @todo Implement a more strict check for media dataURI  
     */
     if (
-        (!data.image && !data.image.startsWith('data:image')) ||
-        (!data.banner && !data.banner.startsWith('data:image'))
-    ) throw new CustomRequestError('Please provide a valid image and banner for this collection', 400);
+        (!data.image && !data.image.startsWith('data:image'))
+    ) throw new CustomRequestError('Please provide a valid image for this collection', 400);
     
     // Convert dataURI to readable stream
     const imageId = `${data.slug}-image`;
-    const bannerId = `${data.slug}-banner`;
     const imageStream = dataUrlToReadableStream(data.image, imageId);
-    const bannerStream = dataUrlToReadableStream(data.banner, bannerId);
     
+    let bannerId = `${data.slug}-banner`;
+    let bannerStream;
+    
+    if (data.banner && !data.banner.startsWith('data:image')) {
+        bannerStream = dataUrlToReadableStream(data.banner, bannerId);
+    }
     // Upload readable stream to ipfs through pinata
     const [imageHash, bannerHash] = await Promise.all([
         uploadMediaToIPFS(imageStream, imageId),
+        bannerStream ? 
         uploadMediaToIPFS(bannerStream, bannerId)
+        :
+        ''
     ])
 
     // Get the user session account

@@ -41,7 +41,7 @@ export default function MarketListingCard({marketOrder, size = "md"}: MarketList
      * @todo Fix card sizes base on size (lg | md) passed as prop
      */
     return (
-        <div className={`w-72 h-96 rounded p-3 bg-gray-200 dark:bg-gray-900 hover:opacity-80 transition flex flex-col justify-between gap-2 drop-shadow-xl`}>
+        <div className={`w-72 h-96 rounded p-3 bg-gray-100 dark:bg-gray-900 hover:opacity-80 transition flex flex-col justify-between gap-2 drop-shadow-xl`}>
             <div className={`bg-transparent flex justify-center items-center h-64`}>
                 <MediaPreview
                     src={`${IPFS_GATEWAY}${media || image}`}

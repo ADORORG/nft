@@ -14,7 +14,7 @@ export default interface CollectionType /* extends Partial<Document> */ {
     /** Collection image URI or ipfs hash */
     image: string; // ipfs hash
     /** Collection banner URI or ipfs hash */
-    banner: string; // ipfs hash
+    banner?: string; // ipfs hash
     /** Comma or white-space separated collection tags string */
     tags: string;
     /** Category of this collection */

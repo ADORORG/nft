@@ -118,9 +118,7 @@ export function getCollectionValueInDollar(query: Record<string, unknown>) {
 
     const aggregateQuery = [
         {
-          $match: {
-            query,
-          },
+          $match: query
         },
         {
           // we only need the collection _id

@@ -1,10 +1,10 @@
 "use client"
 import type { PopulatedMarketOrderType } from "@/lib/types/market"
-import { useRouter } from "next/navigation"
 import { useAtom } from "jotai"
 import { marketFilterStore } from "@/store/form"
 import { MarketListingCard } from "@/components/Card"
-import NavigationButton from "@/components/NavigationButton"
+import Pagination from "@/components/Pagination"
+import appRoutes from "@/config/app.route"
 
 interface MarketplaceItems {
     orders: PopulatedMarketOrderType[],
@@ -13,14 +13,9 @@ interface MarketplaceItems {
 }
 
 export default function MarketplaceItems(props: MarketplaceItems) {
-    const router = useRouter()
     const [marketFilter] = useAtom(marketFilterStore)
     const { totalOrder, nftSchema, saleType, createdAt } = marketFilter
     const { limit, currentPage } = props
-
-    const lastPage = totalOrder ? Math.ceil(totalOrder / limit) : 1
-    const nextPage = lastPage > currentPage ? currentPage + 1 : 0
-    const previousPage = currentPage > 1 ? currentPage - 1 : 0
 
     return (
         <div className="flex flex-col gap-4 py-8 px-4">
@@ -49,20 +44,12 @@ export default function MarketplaceItems(props: MarketplaceItems) {
                     ))
                 }
             </div>
-            <div className="flex flex-row gap-4 my-4 mx-4">
-                <NavigationButton 
-                    direction="left"
-                    text="Previous Page"
-                    disabled={!previousPage}
-                    onClick={() => router.push(`/marketplace/${previousPage}`)}
-                />
-                <NavigationButton 
-                    direction="right"
-                    text="Next Page"
-                    disabled={!nextPage}
-                    onClick={() => router.push(`/marketplace/${nextPage}`)}
-                />
-            </div>
+            <Pagination 
+                totalDocument={totalOrder || 0}
+                limitPerPage={limit}
+                currentPage={currentPage}
+                linkPrefix={appRoutes.marketplace}
+            />
         </div>
     )
 }

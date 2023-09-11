@@ -25,7 +25,7 @@ const appRoutes = {
     /** Explore token & collection page */
     explore: "#",
     /** Marketplace page */
-    marketplace: "/marketplace/1",
+    marketplace: "/marketplace",
     /** Import token page */
     import: "#",
     /** Transfer token page */

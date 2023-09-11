@@ -74,7 +74,7 @@ export function EventMintCollapsed(props: EventMintProps) {
     const ChainIcon = getChainIcon(eventData.contract.chainId )
 
     return (
-        <div className="max-w-xl flex flex-col justify-between gap-4 bg-gray-100 dark:bg-gray-800 p-4 rounded drop-shadow-xl">
+        <div className="max-w-xl flex flex-col justify-between gap-4 bg-gray-100 dark:bg-gray-900 p-4 rounded drop-shadow-xl">
             <div className="flex flex-col md:flex-row justify-between items-center">
                 <h1 className="text-xl font-semibold break-all">
                     <ChainIcon className="w-5 h-5 text-gray-100 mr-1 inline-block" />
@@ -139,7 +139,7 @@ export function EventMintCollapsedSmall(props: EventMintProps) {
 
     return (
         <div>
-            <div className="flex flex-col md:flex-row gap-4 bg-gray-100 dark:bg-gray-800 p-4 rounded drop-shadow-xl">
+            <div className="flex flex-col md:flex-row gap-4 bg-gray-100 dark:bg-gray-900 p-4 rounded drop-shadow-xl">
                 <div className="flex items-center p-2 w-[200px] h-[210px] bg-gray-200 dark:bg-gray-900 rounded">
                     <MediaPreview
                         src={`${IPFS_GATEWAY}${eventData.media}`}
@@ -218,7 +218,7 @@ export function EventMintCardSmall(props: EventMintProps) {
 
     return (
         <div>
-            <div className="flex flex-col w-[280px] bg-gray-100 dark:bg-gray-800 p-2">
+            <div className="flex flex-col w-[280px] bg-gray-100 dark:bg-gray-900 p-2">
                 <div className="flex self-center w-[280px] h-[270px] rounded">
                     <MediaPreview
                         src={`${IPFS_GATEWAY}${eventData.media}`}

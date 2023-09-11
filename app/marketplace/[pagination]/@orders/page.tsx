@@ -10,6 +10,7 @@ async function getServerSideData(pagination: number) {
     await mongoooseConnectionPromise
     return getMarketOrdersByQuery({status: "active"}, {
         limit: ORDER_BATCH, 
+        sort: {createdAt: -1},
         skip: ORDER_BATCH * (pagination - 1)
     })
 }

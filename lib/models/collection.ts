@@ -10,7 +10,7 @@ const CollectionSchema = new Schema<CollectionType>({
     slug: {type: String, required: true, index: true, unique: true, lowercase: true},
     description: {type: String, required: true},
     image: {type: String, required: true}, // ipfs hash
-    banner: {type: String, required: true}, // ipfs hash
+    banner: {type: String}, // ipfs hash
     tags: {type: String, required: true, index: true},
     category: {
         type: String, 

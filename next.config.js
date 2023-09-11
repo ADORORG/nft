@@ -45,6 +45,11 @@ const nextConfig = {
                 source: '/events',
                 destination: '/events/minting_now',
                 permanent: true
+            },
+            {
+                source: '/collection/:slug',
+                destination: '/collection/:slug/1',
+                permanent: true
             }
         ]
     },
