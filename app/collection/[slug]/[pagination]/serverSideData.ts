@@ -3,7 +3,7 @@ import type { PopulatedNftTokenType } from "@/lib/types/token"
 import mongoooseConnectionPromise from '@/wrapper/mongoose_connect'
 import { getCollectionBySlug, getCollectionValueInDollar, estimateCollectionByQuery, getTokensByQuery } from "@/lib/handlers"
 
-const TOKEN_BATCH = 50
+const TOKEN_BATCH = 25
 
 export default async function getServerSideData({slug, pageNumber}: {slug: string, pageNumber?: number}) {
     await mongoooseConnectionPromise
