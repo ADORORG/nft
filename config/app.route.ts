@@ -22,6 +22,12 @@ const appRoutes = {
     createErc1155: "/create/erc1155",
     /** Explore account address */
     viewAccount: "/account/:address",
+    /** Vieww account tokens */
+    viewAccountToken: "/account/:address/token",
+    /** View account collections */
+    viewAccountCollection: "/account/:address/collection",
+    /** View account market orders */
+    viewAccountMarketOrders: "/account/:address/marketplace",
     /** Explore token & collection page */
     explore: "#",
     /** Marketplace page */

@@ -39,7 +39,7 @@ const nextConfig = {
                 */
                 source: '/marketplace',
                 destination: '/marketplace/1',
-                permanent: true,
+                permanent: false,
             },
             {
                 source: '/events',
@@ -49,8 +49,29 @@ const nextConfig = {
             {
                 source: '/collection/:slug',
                 destination: '/collection/:slug/1',
-                permanent: true
-            }
+                permanent: false
+            },
+            {
+                source: '/account/:address',
+                destination: '/account/:address/token/1',
+                permanent: false
+            },
+            {
+                source: '/account/:address/token',
+                destination: '/account/:address/token/1',
+                permanent: false
+            },
+            {
+                source: '/account/:address/collection',
+                destination: '/account/:address/collection/1',
+                permanent: false
+            },
+            {
+                source: '/account/:address/marketplace',
+                destination: '/account/:address/marketplace/1',
+                permanent: false
+            },
+            
         ]
     },
 }

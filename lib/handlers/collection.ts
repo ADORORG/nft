@@ -88,7 +88,21 @@ export function getCollectionBySlug(slug: string): Promise<CollectionType | null
  * @param skip - Collections to skip in find query
  * @returns a maximum of 100 `owner` account populated collections
  */
-export function getCollectionsByQuery(query: Record<string, unknown>, skip: number = 0) {
+export function getCollectionsByQuery(
+  query: Record<string, unknown>,
+  options: {
+    limit?: number,
+    skip?: number,
+    sort?: Record<string, any>,
+    select?: string
+  }
+  ) {
+    const {
+      limit = 100,
+      skip = 0,
+      sort = {createdAt: -1},
+      select = ''
+  } = options
     const leanOption = {lean: true}
     const populate = [
         {
@@ -100,8 +114,9 @@ export function getCollectionsByQuery(query: Record<string, unknown>, skip: numb
 
     return CollectionModel.find({...query})
     .skip(skip)
-    .limit(100)
-    .sort({createdAt: -1})
+    .limit(limit)
+    .sort(sort)
+    .select(select)
     .populate(populate)
     .lean()
     .exec()

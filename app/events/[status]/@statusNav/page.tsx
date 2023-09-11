@@ -1,5 +1,5 @@
 import type { EventStatusType } from "../types"
-import Link from "next/link"
+import TabNavigation from "@/components/TabNav"
 import appRoutes from "@/config/app.route"
 
 export default async function EventPage({params}: {params: {status: EventStatusType}}) {
@@ -14,35 +14,26 @@ export default async function EventPage({params}: {params: {status: EventStatusT
 
     const statusTabs = [
         {
-            name: "minting_now",
-            label: mintingNowNode
+            label: mintingNowNode,
+            link: `${appRoutes.events}/minting_now`,
+            active: currentTab === "minting_now"
         },
         {
-            name: "upcoming",
-            label: "Upcoming"
+            label: "Upcoming",
+            link: `${appRoutes.events}/upcoming`,
+            active: currentTab === "upcoming"
         },
         {
-            name: "completed",
-            label: "Completed"
+            label: "Completed",
+            link: `${appRoutes.events}/completed`,
+            active: currentTab === "completed"
         }
     ]
 
-    const activeClassName = "inline-block p-4 text-tertiary-600 border-b-2 border-tertiary-600 rounded-t-lg active dark:text-tertiary-500 dark:border-tertiary-500"
-    const inactiveClassName = "inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
-
+ 
     return (
-        <div className="font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700">
-            <ul className="flex flex-wrap flex-row">
-                {
-                    statusTabs.map((tab) => (
-                        <li className="mr-2" key={tab.name}>
-                            <Link href={`${appRoutes.events}/${tab.name}`} className={tab.name === currentTab ? activeClassName : inactiveClassName}>
-                                {tab.label}                                    
-                            </Link>
-                        </li>
-                    ))
-                }
-            </ul>
-        </div>
+        <TabNavigation
+            tabs={statusTabs}
+        />
     )
 }

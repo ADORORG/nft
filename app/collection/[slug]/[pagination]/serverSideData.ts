@@ -13,7 +13,6 @@ export default async function getServerSideData({slug, pageNumber}: {slug: strin
     ])
 
     let collectionTokens, collectionTokensCount;
-    console.log("collectionValueInDollar", collectionValueInDollar)
     if (collection && pageNumber) {
         [collectionTokens, collectionTokensCount] = await Promise.all([
             getTokensByQuery({xcollection: collection._id}, {

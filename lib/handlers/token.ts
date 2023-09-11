@@ -318,9 +318,7 @@ export function setTokenOwner(_id: Types.ObjectId | string, newOwnerId: Ethereum
  * @returns a document count
  */
 export function countTokenByQuery(query: Record<string, unknown>) {
-    return TokenModel.countDocuments({
-        ...query
-    })
+    return TokenModel.countDocuments(query)
     .exec()
 }
 
@@ -330,8 +328,6 @@ export function countTokenByQuery(query: Record<string, unknown>) {
  * @returns a document count
  */
 export function estimateTokenByQuery(query: Record<string, unknown>) {
-    return TokenModel.estimatedDocumentCount({
-        ...query
-    })
+    return TokenModel.estimatedDocumentCount(query)
     .exec()
 }

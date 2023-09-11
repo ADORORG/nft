@@ -1,18 +1,23 @@
 "use client"
-import { useState, useRef, useEffect } from "react"
 import type AccountType from "@/lib/types/account"
+import { useState, useRef, useEffect } from "react"
+import Link from "next/link"
 import Image from "@/components/Image"
-import { cutAddress } from "@/utils/main"
+import { cutAddress, replaceUrlParams } from "@/utils/main"
+import appRoute from "@/config/app.route"
 
 type CreatorCardProps = {
     creatorAccount: AccountType, 
     currencyNode: React.ReactNode
 }
 
+
 export default function CreatorCard({creatorAccount, currencyNode}: CreatorCardProps) {
     const [showDropdown, setShowDropdown] = useState<boolean>(false)
     const { address = "0x0", image = "" } = creatorAccount || {}
     const dropdownRef = useRef<HTMLDivElement>(null)
+    const viewAccount = replaceUrlParams(appRoute.viewAccount, {address: address.toLowerCase()})
+    const accountRoute = ["token", "collection", "marketplace"].map(r => ({href: `${viewAccount}/${r}`, label: r}))
 
     const handleClickOutside = (event: MouseEvent) => {
         if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -60,15 +65,13 @@ export default function CreatorCard({creatorAccount, currencyNode}: CreatorCardP
 
                 <div id="dropdownHover" className={`${!showDropdown && "hidden"} absolute origin-top-right right-0 z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-800`}>
                     <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownHoverButton">
-                        <li>
-                            <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">See account </a>
-                        </li>
-                        <li>
-                            <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">See collection</a>
-                        </li>
-                        <li>
-                            <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Report</a>
-                        </li>
+                        {
+                            accountRoute.map(route => (
+                                <li key={route.href}>
+                                    <Link href={route.href} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">See {route.label} </Link>
+                                </li>
+                            ))
+                        }
                     </ul>
                 </div>
             </div>
