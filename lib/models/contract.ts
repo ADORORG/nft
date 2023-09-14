@@ -6,7 +6,7 @@ import { NFT_CONTRACT_SCHEMA, NFT_CONTRACT_EDITION } from '../types/common'
 const { contracts, accounts } = dbCollections;
 
 const ContractSchema = new Schema<ContractType>({
-    contractAddress: {type: String, required: true, index: true},
+    contractAddress: {type: String, required: true, index: true, lowercase: true},
     chainId: {type: Number, required: true, min: 0},
     royalty: {type: Number, default: 0},
     royaltyReceiver: {type: String},

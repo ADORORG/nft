@@ -19,7 +19,7 @@ async function getServerSideData(params: PageProps) {
     const {chainId, contractAddress, tokenId} = params
     await mongoooseConnectionPromise
     const contracts = await getContractsByQuery({
-        contractAddress,
+        contractAddress: contractAddress.toLowerCase(),
         chainId
     }, {limit: 1})
 
