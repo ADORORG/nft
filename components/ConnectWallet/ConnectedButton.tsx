@@ -1,10 +1,21 @@
-import { cutAddress } from "./utils"
+import { useContext } from "react"
 import { useAccount, useBalance, useNetwork } from "wagmi"
-import { showConnectedWalletModal } from "./store"
-import { useAtom } from "jotai"
+import { ConnectWalletManagerContext } from "./ContextWrapper"
+import { cutAddress } from "./utils"
+import type { ConnectedWalletButtonProps } from "./types"
 
-export default function ConnectedWalletButton() {
-    const [showConnectedModal, setShowConnectedModal] = useAtom(showConnectedWalletModal)
+export default function ConnectedWalletButton(props: ConnectedWalletButtonProps) {
+    const config = useContext(ConnectWalletManagerContext)
+    const { 
+        addressClassName = config?.connectedButton?.addressClassName,
+        buttonClassName = config?.connectedButton?.buttonClassName,
+        wrongNetworkClassName = config?.connectedButton?.wrongNetworkClassName, 
+        wrongNetworkText = config?.connectedButton?.wrongNetworkText,
+        decimals = config?.decimals,
+        disabled = config?.connectedButton?.disabled,
+        onClick = config?.connectedButton?.onClick,
+    } = props
+
     const { address } = useAccount()
     const { data: balance } = useBalance({address})
     const { chain: currentChain } = useNetwork()
@@ -14,19 +25,19 @@ export default function ConnectedWalletButton() {
         {
             currentChain?.unsupported ? 
             <button
-                className="flex justify-between items-center px-2 py-2.5 text-lg font-semibold text-center shadow-lg text-rose-900 bg-gray-50 rounded-lg border border-gray-100 dark:text-rose-300 dark:bg-gray-900 dark:border-gray-800"
+                className={wrongNetworkClassName}
                 disabled={true}
             >
-                Wrong Network
+                {wrongNetworkText}
             </button>
             :
             <button 
-                onClick={() => setShowConnectedModal(true)}
-                className="flex justify-between items-center px-2 py-2.5 text-lg font-semibold text-center shadow-lg text-gray-900 bg-gray-50 rounded-lg border border-gray-100 dark:text-gray-50 dark:bg-gray-900 dark:border-gray-800"
-                disabled={showConnectedModal}
-                >
-                {parseFloat(balance?.formatted ?? '0').toFixed(2)} {balance?.symbol}
-                <span className="bg-gray-200 text-gray-700 font-semibold mx-2 px-2.5 py-0.5 rounded dark:text-gray-200 dark:bg-gray-700">{address ? cutAddress(address) : ""}</span>
+                className={buttonClassName}
+                onClick={onClick}
+                disabled={disabled}
+            >
+                {parseFloat(balance?.formatted ?? '0').toFixed(decimals)} {balance?.symbol}
+                <span className={addressClassName}>{address ? cutAddress(address) : ""}</span>
             </button>
         }
         </>

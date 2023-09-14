@@ -52,7 +52,9 @@ export default function useAuthStatus() {
     }
 
     const handleLogout = async () => {
+      if (isConnected) {
         disconnect()
+      }
         await signOut()
     }
 

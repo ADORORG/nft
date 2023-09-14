@@ -1,29 +1,37 @@
+import { useContext } from "react"
 import { useAccount } from "wagmi"
-import { useAtom } from "jotai"
-import { showWalletConnectModal } from "./store"
+import { WalletModalContext, ConnectWalletManagerContext } from "./ContextWrapper"
 import ConnectedWalletButton from "./ConnectedButton"
 import Button from "@/components/Button"
-
-interface ConnectWalletButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-    text?: string,
-}
+import type { ConnectWalletButtonProps } from "./types"
 
 export default function ConnectWalletButton(props: ConnectWalletButtonProps) {
-    const { text = "Connect Account", className, ...otherProps } = props
-    const [showModal, setShowModal] = useAtom(showWalletConnectModal)
+    const config = useContext(ConnectWalletManagerContext)
+    const walletModal = useContext(WalletModalContext)
+    const { 
+        text = config?.connectWalletButton?.text, 
+        showConnectedButton = config?.connectWalletButton?.showConnectedButton,
+        className, 
+        ...otherProps 
+    } = props
     const { isConnected } = useAccount()
 
-    if (isConnected) return (
-        <ConnectedWalletButton />
-    )
+    if (isConnected && showConnectedButton === true) {
+        return (
+            <ConnectedWalletButton
+                onClick={() => walletModal?.({showConnectedModal: true})}
+            />
+        )
+    } else if (isConnected) {
+        return null
+    }
 
     return (
         <Button 
                 rounded 
-                className={`font-semibold ${className}`}
-                onClick={() => setShowModal(true)}
+                className={`${className}`}
+                onClick={() => walletModal?.({showConnectorsModal: true})}
                 variant="gradient"
-                disabled={showModal}
                 {...otherProps}
             >
                 {text}

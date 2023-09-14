@@ -1,30 +1,29 @@
 "use client"
-import { useEffect } from "react"
+import { useEffect, useContext } from "react"
 import { SelectWithIcon } from "@/components/Select"
-import { supportedChains } from "@/web3.config"
-import { useAtom } from "jotai"
-import { selectedChainId } from "./store"
 import { useNetwork, useSwitchNetwork } from "wagmi"
 import { chainIcons } from "./ChainIcons"
-
-interface NetworkChainSelectProps {
-    switchOnChange?: boolean,
-    onChange?: (chainId: number | string) => void,
-    className?: string,
-}
+import { ConnectWalletManagerContext } from "./ContextWrapper"
+import type { NetworkChainSelectProps } from "./types"
 
 export default function NetworkChainSelect(props: NetworkChainSelectProps) {
-    const [chainId, setChainId] = useAtom(selectedChainId)
+    const config = useContext(ConnectWalletManagerContext)
+    const { 
+            switchOnChange = config?.networkChainSelect?.switchOnChange, 
+            onChange = config?.networkChainSelect?.onChange, 
+            className = config?.networkChainSelect?.className
+        } = props
     const { chain: currentChain } = useNetwork()
     const { switchNetworkAsync } = useSwitchNetwork()
-
+   
     useEffect(() => {
         if (currentChain?.id && !currentChain?.unsupported) {
-            setChainId(currentChain.id)
+            config?.setChainId?.(currentChain.id)
         }
-    }, [currentChain, setChainId])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentChain?.id])
 
-    const selectOptions = supportedChains.map(({id: value, name: label}) => {
+    const selectOptions = config?.supportedChains?.map(({id: value, name: label}) => {
         const Icon = chainIcons[value]
         return {
             value, 
@@ -33,22 +32,23 @@ export default function NetworkChainSelect(props: NetworkChainSelectProps) {
         }
     })
 
-    const handleChainChange = async (newChainId: number | string) => {
-        if (props.switchOnChange) {
-            await switchNetworkAsync?.(newChainId as number)
+    const handleChainChange = async (_newChainId: string) => {
+        const newChainId = Number(_newChainId)
+        if (switchOnChange) {
+            await switchNetworkAsync?.(newChainId)
         }
-        if (props.onChange) {
-            props.onChange(newChainId)
+        if (onChange) {
+            onChange(newChainId)
         }
-        setChainId(newChainId)
+        config?.setChainId?.(newChainId)
     }
 
     return (
         <SelectWithIcon
-            options={selectOptions}
-            defaultValue={chainId}
+            options={selectOptions ?? []}
+            defaultValue={config?.chainId as number}
             onChange={handleChainChange}
-            buttonClassName={`w-44 ${props.className}`}
+            buttonClassName={`w-44 ${className}`}
         />
     )
 }

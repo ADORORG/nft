@@ -1,10 +1,14 @@
 "use client"
+import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
+import { Search as SearchIcon, TextRight as BarsLeft, X as XIcon } from "react-bootstrap-icons"
+import { useAuthStatus } from "@/hooks/account"
+import { replaceUrlParams } from "@/utils/main"
+import { ConnectWalletButton, NetworkChainSelect, ConnectedWalletButton } from "@/components/ConnectWallet"
 import ThemeSwitcher from "@/components/ThemeSwitcher"
-import { ConnectWalletButton, NetworkChainSelect } from "@/components/ConnectWallet"
-import { useState } from "react"
-import { Bars3BottomRightIcon, XMarkIcon, MagnifyingGlassIcon as SearchIcon } from "@heroicons/react/24/outline"
+import Dropdown from "@/components/Dropdown"
+import appRoutes from "@/config/app.route"
 
 type NavigationType = {name: string, href: string}
 interface TopNavProps {
@@ -14,8 +18,16 @@ interface TopNavProps {
 }
 
 export default function Navbar({ topNav }:{ topNav: TopNavProps }) {
+  const { isConnected, address, requestSignOut } = useAuthStatus()
   const [isOpen, setIsOpen] = useState(false)
   const {name, logoUrl, navLink} = topNav
+
+  const accountLinks = [
+    {name: "My Token", href: replaceUrlParams(appRoutes.viewAccountToken, {address: address?.toLowerCase() as string})},
+    {name: "My Collection", href: replaceUrlParams(appRoutes.viewAccountCollection, {address: address?.toLowerCase() as string})},
+    {name: "My Orders", href: replaceUrlParams(appRoutes.viewAccountMarketOrders, {address: address?.toLowerCase() as string})},
+    {name: "Set Profile", href: appRoutes.setProfile},  
+  ]
 
   return (
     <nav className="relative bg-white shadow dark:bg-gray-950">
@@ -39,8 +51,8 @@ export default function Navbar({ topNav }:{ topNav: TopNavProps }) {
                         <button onClick={() => setIsOpen(!isOpen)} type="button" className="text-gray-500 dark:text-gray-200 hover:text-gray-600 dark:hover:text-gray-400 focus:outline-none focus:text-gray-600 dark:focus:text-gray-400" aria-label="toggle menu">
                           {
                             isOpen ? 
-                            <XMarkIcon className="w-6 h-6" /> : 
-                            <Bars3BottomRightIcon className="w-6 h-6" />
+                            <XIcon className="w-6 h-6" /> : 
+                            <BarsLeft className="w-6 h-6" />
                           }
                         </button>
                     </div>
@@ -71,9 +83,7 @@ export default function Navbar({ topNav }:{ topNav: TopNavProps }) {
                         ))
                       }
                   </div>
-                  <div>
-                    <ThemeSwitcher />
-                  </div>
+              
                   <div className="lg:ml-4 mt-4 lg:mt-0">
                     <NetworkChainSelect 
                       switchOnChange
@@ -81,8 +91,42 @@ export default function Navbar({ topNav }:{ topNav: TopNavProps }) {
                   </div>
                   
                   <div className="lg:ml-4 mt-4 lg:mt-0">
-                    <ConnectWalletButton />
+                    {
+                      isConnected ?
+                      <Dropdown
+                        dropdownTrigger={<ConnectedWalletButton />}
+                        className="w-48"
+                        dropsClassName="w-full"
+                      >
+                        {
+                          accountLinks.map(({name, href}, i) => (
+                            <Dropdown.Item
+                              key={href}
+                              className="px-2 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                            >
+                              <Link href={href}>
+                                  {name}
+                              </Link>
+                            </Dropdown.Item>
+                          ))
+                        }
+                        <Dropdown.Item 
+                          className="cursor-pointer px-2 py-3 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white border-t border-gray-200 dark:border-gray-700"
+                          onClick={() => requestSignOut()}
+                        >
+                          <span>Disconnect</span>
+                        </Dropdown.Item>
+
+                        <Dropdown.Item className="mt-2 p-2 border-t border-gray-200 dark:border-gray-700">
+                          <ThemeSwitcher view="inline" />
+                        </Dropdown.Item>
+                        
+                      </Dropdown>
+                      :
+                      <ConnectWalletButton />
+                    }
                   </div>
+
                 </div>
             </div>
         </div>

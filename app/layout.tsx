@@ -7,7 +7,7 @@ import SWRProvider from "@/components/SWRProvider"
 import WagmiProvider from "@/components/WagmiProvider"
 import AdminWrapper from "@/components/AdminWrapper"
 import TermsOfServiceWrapper from "@/components/TermsOfServiceWrapper"
-import { ConnectWalletContextWrapper } from "@/components/ConnectWallet"
+import WalletConnectWrapper from "@/components/WalletConnectWrapper"
 import { AppInfo } from "@/lib/app.config"
 import { Toaster } from "react-hot-toast"
 import { Changa/* , Inconsolata */ } from "next/font/google"
@@ -126,7 +126,7 @@ export default function RootLayout({
         <SWRProvider>
           <WagmiProvider>
           <NextAuthSessionProvider>
-            <ConnectWalletContextWrapper>
+            <WalletConnectWrapper>
               <WalletAuthWrapper>
                 <AdminWrapper>
                   <Navbar topNav={topNav} />
@@ -134,7 +134,7 @@ export default function RootLayout({
                   <Footer footerNav={footerNav} />
                 </AdminWrapper>
               </WalletAuthWrapper>
-            </ConnectWalletContextWrapper>
+            </WalletConnectWrapper>
           </NextAuthSessionProvider>
         </WagmiProvider>
         </SWRProvider>

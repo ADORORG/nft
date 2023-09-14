@@ -11,6 +11,7 @@ import Link from "next/link"
 import appRoutes from "@/config/app.route"
 import { IPFS_GATEWAY } from "@/lib/app.config"
 import { replaceUrlParams, cutString } from "@/utils/main"
+
 type NftTokenProps = {
     token: PopulatedNftTokenType, 
 }
@@ -90,7 +91,7 @@ export default function NftTokenCard(props: NftTokenProps) {
                             >
                                 <Button
                                     className="text-sm px-2 py-1"
-                                    variant="secondary"
+                                    variant="gradient"
                                     rounded
                                     inversed
                                 >

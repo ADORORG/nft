@@ -4,10 +4,11 @@ import { SelectWithIcon } from "@/components/Select"
 import { useAtom } from "jotai"
 import { appTheme } from "@/store/common"
 
-export default function ThemeSwitcher() {
+
+export default function ThemeSwitcher({view}: {view?: "inline" | "dropdown"}) {
     const [themeValue, setThemeValue] = useAtom(appTheme)
 
-    const options = [
+    const themeOptions = [
         {
             value: "dark",
             label: "Dark",
@@ -24,7 +25,7 @@ export default function ThemeSwitcher() {
             icon: <Laptop className="h-4 w-4 mr-1" />
         }
     ]
-
+    
     const handleThemeChange = (darkModeWatch: MediaQueryList, _?: MediaQueryListEvent) => {
         if (
             themeValue === "dark" || 
@@ -49,9 +50,30 @@ export default function ThemeSwitcher() {
         }
     })
 
+    if (view === "inline") {
+        return (
+            <div className="flex flex-row justify-between items-center">
+                {
+                    themeOptions.map(({icon, value, label}) => (
+                        <span 
+                            key={value} 
+                            title={label}
+                            className={`flex justify-center cursor-pointer transition-all p-3 rounded ${value === themeValue ? "bg-gray-200 dark:bg-gray-600" : ""}`}
+                            onClick={() => setThemeValue(value)}
+                        >
+                            {icon}
+                        </span>
+                    ))
+                }
+            </div>
+        )
+    }
+
+
+
     return (
         <SelectWithIcon
-            options={options}
+            options={themeOptions}
             defaultValue={themeValue}
             onChange={setThemeValue}
             buttonClassName="w-28"
