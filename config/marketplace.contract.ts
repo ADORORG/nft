@@ -20,9 +20,16 @@ const ethMainnetMarketplace: ChainMarketplaceMap = {
      "1": "0xA9515EBAe4EaE0EF8F63951283868614B7645027"
 } as const
 
+const baseGoerliMarketplace: ChainMarketplaceMap = {
+    /** Map marketplace versions */
+     // version 1
+     "1": "0x099f95b0694A0D808f7C6c46A621f4E5E5E36dF5"
+} as const
+
 const marketplaceContractAddresses: MarketplaceContractMap = {
     1: ethMainnetMarketplace,
     5: goerliMarketplace,
+    84531: baseGoerliMarketplace
 } as const
 
 /** defaultMarketplaceVersion will be updated whenever we deploy a new marketplace contract  */

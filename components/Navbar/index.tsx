@@ -90,43 +90,48 @@ export default function Navbar({ topNav }:{ topNav: TopNavProps }) {
                     />
                   </div>
                   
-                  <div className="lg:ml-4 mt-4 lg:mt-0">
-                    {
-                      isConnected ?
-                      <Dropdown
-                        dropdownTrigger={<ConnectedWalletButton />}
-                        className="w-48"
-                        dropsClassName="w-full"
+                  {
+                    !isConnected ?
+                    <div className="flex gap-2">
+                        <div className="lg:ml-4 mt-4 lg:mt-0">
+                          {/* Theme switch needs to be display to show/trigger theme selection */}
+                          <ThemeSwitcher view="dropdown" />
+                        </div>
+                        <div className="lg:ml-4 mt-4 lg:mt-0">
+                          <ConnectWalletButton />
+                        </div>
+                    </div>
+                    :
+                    <Dropdown
+                      dropdownTrigger={<ConnectedWalletButton />}
+                      className="w-48 lg:ml-4"
+                      dropsClassName="w-full"
+                    >
+                      {
+                        accountLinks.map(({name, href}, i) => (
+                          <Dropdown.Item
+                            key={href}
+                            className="px-2 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                          >
+                            <Link href={href}>
+                                {name}
+                            </Link>
+                          </Dropdown.Item>
+                        ))
+                      }
+                      <Dropdown.Item 
+                        className="cursor-pointer px-2 py-3 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white border-t border-gray-200 dark:border-gray-700"
+                        onClick={() => requestSignOut()}
                       >
-                        {
-                          accountLinks.map(({name, href}, i) => (
-                            <Dropdown.Item
-                              key={href}
-                              className="px-2 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                            >
-                              <Link href={href}>
-                                  {name}
-                              </Link>
-                            </Dropdown.Item>
-                          ))
-                        }
-                        <Dropdown.Item 
-                          className="cursor-pointer px-2 py-3 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white border-t border-gray-200 dark:border-gray-700"
-                          onClick={() => requestSignOut()}
-                        >
-                          <span>Disconnect</span>
-                        </Dropdown.Item>
+                        <span>Disconnect</span>
+                      </Dropdown.Item>
 
-                        <Dropdown.Item className="mt-2 p-2 border-t border-gray-200 dark:border-gray-700">
-                          <ThemeSwitcher view="inline" />
-                        </Dropdown.Item>
-                        
-                      </Dropdown>
-                      :
-                      <ConnectWalletButton />
-                    }
-                  </div>
-
+                      <Dropdown.Item className="mt-2 p-2 border-t border-gray-200 dark:border-gray-700">
+                        <ThemeSwitcher view="inline" />
+                      </Dropdown.Item>
+                      
+                    </Dropdown>
+                  }
                 </div>
             </div>
         </div>
