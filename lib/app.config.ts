@@ -8,9 +8,6 @@ export const AppInfo = {
 
 // Also configured in next.config.js
 export const IPFS_GATEWAY = 'https://ipfs.io/ipfs/'
-export const CONTRACT_TOKEN_URI_PREFIX = 'https://mainnet.adors.org/api/contract/token/'
-export const OTP_EXPIRY = 60 * 60 * 1000 // 1 hour
-export const OTP_RETRY = 60 * 1000 // 1 minute
 
 export const fiatCurrencies = [
   {
