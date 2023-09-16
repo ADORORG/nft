@@ -6,14 +6,21 @@
  */
 export function getNftContractBaseURI(chainId: number) {
     /**
-     * For the current contract,
-     * The contract address will be appended to this uri in the deployed contract
+     * For the current nft solidity contract,
+     * The contract address will be automatically appended to the token uri in the deployed contract
      * @example 
      * chainId = 5
      * contractAddress = '0x'
-     * uri = 'https://api.adors.org/contract/5/0x'
+     * uri = 'https://nft.adors.org/contract/5/0x'
+     * token uri for token Id `1` will be https://nft.adors.org/contract/5/0x/1
      */
-    return `https://nft.adors.org/contract/${chainId}/`
+
+    if (process.env.NODE_ENV === 'production') {
+        return `https://nft.adors.org/contract/${chainId}/`
+    }
+
+    // For staging/development
+    return `https://testnet-nft.adors.org/contract/${chainId}/`
 }
 
 /** Backend api routes */
