@@ -10,7 +10,10 @@ import MintCompleted from "./MintCompleted"
 
 export default function MintCard(props: EventMintProps) {
     const { eventData } = props
-    const accountMintCount = useAccountMintCount({contractAddress: eventData.contract.contractAddress, partitionId: eventData.partitionId})
+    const accountMintCount = useAccountMintCount({
+        contractAddress: eventData.contract.contractAddress, 
+        partitionId: eventData.partitionId
+    })
     const [quantity, setQuantity] = useState(1)
     const [mintDone, setMintDone] = useState(false)
     const relativeStartDate = dateToRelativeDayAndHour(new Date(eventData.start))
@@ -62,11 +65,15 @@ export default function MintCard(props: EventMintProps) {
 
                 {/* Max mint per wallet */}
                 {
-                    eventData.maxMintPerWallet && (
-                        <p>
-                            Account Mints: {accountMintCount}/{eventData.maxMintPerWallet}
-                        </p>
-                    )
+                    <p>
+                        Account Mints:&nbsp; 
+                        {accountMintCount}/{
+                            eventData.maxMintPerWallet > 0 ?
+                            eventData.maxMintPerWallet
+                            :
+                            <span>&infin;</span>
+                        }
+                    </p>
                 }
 
                 {/* Progress bar */}

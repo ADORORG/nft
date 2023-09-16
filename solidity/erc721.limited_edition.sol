@@ -1854,6 +1854,8 @@ contract ERC721Partitioned is ERC721Permit, Ownable {
             tokenIdPartition[i] = partitionId_;
             _mint(to_, i);
         }
+        walletMints[partitionId_][to_] += amount_;
+
     }
 
     function burn(uint256 tokenId) public {

@@ -197,12 +197,16 @@ export function useOpenEditionConfiguration({contractAddress}: {contractAddress:
     return config
 }
 
-export function useAccountMintCount({contractAddress, accountAddress, partitionId}: {contractAddress: string, accountAddress?: string, partitionId?: number}) {
+export function useAccountMintCount(data: {contractAddress: string, accountAddress?: string, partitionId?: number}) {
+    const {contractAddress, accountAddress, partitionId} = data
     const publicClient = usePublicClient()
+    const { session } = useAuthStatus()
     const [count, setCount] = useState(0)
-    
+
     const accountMintsCount = useCallback(async () => {
-        if (accountAddress) {
+        const address = accountAddress || session?.user.address
+
+        if (address) {
             let mintsCount
 
             if (partitionId) {
@@ -211,25 +215,25 @@ export function useAccountMintCount({contractAddress, accountAddress, partitionI
                     abi: latestERC721LimitedEdition,
                     address: getAddress(contractAddress),
                     functionName: "walletMints",
-                    args: [BigInt(partitionId), getAddress(accountAddress as string)]
+                    args: [BigInt(partitionId), getAddress(address)]
                 })
             } else {
                 mintsCount = await publicClient.readContract({
                     abi: latestERC721OpenEdition,
                     address: getAddress(contractAddress),
                     functionName: "walletMints",
-                    args: [getAddress(accountAddress as string)]
+                    args: [getAddress(address)]
                 })
             }
-
+            console.info('event mintsCount', mintsCount)
             setCount(Number(mintsCount))
         }
 
-    }, [publicClient, contractAddress, accountAddress, partitionId])
+    }, [publicClient, contractAddress, accountAddress, partitionId, session?.user.address])
 
     useEffect(() => {
         accountMintsCount()
-    }, [accountMintsCount])
+    }, [accountMintsCount, contractAddress, session?.user.address])
 
     return count
 }
