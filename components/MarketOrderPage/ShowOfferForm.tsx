@@ -73,7 +73,7 @@ export default function ShowOfferForm(props: MarketOrdersProp & TokenPageProps) 
 
             const response = await fetcher(apiRoutes.createMarketOrder, {
                 // Overwrite seller to Ethereum address
-                body: JSON.stringify({...marketOffer, seller: session?.user.address}),
+                body: JSON.stringify(marketOfferData),
                 method: "POST"
             })
 
@@ -92,6 +92,9 @@ export default function ShowOfferForm(props: MarketOrdersProp & TokenPageProps) 
 
     return (
         <div className="my-4">
+            <h2 className="text-2xl py-6">
+                Make an offer for <strong>{props.token.name}#{props.token.tokenId}</strong>
+            </h2>
             {
                 activeOfferFromAccount ?
                 <Button 
@@ -104,9 +107,6 @@ export default function ShowOfferForm(props: MarketOrdersProp & TokenPageProps) 
                 </Button>
                 :
                 <div className="flex flex-col gap-4">
-                    <h2 className="text-2xl py-6">
-                        Make an offer for <strong>{props.token.name}#{props.token.tokenId}</strong>
-                    </h2>
                     <InputField 
                         label="Offer price"
                         labelClassName="my-2"

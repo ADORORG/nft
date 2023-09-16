@@ -10,7 +10,7 @@ export async function validateMarket(document: any) {
       await MarketOrderModel.validate(document)
       return true
   } catch(error) {
-      // console.log(error)
+      console.log(error)
       return false
   }
 }

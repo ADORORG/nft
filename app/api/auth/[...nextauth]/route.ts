@@ -65,14 +65,15 @@ export const nextAuthOptions = (req?: NextApiRequest): NextAuthOptions => {
       },
 
       session({ session, token }: { session: any; token: any }) {
-        const { email, emailVerified, roles, address } = token.user
+        const { email, emailVerified, roles, address, _id } = token.user
         const user: Record<string, unknown> = {
           email,
           emailVerified,
-          address
+          address,
+          _id
         }
         // if there's role, add it to user
-        // By default, user address wouldn't have role. However, admin may have
+        // By default, user address wouldn't have role. However, admin will have
         if (roles?.length) user.roles = roles
         session.user = user
         return session

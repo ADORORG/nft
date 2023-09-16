@@ -1,5 +1,5 @@
 import type EventMintProps from "../types"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { dateToRelativeDayAndHour } from "@/utils/date"
 import { nftEditionChecker } from "@/utils/contract"
 import { useAccountMintCount } from "@/hooks/contract/event"
@@ -20,6 +20,14 @@ export default function MintCard(props: EventMintProps) {
     const relativeEndDate = dateToRelativeDayAndHour(new Date(eventData.end))
     const nftEditionType = nftEditionChecker(eventData.nftEdition)
     
+    // We want to show MintCompleted for a few seconds before hiding it
+    useEffect(() => {
+        if (mintDone) {
+            const timeout = setTimeout(() => {setMintDone(false)}, 12000)
+            return () => clearTimeout(timeout)
+        }
+    }, [mintDone])
+
     if (mintDone) return (<MintCompleted eventData={props.eventData} />)
 
     return (

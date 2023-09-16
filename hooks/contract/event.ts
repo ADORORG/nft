@@ -218,6 +218,7 @@ export function useAccountMintCount(data: {contractAddress: string, accountAddre
                     args: [BigInt(partitionId), getAddress(address)]
                 })
             } else {
+                // use open edition
                 mintsCount = await publicClient.readContract({
                     abi: latestERC721OpenEdition,
                     address: getAddress(contractAddress),
@@ -225,7 +226,6 @@ export function useAccountMintCount(data: {contractAddress: string, accountAddre
                     args: [getAddress(address)]
                 })
             }
-            console.info('event mintsCount', mintsCount)
             setCount(Number(mintsCount))
         }
 
