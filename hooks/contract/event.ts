@@ -197,30 +197,39 @@ export function useOpenEditionConfiguration({contractAddress}: {contractAddress:
     return config
 }
 
-export function useAccountPurchaseCount({contractAddress, accountAddress}: {contractAddress: string, accountAddress?: string}) {
+export function useAccountMintCount({contractAddress, accountAddress, partitionId}: {contractAddress: string, accountAddress?: string, partitionId?: number}) {
     const publicClient = usePublicClient()
     const [count, setCount] = useState(0)
-    const accountPurchaseCount = useMemo(async () => {
-        let accountPurchaseCount: Number | bigint = 0
-
+    
+    const accountMintsCount = useCallback(async () => {
         if (accountAddress) {
-            accountPurchaseCount = await publicClient.readContract({
-                abi: latestERC721OpenEdition,
-                address: getAddress(contractAddress),
-                functionName: "walletMints",
-                args: [getAddress(accountAddress as string)]
-            })
+            let mintsCount
+
+            if (partitionId) {
+                // use limited edition abi
+                mintsCount = await publicClient.readContract({
+                    abi: latestERC721LimitedEdition,
+                    address: getAddress(contractAddress),
+                    functionName: "walletMints",
+                    args: [BigInt(partitionId), getAddress(accountAddress as string)]
+                })
+            } else {
+                mintsCount = await publicClient.readContract({
+                    abi: latestERC721OpenEdition,
+                    address: getAddress(contractAddress),
+                    functionName: "walletMints",
+                    args: [getAddress(accountAddress as string)]
+                })
+            }
+
+            setCount(Number(mintsCount))
         }
 
-        return Number(accountPurchaseCount)
-
-    }, [publicClient, contractAddress, accountAddress])
+    }, [publicClient, contractAddress, accountAddress, partitionId])
 
     useEffect(() => {
-        accountPurchaseCount.then((count) => {
-            setCount(count)
-        })
-    }, [accountPurchaseCount])
+        accountMintsCount()
+    }, [accountMintsCount])
 
     return count
 }

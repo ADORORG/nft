@@ -2,6 +2,7 @@ import type EventMintProps from "../types"
 import { useState } from "react"
 import { dateToRelativeDayAndHour } from "@/utils/date"
 import { nftEditionChecker } from "@/utils/contract"
+import { useAccountMintCount } from "@/hooks/contract/event"
 import { InputField } from "@/components/Form"
 import ProgressBar from "@/components/ProgressBar"
 import MintButton from "./MintButton"
@@ -9,12 +10,12 @@ import MintCompleted from "./MintCompleted"
 
 export default function MintCard(props: EventMintProps) {
     const { eventData } = props
+    const accountMintCount = useAccountMintCount({contractAddress: eventData.contract.contractAddress, partitionId: eventData.partitionId})
     const [quantity, setQuantity] = useState(1)
     const [mintDone, setMintDone] = useState(false)
     const relativeStartDate = dateToRelativeDayAndHour(new Date(eventData.start))
     const relativeEndDate = dateToRelativeDayAndHour(new Date(eventData.end))
     const nftEditionType = nftEditionChecker(eventData.nftEdition)
-    const accountPurchaseCount = 0
     
     if (mintDone) return (<MintCompleted eventData={props.eventData} />)
 
@@ -41,7 +42,7 @@ export default function MintCard(props: EventMintProps) {
                             max={
                                 eventData.maxMintPerWallet &&
                                 eventData.maxMintPerWallet > 0 ?
-                                eventData.maxMintPerWallet - accountPurchaseCount
+                                eventData.maxMintPerWallet - accountMintCount
                                 : 
                                 undefined
                             }
@@ -63,7 +64,7 @@ export default function MintCard(props: EventMintProps) {
                 {
                     eventData.maxMintPerWallet && (
                         <p>
-                            Max mints: {accountPurchaseCount}/{eventData.maxMintPerWallet}
+                            Account Mints: {accountMintCount}/{eventData.maxMintPerWallet}
                         </p>
                     )
                 }

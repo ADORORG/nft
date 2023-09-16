@@ -159,7 +159,7 @@ export function useAuctionOrder() {
     }, [publicClient, session, walletClient, erc20Approval])
 
     /**
-     * Claim auction when it ended
+     * Claim auction when it has ended
      */
     const finaliseAuction = useCallback(async (order: PopulatedMarketOrderType) => {
         /** Destruct order data */
