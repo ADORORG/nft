@@ -16,7 +16,7 @@ export default function RedeemableButton(props: TokenPageProps & {session: { use
                 disabled={!redeemable || !isOwnedBySessionAccount }
                 onClick={() => setShowModal(true)}
                 className="w-3/4"
-                variant="secondary"
+                variant="gradient"
                 title={redeemable ? "Has redeemable content by owner" : "No redeemable content"}
                 rounded
             >
