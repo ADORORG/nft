@@ -253,3 +253,25 @@ export function replaceUrlParams(urlTemplate: string, params: Record<string, str
 export function promiseDelay(duration: number) {
 	return new Promise(resolve => setTimeout(resolve, duration))
 }
+
+/**
+ * Call a function later by calling `.exec()`.
+ * This function is  handy for DRY principle
+ * @param func Function to call later
+ * @param args Rest arguments that is passed to `func`
+ * @returns 
+ * @example
+ * const doMulti = (num) => num * 33
+ * const callMultiLater = callFunctionLater(doMulti, 4)
+ * // Use doMulti
+ * const multiValue = callMultiLater.exec() // 132
+ * // Using Promise
+ * const doMulti = (num) => Promise.resolve(num * 33)
+ * const callMultiLater = callFunctionLater(doMulti, 4)
+ * const multiValue = await callMultiLater.exec() // 132
+ */
+export function callFunctionLater<argT = unknown, rT = unknown>(func: (...args: argT[]) => rT, ...args: argT[]) {
+	return {
+		exec: () => func(...args)
+	}
+}

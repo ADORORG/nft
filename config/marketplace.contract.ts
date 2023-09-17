@@ -38,14 +38,12 @@ export default marketplaceContractAddresses
 
 /**
  * Get the appropriate marketplace contract address based on contract chainId & contract nftSchema
- * @param token - A populated token containing contract data
+ * @param tokenContractChainId - Token contract chain id
  * @param version - The version to get, defaults to the marketplace contract latest version
  * @returns 
  */
-export function getMarketplaceContract(token: PopulatedNftTokenType, version: string = defaultMarketplaceVersion) {
+export function getMarketplaceContract(tokenContractChainId: number, version: string = defaultMarketplaceVersion) {
     try {
-        /** Get the contract chainId */
-        const tokenContractChainId = token.contract.chainId
         /** Get the marketplace contract by chainId */
         const marketplaceContractByChain = marketplaceContractAddresses[tokenContractChainId]
 
