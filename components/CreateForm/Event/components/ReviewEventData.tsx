@@ -4,6 +4,7 @@ import { useChainById } from "@/hooks/contract"
 import { useAccountContract, useAccountCollection } from "@/hooks/fetch"
 import { useAuthStatus } from "@/hooks/account"
 import { fromRoyaltyPercent, getEventContractEditionData, nftEditionChecker } from "@/utils/contract"
+import Button from "@/components/Button"
 
 export default function ReviewEventData(props: EventDataFormProps) {
     const { session } = useAuthStatus()
@@ -80,7 +81,18 @@ export default function ReviewEventData(props: EventDataFormProps) {
             </p>
             <p className={fieldClassName}>
                 <span>Price</span>
-                <span>{price || notSet} {chain?.nativeCurrency?.symbol}</span>
+                <span>
+                    {
+                        !parseFloat((price || "0") as string) ?
+                        <span>
+                            <Button className="py-1" variant="gradient" rounded>Free</Button>
+                            &nbsp;0&nbsp;
+                        </span>
+                        :
+                        price
+                    }
+                    <span>{chain?.nativeCurrency?.symbol}</span>
+                </span>
             </p>
             <p className={fieldClassName}>
                 <span>Start date</span>

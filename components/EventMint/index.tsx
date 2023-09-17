@@ -7,6 +7,7 @@ import ExternalLink from "./component/ExternalLink"
 import MintCard from "./component/MintCard"
 import Button from "@/components/Button"
 import QuickModal from "@/components/QuickModal"
+import ProgressBar from "@/components/ProgressBar"
 import { MediaSkeleton } from "@/components/Skeleton"
 import { MediaPreview } from "@/components/MediaPreview"
 import { UserAccountAvatarWithLink } from "@/components/UserAccountAvatar"
@@ -173,6 +174,18 @@ export function EventMintCollapsedSmall(props: EventMintProps) {
                     <p className="break-all">
                         {cutString(eventData.xcollection.description, 40)}
                     </p>
+                    <div>
+                        <ProgressBar
+                            progress={
+                                nftEditionType.isOpenEdition ?
+                                100
+                                :
+                                ((eventData.supplyMinted || 0) / eventData.supply) * 100
+                            }
+                            variant="gradient"
+                            size="sm"
+                        />
+                    </div>
                     <div className="w-full my-2">
                         <Button
                             disabled={eventData.end < Date.now()}
@@ -234,7 +247,7 @@ export function EventMintCardSmall(props: EventMintProps) {
                         {cutString(eventData.tokenName || eventData.contract?.label, 20)}
                     </h1>
                 </div>
-
+            
                 <div className="w-full my-2">
                     <Button
                         variant="gradient"
@@ -242,7 +255,13 @@ export function EventMintCardSmall(props: EventMintProps) {
                         onClick={() => setShowModal(true)}
                         rounded
                     >
-                        Collect ({eventData.price} {chain?.nativeCurrency.symbol})
+                        Collect (
+                            {
+                                !eventData.price ?
+                                "Free" :
+                                `${eventData.price} ${chain?.nativeCurrency.symbol}`
+                            }
+                        )
                     </Button>
                 </div>
             </div>
