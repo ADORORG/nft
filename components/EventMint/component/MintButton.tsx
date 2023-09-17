@@ -121,7 +121,12 @@ export default function MintButton({eventData, quantity, done}: EventMintProps &
                             mintedOffchain ?
                             "Mint More"
                             :
-                            "Mint" 
+                            `${
+                                parseFloat(eventData.price.toString()) <= 0 ?
+                                "Mint Free"
+                                :
+                                "Mint"
+                            }` 
                         : 
                         "Ended"
                     }

@@ -199,7 +199,11 @@ export function EventMintCollapsedSmall(props: EventMintProps) {
                                 "Ended" :
                                 nftEditionType.isLimitedSupply && eventData.supplyMinted >= eventData.supply ?
                                 "Minted out" :
-                                `Collect (${eventData.price} ${chain?.nativeCurrency.symbol})`
+                                `Collect (${
+                                    parseFloat(eventData.price.toString()) <= 0 ?
+                                    "Free" :
+                                    `${eventData.price} ${chain?.nativeCurrency.symbol}`
+                                })`
                             }
                             
                         </Button>
@@ -257,7 +261,7 @@ export function EventMintCardSmall(props: EventMintProps) {
                     >
                         Collect (
                             {
-                                !eventData.price ?
+                                parseFloat(eventData.price.toString()) <= 0 ?
                                 "Free" :
                                 `${eventData.price} ${chain?.nativeCurrency.symbol}`
                             }
