@@ -6,7 +6,6 @@ import { useAtom } from "jotai"
 import { toast } from "react-hot-toast"
 import { useAccount } from "wagmi"
 import {
-    nftTokenImageStore,
     nftTokenMediaStore,
     nftTokenCreatedStore,
     nftTokenUploadedStore,
@@ -14,6 +13,8 @@ import {
     nftTokenAttributeStore
 } from "@/store/form"
 import { validateFile } from "@/utils/file"
+import { splitAtWhiteSpaceOrComma } from "@/utils/main"
+import { toRoyaltyPercent } from "@/utils/contract"
 import { useMediaObjectUrl } from "@/hooks/media/useObjectUrl"
 import {
     FileDropzone,
@@ -33,6 +34,10 @@ import Button from "@/components/Button"
 import CreateTokenModal from "./CreateTokenModal"
 import appRoutes from "@/config/app.route"
 
+/**
+ * @todo - Move contract write/read to hook in a separate file 
+ * @returns 
+ */
 export default function CreateTokenForm() {
     const searchParams = useSearchParams()
     const { isConnected, address } = useAccount()
@@ -50,12 +55,10 @@ export default function CreateTokenForm() {
     /** A placeholder or default token attribute */
 	const defaultAttributes = {trait_type: "", value: ""}
     /** Allowed Image type of token  */
-	const allowImageExtensions = ["jpg", "jpeg", "png", "gif", "webp", "svg"]
     /** Optional media extension of token */
-	const allowMediaExtension = [...allowImageExtensions, "mp3", "3gp", "mp4", "webm", "mov"]
+	const allowMediaExtension = ["jpg", "jpeg", "png", "gif", "webp", "svg", "mp3", "3gp", "mp4", "webm", "mov"]
 
     /** Use atom store of token data */
-    const [nftTokenImage, setNftTokenImage] = useAtom(nftTokenImageStore)
     const [nftTokenMedia, setNftTokenMedia] = useAtom(nftTokenMediaStore)
     const [nftTokenData, setNftTokenData] = useAtom(nftTokenDataStore)
     const [nftTokenAttribute, setNftTokenAttribute] = useAtom(nftTokenAttributeStore)
@@ -67,8 +70,9 @@ export default function CreateTokenForm() {
     /** Modal for minting and uploading token data */
     const [showModal, setShowModal] = useState(false)
     const [royaltyPercent, setRoyaltyPercent] = useState(10)
-    const tempImageObjectUrl = useMediaObjectUrl(nftTokenImage)
     const tempMediaObjectUrl = useMediaObjectUrl(nftTokenMedia)
+    const targetContract = accountContracts?.find(c => c._id?.toString() === nftTokenData?.contract)
+    const isErc721 = targetContract?.nftSchema === "erc721"
 
     /**
      * Reset all the form field. This must be done before creating a new token
@@ -78,7 +82,6 @@ export default function CreateTokenForm() {
         setNftTokenUploaded(false)
         setNftTokenData({})
         setNftTokenAttribute([{...defaultAttributes}])
-        setNftTokenImage(null)
         setNftTokenMedia(null)
     }
 
@@ -96,21 +99,6 @@ export default function CreateTokenForm() {
             setNftTokenData({...nftTokenData, [name]: value})            
         }
 	}
-
-    /**
-     * Image change event handler
-     * @param e Event handler
-     */
-    const handleImageFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-        try {
-            if (e.target.files?.length) {
-                validateFile(e.target.files[0], {ext: allowImageExtensions})
-                setNftTokenImage(e.target.files[0])
-            }
-        } catch (error: any) {
-            toast.error(error.message)
-        }
-    }
 
     /**
      * Media change event handler
@@ -132,7 +120,7 @@ export default function CreateTokenForm() {
     /**
      * Verify the required form fields for token creation and enable modal
      */
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         const noEmptyFields = requiredFormFields.every(field => nftTokenData && !!nftTokenData[field])
 
 		if (!noEmptyFields) {
@@ -140,12 +128,12 @@ export default function CreateTokenForm() {
 			return
 		}
 
-		if (!nftTokenImage) {
-			toast.error("Please upload token image")
+		if (!nftTokenMedia) {
+			toast.error("Please upload token media")
 			return
 		}
-
         setShowModal(true)
+        
     }
 
     return (
@@ -223,9 +211,10 @@ export default function CreateTokenForm() {
                                 min={0}
                                 placeholder="1"
                                 onChange={handleInputChange}
-                                value={nftTokenData?.supply || "1"}
+                                value={isErc721 ? "1" : (nftTokenData?.supply || "1")}
                                 autoComplete="off"
                                 className="rounded focus:transition-all duration-700"
+                                disabled={isErc721}
                             />
                         </div>
 
@@ -235,11 +224,12 @@ export default function CreateTokenForm() {
                             <RangeInput
                                 max={50}
                                 step={1}
+                                value={royaltyPercent}
                                 onChange={e => {
                                     const value = Number(e.target.value)
                                     setRoyaltyPercent(value)
                                     // set contract royalty
-                                    setNftTokenData({...nftTokenData, royalty: value * 100})
+                                    setNftTokenData({...nftTokenData, royalty: toRoyaltyPercent(value)})
                                 }}
                             />
                         </div>
@@ -280,6 +270,12 @@ export default function CreateTokenForm() {
                             name="tags"
                             placeholder="art, 3D, pin"
                             onChange={handleInputChange}
+                            onBlur={e => {
+                                // Limit tags to 6
+                                const {value} = e.target
+                                const tags = splitAtWhiteSpaceOrComma(value).slice(0, 6).join(", ")
+                                setNftTokenData({...nftTokenData, tags})
+                            }}
                             value={nftTokenData?.tags || ""}
                             autoComplete="off"
                             className="rounded focus:transition-all duration-400"
@@ -382,35 +378,9 @@ export default function CreateTokenForm() {
                 </div>
 
                 <div className="w-full flex flex-col gap-4">
-                    {/* Input media/file  */}
-                    <div className="md:w-[320px] md:h-[320px] h-[250px] w-[250px]">
-                        {/* token Image */}
-                        <label htmlFor="nftTokenImage" className="my-4 font-medium">Image</label>
-                        {
-                            nftTokenImage &&
-                            <MediaPreview 
-                                type="image/*"
-                                htmlFor="nftTokenImage"
-                                previewClassName=""
-                                src={tempImageObjectUrl}
-                            />
-                        }
-                        <div className={!!nftTokenImage ? "hidden" : ""}>
-                            <FileDropzone
-                                id="nftTokenImage"
-                                label="Token Image"
-                                fileExtensionText={allowImageExtensions.join(", ")}
-                                accept={allowImageExtensions.map(x => "." + x).join(", ")}
-                                labelClassName="hover:transition-all duration-700"
-                                onChange={handleImageFile}
-                            />
-                        </div>
-                    </div>
-
-                    <div className="md:h-[250px] md:w-[500px] h-[250px] w-[444px]">
+                    <div className="h-[250px] w-[250px]">
                         {/* Token Media */}
-                        <label htmlFor="nftTokenMedia" className="my-4 text-sm font-medium">Media (optional)</label>
-                        
+                        <label htmlFor="nftTokenMedia" className="my-4 text-sm font-medium">Media</label>      
                         {
                             nftTokenMedia &&
                             <MediaPreview 

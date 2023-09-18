@@ -6,7 +6,6 @@ import { toast } from "react-hot-toast"
 import { decodeEventLog } from "viem"
 import { usePrepareContractWrite, useContractWrite, useAccount, useFeeData, usePublicClient } from "wagmi"
 import {
-    nftTokenImageStore,
     nftTokenMediaStore,
     nftTokenCreatedStore,
     nftTokenUploadedStore,
@@ -196,7 +195,6 @@ function MintToken({contract}: CreateTokenModalProps) {
 function UploadTokenData() {
     const [uploading, setUploading] = useState(false)
     const [nftTokenUploaded, setNftTokenUploaded] = useAtom(nftTokenUploadedStore)
-    const [nftTokenImage] = useAtom(nftTokenImageStore)
     const [nftTokenMedia] = useAtom(nftTokenMediaStore)
     const [nftTokenData] = useAtom(nftTokenDataStore)
     const [nftTokenAttribute] = useAtom(nftTokenAttributeStore)
@@ -227,17 +225,10 @@ function UploadTokenData() {
             formData.append("attributes", JSON.stringify(nftTokenAttribute))
         }
 
-        const [imageDataURL, bannerDataURL] = await Promise.all([
-            new Promise<string>(resolve => readSingleFileAsDataURL(nftTokenImage as Blob, resolve as any)),
-            nftTokenMedia ? new Promise<string>(resolve => readSingleFileAsDataURL(nftTokenMedia as Blob, resolve as any)) : ""
-        ])
+        const mediaDataURL = await new Promise<string>(resolve => readSingleFileAsDataURL(nftTokenMedia as Blob, resolve as any))
 
-        // append image
-        formData.append("image", imageDataURL)
-
-        if (nftTokenMedia) {
-            formData.append("media", bannerDataURL)
-        }
+        // append media
+        formData.append("media", mediaDataURL)
 
         return formData
     }
@@ -265,7 +256,7 @@ function UploadTokenData() {
     return (
         <div className="my-4 flex flex-col gap-4">
             <Button 
-                variant="secondary"
+                variant="gradient"
                 disabled={nftTokenUploaded || uploading} 
                 loading={uploading}
                 onClick={uploadToken}

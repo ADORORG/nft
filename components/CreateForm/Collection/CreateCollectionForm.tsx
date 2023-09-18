@@ -4,12 +4,12 @@ import { useState } from "react"
 import { useAtom } from "jotai"
 import { toast } from "react-hot-toast"
 import {
-    collectionImageStore,
+    collectionMediaStore,
     collectionBannerStore,
     collectionDataStore,
     collectionCreatedStore
 } from "@/store/form"
-import { onlyAlphaNumeric } from "@/lib/utils/main"
+import { onlyAlphaNumeric, splitAtWhiteSpaceOrComma } from "@/lib/utils/main"
 import { readSingleFileAsDataURL, validateFile } from "@/utils/file"
 import { collectionCategories } from "@/lib/app.config"
 import { useAuthStatus } from "@/hooks/account"
@@ -34,19 +34,17 @@ export default function CreateCollectionForm() {
     const socialMediaFields = ["discord", "twitter"] as const
 	const requiredFormFields = ["name", "description", "category", "tags"] as const
 	const otherFormFields = ["externalUrl"] as const
-    /** Allowed Image type of token  */
-    const allowImageExtensions = ["jpg", "jpeg", "png", "gif", "webp", "svg"]
-    /** Optional media extension of token */
-	const allowMediaExtension = [...allowImageExtensions, "mp3", "3gp", "mp4", "webm", "mov"]
+    /** Allowed media extension of token */
+	const allowMediaExtension = ["jpg", "jpeg", "png", "gif", "webp", "svg", "mp3", "3gp", "mp4", "webm", "mov"]
 
     const [isLoading, setIsLoading] = useState(false)
     const [isInvalidCollectionSlug, setIsInvalidCollectionSlug] = useState<boolean | undefined>()
     const [bannerFile, setBannerFile] = useAtom(collectionBannerStore)
-    const [imageFile, setImageFile] = useAtom(collectionImageStore)
+    const [mediaFile, setMediaFile] = useAtom(collectionMediaStore)
     const [collectionData, setCollectionData] = useAtom(collectionDataStore)
     const [collectionCreated, setCollectionCreated] = useAtom(collectionCreatedStore)
     const [collectionSlug, setCollectionSlug] = useState('')
-    const tempImageObjectUrl = useMediaObjectUrl(imageFile)
+    const tempMediaObjectUrl = useMediaObjectUrl(mediaFile)
     const tempBannerObjectUrl = useMediaObjectUrl(bannerFile)
    /**
     * Check that collection slug (url) is not in use by another collection 
@@ -76,7 +74,7 @@ export default function CreateCollectionForm() {
     }
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement|HTMLSelectElement>) => {
-		const {name, value} = e.target;
+		let {name, value} = e.target;
         if (name === "name") {
             const slug = onlyAlphaNumeric(value)
             setCollectionSlug(slug.toLowerCase())
@@ -93,8 +91,8 @@ export default function CreateCollectionForm() {
 			return
 		}
 
-		if (!imageFile || !bannerFile) {
-			toast.error("Please upload collection image and banner")
+		if (!mediaFile) {
+			toast.error("Please upload collection media")
 			return
 		}
 
@@ -105,13 +103,17 @@ export default function CreateCollectionForm() {
         try {
             setIsLoading(true)
             const formData = new FormData()
-            // append image and banner
-            const [imageDataURL, bannerDataURL] = await Promise.all([
-                new Promise<string>(resolve => readSingleFileAsDataURL(imageFile as Blob, resolve as any)),
+            // append media and banner
+            const [mediaDataURL, bannerDataURL] = await Promise.all([
+                new Promise<string>(resolve => readSingleFileAsDataURL(mediaFile as Blob, resolve as any)),
+
+                bannerFile ? 
                 new Promise<string>(resolve => readSingleFileAsDataURL(bannerFile as Blob, resolve as any))
+                :
+                Promise.resolve("")
             ])
             
-            formData.append("image", imageDataURL)
+            formData.append("media", mediaDataURL)
             formData.append("banner", bannerDataURL)
 
             for (const field of requiredFormFields) {
@@ -149,7 +151,7 @@ export default function CreateCollectionForm() {
     }
 
     const resetForm = () => {
-		setImageFile(null)
+		setMediaFile(null)
 		setBannerFile(null)
 		setCollectionData({})
         setCollectionCreated(false)
@@ -239,6 +241,12 @@ export default function CreateCollectionForm() {
                             name="tags"
                             placeholder="art, 3D, pin"
                             onChange={handleInputChange}
+                            onBlur={e => {
+                                // Limit tags to 6
+                                const {value} = e.target
+                                const tags = splitAtWhiteSpaceOrComma(value).slice(0, 6).join(", ")
+                                setCollectionData({...collectionData, tags})
+                            }}
                             value={collectionData?.tags || ""}
                             autoComplete="off"
                             className="rounded focus:transition-all duration-400"
@@ -285,28 +293,29 @@ export default function CreateCollectionForm() {
                 <div className="w-full flex flex-col gap-4">
                     {/* Input media/file  */}
                     <div className="md:w-[320px] md:h-[320px] h-[250px] w-[250px]">
-                        {/* Collection Image */}
-                        <h4 className="my-4 font-medium">Image</h4>
+                        {/* Collection Media */}
+                        <h4 className="my-4 font-medium">Media</h4>
                         {
-                            imageFile &&
+                            mediaFile &&
                             <MediaPreview 
-                                type="image/*"
-                                htmlFor="collectionImage"
+                                type={collectionData.mediaType}
+                                htmlFor="collectionMedia"
                                 previewClassName=""
-                                src={tempImageObjectUrl}
+                                src={tempMediaObjectUrl}
                             />
                         }
-                        <div className={!!imageFile ? "hidden" : ""}>
+                        <div className={!!mediaFile ? "hidden" : ""}>
                             <FileDropzone
-                                id="collectionImage"
-                                label="Collection Image"
-                                fileExtensionText={allowImageExtensions.join(", ")}
-                                accept={allowImageExtensions.map(x => "." + x).join(", ")}
+                                id="collectionMedia"
+                                label="Collection Media"
+                                fileExtensionText={allowMediaExtension.join(", ")}
+                                accept={allowMediaExtension.map(x => "." + x).join(", ")}
                                 labelClassName="hover:transition-all duration-700"
                                 onChange={(event) => {
                                     if (event.target.files?.length) {
-                                        validateFile(event.target.files[0], {ext: allowImageExtensions})
-                                        setImageFile(event.target.files[0])
+                                        validateFile(event.target.files[0], {ext: allowMediaExtension})
+                                        setMediaFile(event.target.files[0])
+                                        setCollectionData({...collectionData, mediaType: event.target.files[0].type})
                                     }
                                 }}
                             />
@@ -315,12 +324,12 @@ export default function CreateCollectionForm() {
 
                     <div className="md:h-[250px] md:w-[500px] h-[250px] w-[444px]">
                         {/* Collection Banner */}
-                        <h4 className="my-4 text-sm font-medium">Banner</h4>
+                        <h4 className="my-4 text-sm font-medium">Banner (Optional)</h4>
                         
                         {
                             bannerFile &&
                             <MediaPreview
-                                type="image/*"
+                                type={collectionData.bannerType}
                                 htmlFor="collectionBanner"
                                 previewClassName=""
                                 src={tempBannerObjectUrl}
@@ -337,6 +346,7 @@ export default function CreateCollectionForm() {
                                     if (event.target.files?.length) {
                                         validateFile(event.target.files[0], {ext: allowMediaExtension})
                                         setBannerFile(event.target.files[0])
+                                        setCollectionData({...collectionData, bannerType: event.target.files[0].type})
                                     }
                                 }}
                             />
@@ -354,7 +364,7 @@ export default function CreateCollectionForm() {
                             collectionCreated ?
                             <Button
                                 className="px-3"
-                                variant="secondary"
+                                variant="gradient"
                                 rounded
                             >
                                 <Link href={appRoute.viewCollection.replace(":slug", onlyAlphaNumeric(collectionData?.name as string))}>View Collection</Link>

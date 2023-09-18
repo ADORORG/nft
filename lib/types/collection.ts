@@ -11,14 +11,18 @@ export default interface CollectionType /* extends Partial<Document> */ {
     slug: string;
     /** Description of the collection */
     description: string;
-    /** Collection image URI or ipfs hash */
-    image: string; // ipfs hash
+    /** 
+     * @deprecated - Use `media`.
+     * Collection image URI or ipfs hash */
+    image?: string; // ipfs hash
     /** Collection media */
-    media?: string; // ipfs hash
+    media: string; // ipfs hash
     /** Collection media type */
-    mediaType?: string;
+    mediaType: string;
     /** Collection banner URI or ipfs hash */
     banner?: string; // ipfs hash
+    /** Collection media type */
+    bannerType?: string;
     /** Comma or white-space separated collection tags string */
     tags: string;
     /** Category of this collection */

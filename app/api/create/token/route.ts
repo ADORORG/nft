@@ -33,32 +33,22 @@ async function createNewToken(request: NextRequest, _: any, { user }: {user: Acc
      * @todo Convert media to stream and upload to decentralized storage 
     */
     if (
-        (!data.image && !data.image.startsWith('data:image'))
-    ) throw new CustomRequestError('Please provide a valid token image', 400)
+        (!data.media && !data.media.startsWith('data:'))
+    ) throw new CustomRequestError('Please provide a valid token media', 400)
     
     // Convert dataURI to readable stream
-    const imageId = `${data.contract}#${data.tokenId}-image`
-    const imageStream = dataUrlToReadableStream(data.image, imageId)
-    
-    const mediaToUpload = [
-        uploadMediaToIPFS(imageStream, imageId)
-    ]
+    const mediaId = `${data.contract}#${data.tokenId}-media`
+    const mediaStream = dataUrlToReadableStream(data.media, mediaId)
 
-    if (data.media) {
-        const mediaId = `${data.contract}#${data.tokenId}-media`
-        const mediaStream = dataUrlToReadableStream(data.media, mediaId)
-        mediaToUpload.push(uploadMediaToIPFS(mediaStream, mediaId))
-    }
     // Upload readable stream to ipfs through pinata
-    const [imageHash, mediaHash] = await Promise.all(mediaToUpload)
+    const mediaHash = await uploadMediaToIPFS(mediaStream, mediaId)
 
     await mongooseConnectPromise
     // Get the user session account
     const account = await setAccountDetails(user.address, {address: user.address})
     // create the new token
     const newToken = await createToken({
-        image: imageHash,
-        media: mediaHash || "",
+        media: mediaHash,
         mediaType: data.mediaType,
         tokenId: data.tokenId,
         supply: data.supply,
@@ -74,7 +64,6 @@ async function createNewToken(request: NextRequest, _: any, { user }: {user: Acc
         owner: account._id,
         xcollection: data.xcollection,
         contract: data.contract,
-
     })
     
     // send the new token in response

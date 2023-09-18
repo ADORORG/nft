@@ -29,26 +29,26 @@ async function createNewCollection(request: NextRequest, _: any, { user }: {user
     }
 
     /** 
-     * Ensure that image and banner is a dataURI
+     * Ensure that media is a dataURI
      * @todo Implement a more strict check for media dataURI  
     */
     if (
-        (!data.image && !data.image.startsWith('data:image'))
-    ) throw new CustomRequestError('Please provide a valid image for this collection', 400);
+        (!data.media && !data.media.startsWith('data:'))
+    ) throw new CustomRequestError('Please provide a valid media for this collection', 400);
     
     // Convert dataURI to readable stream
-    const imageId = `${data.slug}-image`;
-    const imageStream = dataUrlToReadableStream(data.image, imageId);
+    const mediaId = `${data.slug}-media`;
+    const mediaStream = dataUrlToReadableStream(data.media, mediaId);
     
     let bannerId = `${data.slug}-banner`;
     let bannerStream;
     
-    if (data.banner && !data.banner.startsWith('data:image')) {
+    if (data.banner && !data.banner.startsWith('data:')) {
         bannerStream = dataUrlToReadableStream(data.banner, bannerId);
     }
     // Upload readable stream to ipfs through pinata
-    const [imageHash, bannerHash] = await Promise.all([
-        uploadMediaToIPFS(imageStream, imageId),
+    const [mediaHash, bannerHash] = await Promise.all([
+        uploadMediaToIPFS(mediaStream, mediaId),
         bannerStream ? 
         uploadMediaToIPFS(bannerStream, bannerId)
         :
@@ -59,16 +59,18 @@ async function createNewCollection(request: NextRequest, _: any, { user }: {user
     const account = await setAccountDetails(user.address, {address: user.address})
     // create the new collection
     const newCollection = await createCollection({
-        image: imageHash,
+        media: mediaHash,
         banner: bannerHash,
+        mediaType: data.mediaType,
+        bannerType: data.bannerType || '',
         slug: data.slug,
         name: data.name,
         description: data.description,
         tags: data.tags,
         category: data.category,
         externalUrl: data.externalUrl,
-        twitter: data.twitter || "",
-        discord: data.discord || "",
+        twitter: data.twitter || '',
+        discord: data.discord || '',
         owner: account._id
     })
     

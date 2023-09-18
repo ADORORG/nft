@@ -1,13 +1,14 @@
 import type AccountType from "@/lib/types/account"
 import { FiatCurrencyDisplay } from "@/components/Currency"
 import Banner from "@/components/Banner"
-import Image from "@/components/Image"
 import TagList from "@/components/TagList"
 import Tag from "@/components/Tag"
 import SocialIcon from "@/components/SocialIcon"
 import AccountAvatar from "@/components/UserAccountAvatar"
+import MediaPreview from "@/components/MediaPreview"
 import Link from "next/link"
 import appRoute from "@/config/app.route"
+import { IPFS_GATEWAY } from "@/lib/app.config"
 // Server
 import getServerSideData from "../serverSideData"
 
@@ -22,6 +23,8 @@ export default async function Page({params: {slug}}: {params: {slug: string}}) {
         category,
         // externalUrl,
         // banner,
+        media,
+        mediaType,
         image,
         discord,
         twitter
@@ -30,10 +33,11 @@ export default async function Page({params: {slug}}: {params: {slug: string}}) {
     return (
         <Banner className="pb-8">
             <Banner.Image>
-                <Image 
-                    src={image}
-                    alt=""
-                    width={200}
+                <MediaPreview
+                    type={mediaType || "image/*"}
+                    src={`${IPFS_GATEWAY}${media || image}`}
+                    previewClassName="h-[200px] w-[200px] flex justify-center items-center"
+                    className="max-h-[200px]"
                 />
             </Banner.Image>
             

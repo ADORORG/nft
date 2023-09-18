@@ -7,7 +7,7 @@ import { atomWithLocalStorage } from "./atom.local"
 import { atom } from "jotai"
 
 // Collection data store
-export const collectionImageStore = atom<File | null>(null)
+export const collectionMediaStore = atom<File | null>(null)
 export const collectionBannerStore = atom<File | null>(null)
 export const collectionCreatedStore = atom(false)
 export const collectionDataStore = atom<Partial<CollectionType>>({})

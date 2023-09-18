@@ -48,7 +48,8 @@ const CardList = () => {
             version: "1"
           },
           name: "NFT Name",
-          image: `http://localhost:3000/test-images/image${imgNumber}.png`,
+          media: `http://localhost:3000/test-images/image${imgNumber}.png`,
+          mediaType: "image/*",
           createdAt: new Date(),
           updatedAt: new Date(),
           owner: {
@@ -61,7 +62,8 @@ const CardList = () => {
             name: "my collection",
             slug: "mycollection",
             owner: "0x1234567890123456789012345678901234567890",
-            image: "hash",
+            media: "hash",
+            mediaType: "image/*",
             banner: "hash",
             description: "",
             tags: "",

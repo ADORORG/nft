@@ -8,6 +8,7 @@ import { toast } from "react-hot-toast"
 import { useNetwork, useWalletClient, usePublicClient } from "wagmi"
 import { fetcher, getFetcherErrorMessage } from "@/utils/network"
 import { replaceUrlParams } from "@/utils/main"
+import { toRoyaltyPercent } from "@/utils/contract"
 import { InputField, RangeInput } from "@/components/Form"
 import { ConnectWalletButton } from "@/components/ConnectWallet"
 import { ERC1155_BYTECODE, ERC1155_VERSION } from "@/solidity/erc1155.compiled"
@@ -126,7 +127,7 @@ export default function CreateNftContractForm({nftSchema}: Pick<ContractType, "n
     }, [contractData, deployed, uploadContractData, isErc721, deployContractNftContract, nftSchema])
 
     return (
-        <div className="w-full md:w-1/2 lg:w-2/5 mx-auto">
+        <div className="w-full md:w-1/2 lg:max-w-md mx-auto">
             <h1 className="text-4xl pb-10 md:leading-4">Create {isErc721 ? "ERC721" : "ERC1155"} Contract</h1>
 
             <div className="flex flex-col gap-4 justify-center">
@@ -163,11 +164,12 @@ export default function CreateNftContractForm({nftSchema}: Pick<ContractType, "n
                     <RangeInput
                         max={50}
                         step={1}
+                        value={royaltyPercent}
                         onChange={e => {
                             const value = Number(e.target.value)
                             setRoyaltyPercent(value)
                             // set contract royalty
-                            setContractData({...contractData, royalty: value * 100})
+                            setContractData({...contractData, royalty: toRoyaltyPercent(value)})
                         }}
                         disabled={loading}
                     />

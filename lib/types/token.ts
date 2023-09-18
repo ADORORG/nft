@@ -16,13 +16,14 @@ export default interface NftTokenType /* extends Partial<Document> */ {
     /** Description of the token */
     description?: string;
     /**
+     * @deprecated - Use `media` instead.
      * Ipfs hash or an absolute url if token is imported 
     */
     image?: string;
     /**
      * Alternative media for token. It could be an image/audio/video
      */
-    media?: string;
+    media: string;
     /**
      * The type of media content if provided. Examples video/mp4, image/png
      */
@@ -37,7 +38,7 @@ export default interface NftTokenType /* extends Partial<Document> */ {
     redeemableContent?: string;
     /** Token attribute */
     attributes?: AttributeType[];
-    /** Comma or white-space separated collection tags string */
+    /** Comma or white-space separated token tags string */
     tags?: string;
     /** Number of views for this token */
     views?: number;
