@@ -22,7 +22,7 @@ export default function EventDetails(props: EventMintProps) {
     return (
         <div className="flex flex-col gap-4">
             <p className="px-2 py-6">
-                {eventData.xcollection.description}
+                {eventData.tokenDescription}
             </p>
             {
                 Object.entries(nodeData).map(([key, value]) => (
