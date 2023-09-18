@@ -1,10 +1,9 @@
 import type ContractType from "@/lib/types/contract"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { CodeSlash, CloudCheck, BagCheck } from "react-bootstrap-icons"
 import { useAtom } from "jotai"
 import { toast } from "react-hot-toast"
-import { decodeEventLog } from "viem"
-import { usePrepareContractWrite, useContractWrite, useAccount, useFeeData, usePublicClient } from "wagmi"
+import { useAccount } from "wagmi"
 import {
     nftTokenMediaStore,
     nftTokenCreatedStore,
@@ -16,13 +15,12 @@ import { fetcher, getFetcherErrorMessage } from "@/utils/network"
 import { replaceUrlParams } from "@/utils/main"
 import { readSingleFileAsDataURL } from "@/utils/file"
 import { useContractChain } from "@/hooks/contract"
+import { useERC721, useERC1155 } from "@/hooks/contract/nft"
 import Stepper from "@/components/Stepper"
 import Button from "@/components/Button"
 import Link from "next/link"
 import apiRoutes from "@/config/api.route"
 import appRoutes from "@/config/app.route"
-import erc1155Abi from "@/abi/erc1155"
-import erc721Abi from "@/abi/erc721"
 
 interface CreateTokenModalProps {
     contract: ContractType
@@ -102,74 +100,42 @@ function MintToken({contract}: CreateTokenModalProps) {
     const [nftTokenCreated, setNftTokenCreated] = useAtom(nftTokenCreatedStore)
     const [nftTokenData, setNftTokenData] = useAtom(nftTokenDataStore)
     const { address } = useAccount()
-    const { data: feeData } = useFeeData({ chainId: contract.chainId })
+    const erc721Method = useERC721() 
+    const erc1155Method = useERC1155()
     const contractChain = useContractChain(contract)
     
-    const writeArgs: Record<string, Record<string, any>> = {
-        erc721: {
-            functionName: "mint",
-            /** @todo Execution is always reverted if royalty is passed */
-            // args: [address, BigInt(nftTokenData?.royalty || 1)],
-            args: [],
-            abi: erc721Abi,
-            address: contract.contractAddress,
-            chainId: contract.chainId,
-            maxFeePerGas: feeData?.maxFeePerGas,
-            maxPriorityFeePerGas: feeData?.maxPriorityFeePerGas,
-            onError: () => toast.error("Minting will fail, please report error")
-        },
-        erc1155: {
-            functionName: "create",
-            /** @todo Execution is always reverted if royalty is passed */
-            // args: [address, BigInt(nftTokenData?.supply || 1), BigInt(nftTokenData?.royalty || 0), "0x"],
-            args: [address, BigInt(nftTokenData?.supply || 1), "0x"],
-            abi: erc1155Abi,
-            address: contract.contractAddress,
-            chainId: contract.chainId,
-            maxFeePerGas: feeData?.maxFeePerGas,
-            maxPriorityFeePerGas: feeData?.maxPriorityFeePerGas,
-            onError: () => toast.error("Minting will fail, please report error")
-        }
-    } as const
-
-    const { config } = usePrepareContractWrite(writeArgs[nftSchema])
-    const { isLoading, writeAsync } = useContractWrite(config)
-    const publcClient = usePublicClient({ chainId: contract.chainId })
+    useEffect(() => {
+        contractChain.ensureContractChainAsync()
+    }, [contractChain])
 
     const handleMinting = async () => {
         try {
             setMinting(true)
-            // Ensure we are connected to the chain which contrat was deployed
-            await contractChain.ensureContractChainAsync()
             /** Send the transaction */
-            const mintTransaction = await writeAsync?.()
-            /** Wait for the transaction to be mined */
-            const txReceipt = await publcClient.waitForTransactionReceipt(mintTransaction as any)
-            /** Decode the transaction logs to extract the tokenId */
-            const mintLog = decodeEventLog({
-                abi: writeArgs[nftSchema].abi,
-                data: txReceipt.logs[0].data,
-                topics: txReceipt.logs[0].topics
-            })
+            let writeResult
 
-            let tokenId
-
-            /** Get the tokenId */
-            switch(nftSchema) {
-                case "erc721":
-                    tokenId = (mintLog.args as any)?.tokenId?.toString()
-                    break
-                case "erc1155":
-                    tokenId = (mintLog.args as any)?.id?.toString()
-                    break
+            if (nftSchema === "erc721") {
+                writeResult = await erc721Method.mint({
+                    contractAddress: contract.contractAddress,
+                    royalty: nftTokenData?.royalty || contract.royalty,
+                    receiverAddress: address as string
+                })
+            } else {
+                writeResult = await erc1155Method.create({
+                    contractAddress: contract.contractAddress,
+                    initialSupply: nftTokenData?.supply || 1,
+                    royalty: nftTokenData?.royalty || contract.royalty,
+                    receiverAddress: address as string
+                })
             }
-            
-            setNftTokenData({...nftTokenData, tokenId})
+
+            setNftTokenData({...nftTokenData, tokenId: writeResult?.tokenId})
             // console.log("tokenId", tokenId)
             setNftTokenCreated(true)
         
         } catch (error: any) {
-            // toast.error(error.message)
+            console.error(error)
+            toast.error(getFetcherErrorMessage(error))
 
         } finally {
             setMinting(false)
@@ -180,8 +146,8 @@ function MintToken({contract}: CreateTokenModalProps) {
         <div className="my-4 flex flex-col">
             <Button 
                 variant="secondary"
-                disabled={nftTokenCreated || minting || isLoading || !writeAsync}
-                loading={minting || isLoading}
+                disabled={nftTokenCreated || minting}
+                loading={minting}
                 onClick={handleMinting}
                 rounded
             >

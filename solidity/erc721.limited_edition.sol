@@ -1093,7 +1093,7 @@ abstract contract ERC2981 is IERC2981, ERC165 {
      * - `feeNumerator` cannot be greater than the fee denominator.
      */
     function _setDefaultRoyalty(address receiver, uint96 feeNumerator) internal virtual {
-        require(feeNumerator <= MAX_ROYALTY, "ERC2981: MAX royalty fee is 9900 - 99%");
+        require(feeNumerator <= MAX_ROYALTY, "ERC2981: Exceed MAX royalty fee");
         require(receiver != address(0), "ERC2981: invalid receiver");
 
         _defaultRoyaltyInfo = RoyaltyInfo(receiver, feeNumerator);
