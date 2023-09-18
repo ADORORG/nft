@@ -42,14 +42,14 @@ export default function SaleEventMetadataForm(props: EventDataFormProps) {
                 autoComplete="off"
             />
             <div className="">
-                <label htmlFor="token-description" className="block my-2 text-sm font-medium text-gray-900 dark:text-white ">
+                <label htmlFor="event-description" className="block my-2 text-sm font-medium text-gray-900 dark:text-white ">
                     Description <br/><small>Minted tokens will have this description</small>
                 </label>
                 <TextArea
-                    id="event-description"
-                    name="description"
+                    id="tokenDescription"
+                    name="tokenDescription"
                     placeholder="Describe your contract token"
-                    value={eventData?.description || ""}
+                    value={eventData?.tokenDescription || ""}
                     className="rounded focus:transition-all duration-700"
                     onChange={handleEventDataChange}
                 />

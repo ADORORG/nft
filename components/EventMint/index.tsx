@@ -106,7 +106,7 @@ export function EventMintCollapsed(props: EventMintProps) {
 
             <div className="p-3">
                 <p className="min-h-[70px] break-all">
-                    {cutString(eventData.xcollection.description, 120)}
+                    {cutString(eventData.tokenDescription, 120)}
                 </p>
                 <p className="text-end">
                 <Link
@@ -172,7 +172,7 @@ export function EventMintCollapsedSmall(props: EventMintProps) {
                         />
                     </div>
                     <p className="break-all">
-                        {cutString(eventData.xcollection.description, 40)}
+                        {cutString(eventData.tokenDescription, 40)}
                     </p>
                     <div>
                         <ProgressBar

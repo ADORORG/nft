@@ -52,7 +52,7 @@ export default interface NftContractSaleEventType {
     /** Every tokens minted in this event will have this name */
     tokenName: string,
     /** Every tokens minted in this event will have this description */
-    description?: string,
+    tokenDescription?: string,
     /** Redeemable content if token has redeemable content */
     redeemableContent?: string;
     /** Is the nft token from this sale event transferrable? */

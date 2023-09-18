@@ -32,6 +32,7 @@ const NftContractSaleEventSchema = new Schema<NftContractSaleEventType>({
     // Token minted in this sale event will have the following properties.
     // These properties will be saved to the token model when a token is minted.
     tokenName: {type: String, required: true},
+    tokenDescription: String,
     redeemableContent: String,
     transferrable: {type: Boolean, default: true},
     media: {type: String, required: true},

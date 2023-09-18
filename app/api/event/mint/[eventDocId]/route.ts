@@ -44,7 +44,7 @@ async function mintOnSaleEvent(request: NextRequest, { params }: {params: {event
             // Use event tokenName as token name
             name: mintEventData.tokenName,
             // Use xcollection to which this event belong as the description
-            description: mintEventData.xcollection.description,
+            description: mintEventData.tokenDescription || "",
             image: mintEventData.media,
             media: mintEventData.media,
             mediaType: mintEventData.mediaType,
