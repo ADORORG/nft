@@ -4,7 +4,7 @@ import { toRoyaltyPercent, fromRoyaltyPercent } from "@/utils/contract"
 import { nftEditionChecker } from "@/utils/contract"
 import { useChainById } from "@/hooks/contract"
 import { useAuthStatus } from "@/hooks/account"
-import { InputField, RangeInput, SwitchCheckbox } from "@/components/Form"
+import { InputField, RangeInput, SwitchCheckbox, TextArea } from "@/components/Form"
 import DateAndTime from "@/components/DateAndTime"
 import Bordered from "@/components/Bordered"
 
@@ -23,7 +23,7 @@ export default function SaleEventMetadataForm(props: EventDataFormProps) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    const handleEventDataChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleEventDataChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const {name, value} = e.target
         props?.updateEventData?.({...eventData, [name]: value})
     }
@@ -38,10 +38,22 @@ export default function SaleEventMetadataForm(props: EventDataFormProps) {
                 onChange={handleEventDataChange}
                 value={eventData?.tokenName || ""}
                 className="rounded focus:transition-all duration-700"
-                labelClassName="my-3"
+                labelClassName="my-1"
                 autoComplete="off"
             />
-
+            <div className="">
+                <label htmlFor="token-description" className="block my-2 text-sm font-medium text-gray-900 dark:text-white ">
+                    Description <br/><small>Minted tokens will have this description</small>
+                </label>
+                <TextArea
+                    id="event-description"
+                    name="description"
+                    placeholder="Describe your contract token"
+                    value={eventData?.description || ""}
+                    className="rounded focus:transition-all duration-700"
+                    onChange={handleEventDataChange}
+                />
+            </div>
             <InputField
                 label={`Price (${chain?.nativeCurrency?.symbol || `ETH`})`}
                 type="number"
@@ -50,7 +62,7 @@ export default function SaleEventMetadataForm(props: EventDataFormProps) {
                 onChange={handleEventDataChange}
                 value={eventData?.price || "0"}
                 className="rounded focus:transition-all duration-700"
-                labelClassName="my-3"
+                labelClassName="my-1"
             />
           
             <div>
@@ -64,7 +76,6 @@ export default function SaleEventMetadataForm(props: EventDataFormProps) {
                     )}
                     minDate={new Date()}
                     value={eventData.start}
-
                 />
             </div>
             
@@ -90,13 +101,13 @@ export default function SaleEventMetadataForm(props: EventDataFormProps) {
                 placeholder="0x..."
                 value={eventData?.feeRecipient || ""}
                 className="rounded focus:transition-all duration-700"
-                labelClassName="my-3"
+                labelClassName="my-1"
             />
             {/* Event Royalty amount*/}
-            <div className="flex flex-col gap-3 mb-3 w-full">
+            <div className="flex flex-col gap-3 mb-1 w-full">
                 <span>Royalty amount ({royaltyPercent}%)</span>
                 <RangeInput
-                    max={100}
+                    max={50}
                     step={1}
                     value={royaltyPercent}
                     onChange={e => {
@@ -116,7 +127,7 @@ export default function SaleEventMetadataForm(props: EventDataFormProps) {
                 placeholder="0x..."
                 value={eventData?.royaltyReceiver || ""}
                 className="rounded focus:transition-all duration-700"
-                labelClassName="my-3"
+                labelClassName="my-1"
             />
 
             {
@@ -129,7 +140,7 @@ export default function SaleEventMetadataForm(props: EventDataFormProps) {
                     onChange={handleEventDataChange}
                     value={eventData?.maxMintPerWallet || "0"}
                     className="rounded focus:transition-all duration-700"
-                    labelClassName="my-3"
+                    labelClassName="my-1"
                 />
             }
             

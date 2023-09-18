@@ -51,6 +51,8 @@ export default interface NftContractSaleEventType {
     // These properties will be saved to the token model when a token is minted.
     /** Every tokens minted in this event will have this name */
     tokenName: string,
+    /** Every tokens minted in this event will have this description */
+    description?: string,
     /** Redeemable content if token has redeemable content */
     redeemableContent?: string;
     /** Is the nft token from this sale event transferrable? */
