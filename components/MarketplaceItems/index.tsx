@@ -14,7 +14,7 @@ interface MarketplaceItems {
 
 export default function MarketplaceItems(props: MarketplaceItems) {
     const [marketFilter] = useAtom(marketFilterStore)
-    const { totalOrder, nftSchema, saleType, createdAt } = marketFilter
+    const { totalOrder, nftSchema, saleType, createdAt, category } = marketFilter
     const { limit, currentPage } = props
 
     return (
@@ -29,6 +29,9 @@ export default function MarketplaceItems(props: MarketplaceItems) {
                         &&
                         // Filter by saleType
                         (!saleType || saleType === "all" || saleType === o.saleType)
+                        &&
+                        // Filter by category
+                        (!category || category === "all" || category === o.token.xcollection.category)
                     ))
                     .sort((o1, o2) => (
                         Number(createdAt) === 1 ? 

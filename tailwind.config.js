@@ -18,7 +18,7 @@ module.exports = {
         primary: colors.rose,
         secondary: colors.purple,
         tertiary: colors.cyan,
-        gray: colors.neutral
+        gray: colors.stone
       },
     },
   },

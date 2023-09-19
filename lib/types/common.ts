@@ -84,7 +84,8 @@ export type MarketFilterType = {
     saleType: MarketSaleType | 'all',
     nftSchema: NftContractSchemaType | 'all',
     createdAt: 1 | -1,
-    totalOrder: number
+    totalOrder: number,
+    category?: string
 }
 
 export type OnchainMintResponse = {

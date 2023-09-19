@@ -4,7 +4,8 @@ import { useEffect } from "react"
 import { useAtom } from "jotai"
 import { Select } from "@/components/Select"
 import { marketFilterStore } from "@/store/form"
-import { formatNumber } from "@/lib/utils/main"
+import { formatNumber } from "@/utils/main"
+import { collectionCategories } from "@/lib/app.config"
 
 interface MarketFilterFormProps {
     marketValue: TotalMarketValueInDollarType
@@ -62,6 +63,24 @@ export default function MarketFilterForm(props: MarketFilterFormProps) {
                     <Select.Option value="" disabled>Date Added</Select.Option>
                     <Select.Option value="-1">Latest</Select.Option>
                     <Select.Option value="1">Oldest</Select.Option>
+                </Select>
+
+                <Select
+                    onChange={handleChange}
+                    name="category"
+                    value={marketFilter?.category || ""}
+                    className="rounded"
+                >
+                    <Select.Option value="" disabled>Category</Select.Option>
+                    <Select.Option value="all">All category</Select.Option>
+                    {
+                        collectionCategories.map((category) => (
+                            <Select.Option 
+                                key={category.slug}
+                                value={category.slug}
+                            >{category.name}</Select.Option>
+                        ))
+                    }
                 </Select>
             </div>
 
