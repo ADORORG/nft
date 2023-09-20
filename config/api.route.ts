@@ -58,6 +58,8 @@ const apiRoutes = {
      * Callable by the token holder/owner
      */
     getRedeemableContent: "/api/token/redeem/:tokenDocId",
+    /** Transfer token offchain to a newOwner after transferring onchain */
+    transferToken: "/api/token/transfer",
     /** Get all supported currencies */
     getAllCurrency: "/api/currency/getAll",
     /** Get currency by chain Id */

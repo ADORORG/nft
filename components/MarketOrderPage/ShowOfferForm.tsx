@@ -29,7 +29,7 @@ export default function ShowOfferForm(props: MarketOrdersProp & TokenPageProps) 
     const { currencies } = useAllCurrencies()
     const marketOffer = useMarketOffer()
     /** Check for active offer from this session account for this token */
-    const activeOfferFromAccount = session && props.orders.find(order => order.status === "active" && order.saleType === "offer" && order.buyer?.address.toLowerCase() === session.user.address)
+    const activeOfferFromAccount = session && props?.orders?.find(order => order.status === "active" && order.saleType === "offer" && order.buyer?.address.toLowerCase() === session.user.address)
 
     const makeAnOffer = async () => {
         try {

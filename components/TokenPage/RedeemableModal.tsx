@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { fetcher, getFetcherErrorMessage } from "@/utils/network"
+import { replaceUrlParams } from "@/utils/main"
 import { toast } from "react-hot-toast"
 import Button from "@/components/Button"
 import apiRoutes from "@/config/api.route"
@@ -14,8 +15,7 @@ export default function RedeemableModal(props: TokenPageProps) {
             setIsFetching(true)
 
             const response = await fetcher(
-                apiRoutes.getRedeemableContent
-                .replace(":tokenDocId", props.token._id?.toString() as string)
+                replaceUrlParams(apiRoutes.getRedeemableContent, {tokenDocId: props.token._id?.toString() as string})
             )
             
             if (response.data) {

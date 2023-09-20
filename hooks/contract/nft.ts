@@ -41,12 +41,52 @@ export function useERC721() {
         const tokenId = (mintLog.args as any)?.tokenId?.toString()
 
         return {
-            tokenId
+            tokenId: Number(tokenId)
         }
     }, [publicClient, walletClient, address])
 
+    const transferFrom = useCallback(async (
+        {
+            tokenId,
+            contractAddress,
+            newOwner
+        }: {
+            tokenId: number,
+            contractAddress: string,
+            newOwner: string
+        }
+    ) => {
+        const writeContractRequest = await publicClient?.simulateContract({
+            account: address,
+            abi: erc721Abi,
+            address: getAddress(contractAddress),
+            functionName: "transferFrom",
+            args: [getAddress(address as string), getAddress(newOwner), BigInt(tokenId)]
+        })
+
+        const minTxHash = await walletClient?.writeContract(writeContractRequest?.request)
+        const txReceipt = await publicClient.waitForTransactionReceipt({hash: minTxHash as any})
+
+        return txReceipt
+
+    }, [publicClient, walletClient, address])
+
+    const ownerOf = useCallback(async ({tokenId, contractAddress}: { tokenId: number, contractAddress: string }) => {
+        const owner = await publicClient?.readContract({
+            account: address,
+            abi: erc721Abi,
+            address: getAddress(contractAddress),
+            functionName: "ownerOf",
+            args: [BigInt(tokenId)]
+        })
+
+        return owner
+    }, [publicClient, address])
+
     return {
-        mint
+        mint,
+        ownerOf,
+        transferFrom
     }
 }
 
@@ -93,11 +133,68 @@ export function useERC1155() {
         }
     }, [publicClient, walletClient, address])
 
-    
+    const safeTransferFrom = useCallback(async (
+        {
+            contractAddress,
+            newOwner,
+            tokenId,
+            amount
+        }: {
+            contractAddress: string,
+            newOwner: string,
+            tokenId: number,
+            amount: number
+        }
+        ) => {
+        const writeContractRequest = await publicClient?.simulateContract({
+            account: address,
+            abi: erc1155Abi,
+            address: getAddress(contractAddress),
+            functionName: "safeTransferFrom",
+            args: [
+                getAddress(address as string), 
+                getAddress(newOwner),
+                BigInt(tokenId), 
+                BigInt(amount), 
+                "0x"
+            ]
+        })
+
+        const minTxHash = await walletClient?.writeContract(writeContractRequest?.request)
+        const txReceipt = await publicClient.waitForTransactionReceipt({hash: minTxHash as any})
+        
+        return txReceipt
+
+    }, [publicClient, walletClient, address])
+
+    const balanceOf = useCallback(async (
+        {
+            tokenId, 
+            contractAddress,
+            accountAddress = address
+        }: { 
+            tokenId: number, 
+            contractAddress: string,
+            accountAddress?: typeof address | string
+        }) => {
+        const balance = await publicClient?.readContract({
+            account: address,
+            abi: erc1155Abi,
+            address: getAddress(contractAddress),
+            functionName: "balanceOf",
+            args: [getAddress(accountAddress as string), BigInt(tokenId)]
+        })
+
+        return Number(balance)
+
+    }, [publicClient, address])
+
     const mint = useCallback(async () => {}, [])
 
     return {
         create,
-        mint
+        mint,
+        safeTransferFrom,
+        balanceOf
     }
 }

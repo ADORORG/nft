@@ -9,7 +9,11 @@ export default interface NftTokenType /* extends Partial<Document> */ {
     _id?: Types.ObjectId;
     /** NFT token id */
     tokenId: number;
-    /** Token supply. Always 1 for erc721 */
+    /** Token amount being held by this owner. Always 1 for erc721 */
+    quantity?: number;
+    /** 
+     * @deprecated - This will be removed
+     * Token supply. Always 1 for erc721 */
     supply?: number;
     /** Name of the token */
     name?: string;
