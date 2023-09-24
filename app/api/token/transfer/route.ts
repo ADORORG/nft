@@ -3,32 +3,26 @@ import { Types } from 'mongoose'
 import type { PopulatedNftTokenType } from '@/lib/types/token'
 import { type NextRequest, NextResponse } from 'next/server'
 import { CustomRequestError } from '@/lib/error/request'
-import { setTokenOwner, setAccountDetails, validateToken } from '@/lib/handlers'
+import { setTokenOwner, setAccountDetails, getTokenByQuery } from '@/lib/handlers'
 import { withRequestError, withSession } from '@/wrapper'
 import { isEthereumAddress } from '@/lib/utils/main'
 import mongooseConnectPromise from '@/wrapper/mongoose_connect'
 
 async function transferToken(request: NextRequest, _: {}, { user }: {user: AccountType}) {
     const body = await request.json()
-    const token = body.token as PopulatedNftTokenType
-    const newOwner = body.newOwner as string
-    
-    if (user._id !== token.owner._id) {
-        throw new CustomRequestError('Token owner mismatch')
-    }
+    const { tokenDocId, newOwner } = body as {tokenDocId: string, newOwner: string}
 
     if (!isEthereumAddress(newOwner)) {
         throw new CustomRequestError('Invalid new owner address')
     }
 
-    const isValidToken = await validateToken(token)
-
-    if (!isValidToken){
-        throw new CustomRequestError('Invalid token data')
-    }
-
     await mongooseConnectPromise
+    const token = await getTokenByQuery({_id: tokenDocId}) as PopulatedNftTokenType
 
+    if (!token) {
+        throw new CustomRequestError('Invalid token')
+    }
+    
     const newOwnerAccount = await setAccountDetails(newOwner, {address: newOwner})
     const newOwnerToken = await setTokenOwner(token._id as Types.ObjectId, newOwnerAccount._id)
 

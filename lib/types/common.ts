@@ -59,7 +59,7 @@ export type TotalMarketValueInDollarType = {
 
 /** The response type from /api fetch */
 export type AppRouterApiResponseType<T=any> = {
-    /** Status of the api response */
+    /** Status of the api response. True or false */
     success: boolean,
     /** Data returned from the request */
     data: T,

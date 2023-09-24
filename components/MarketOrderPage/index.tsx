@@ -56,8 +56,7 @@ export default function MarketOrderPage(props: MarketOrdersProp & TokenPageProps
                         />
                         :
                         null
-                    }
-                    
+                    }        
             </div>
         </div>
     )

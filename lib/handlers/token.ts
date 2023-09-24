@@ -4,12 +4,16 @@ import type { EthereumAddress } from '../types/common'
 import type NftTokenType from '../types/token'
 import TokenModel from '../models/token'
 
-export async function validateToken(document: any) {
+export async function validateToken(document: any, paths: string[] = []) {
     try {
-        await TokenModel.validate(document)
+        if (paths.length) {
+            await TokenModel.validate(document, paths)
+        } else {
+            await TokenModel.validate(document)
+        }
         return true
     } catch(error) {
-        // console.log(error)
+        console.log(error)
         return false
     }
 }

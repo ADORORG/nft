@@ -505,7 +505,7 @@ export function useFixedPriceOrder(order: PopulatedMarketOrderType) {
                     onchainOrderData,
                     order.orderSignature as any,
                     approvalSignature as any,
-                    BigInt(order.orderDeadline as string)
+                    BigInt(order.orderDeadline as number)
                 ]
             })
 
@@ -566,7 +566,7 @@ export function useMarketOffer() {
             tokenId: order.token.tokenId,
             paymentToken: order.currency.address,
             bigOrderPrice,
-            signatureDeadline: order.orderDeadline as string
+            signatureDeadline: order.orderDeadline as number
         })
 
         /** Check payment currency allowance / request approval */

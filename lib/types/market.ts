@@ -60,9 +60,10 @@ export default interface MarketOrderType /* extends Partial<Document> */ {
      */
     orderSignature?: string;
     /**
-     * Epoch timestamp for offchain order deadline
+     * Epoch timestamp in seconds for offchain order deadline.
+     * The deadline for an offer and signature deadline for offchain order
      */
-    orderDeadline?: string;
+    orderDeadline?: number;
     /**
      * The version of marketplace contract for which this order is listed
      */

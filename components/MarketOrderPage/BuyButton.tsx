@@ -118,9 +118,9 @@ export default function BuyButton(props: MarketOrderProp) {
     }
 
     return (
-        <div className="w-3/4">
+        <div className="w-4/5">
             <Button 
-                className="flex flex-wrap justify-center items-center gap-2 w-full py-3 text-xl"
+                className="flex flex-row justify-center items-center gap-2 w-full"
                 variant="gradient"
                 onClick={handleFixedPriceOrderPurchase} 
                 loading={loading}
@@ -129,10 +129,10 @@ export default function BuyButton(props: MarketOrderProp) {
             >
                 
                 <TagIcon
-                    className="h-6 w-6"
+                    className="h-5 w-5"
                 />
                 <span>
-                    Buy now
+                    Buy @ {props.order.price} {props.order.currency.symbol}
                 </span>
             
             </Button>

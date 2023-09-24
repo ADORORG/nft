@@ -52,7 +52,7 @@ export default function BidForm(props: MarketOrderProp) {
                          * Auction ended
                          */
                         <Button 
-                            className="flex items-center justify-center text-xl p-4 gap-2"
+                            className="flex items-center justify-center text-xl p- gap-2"
                             variant="gradient"
                             disabled
                             rounded
@@ -175,7 +175,7 @@ function BuyAuctionNow(props: MarketOrderProp) {
 
     return (
         <Button 
-            className="flex items-center justify-center gap-2 text-xl"
+            className="flex items-center justify-center gap-2"
             variant="gradient"
             disabled={!isConnected || !session?.user || loading}
             loading={loading}
@@ -302,7 +302,7 @@ function ShowBidForm(props: MarketOrderProp & {highestBid?: PopulatedMarketBidTy
             {
                 isConnected ?
                 <Button
-                    className="flex items-center justify-center gap-2 text-xl py-3"
+                    className="flex items-center justify-center gap-2"
                     variant="gradient" 
                     onClick={handleBidding}
                     disabled={!session?.user || loading || processedOffchain}
@@ -389,7 +389,7 @@ function ClaimAuctionToken(props: MarketOrderProp & {highestBid?: PopulatedMarke
 
     return (
         <Button 
-            className="flex items-center justify-center text-xl p-4 gap-2"
+            className="flex items-center justify-center gap-2"
             variant="gradient"
             onClick={handleClaim}
             loading={loading}

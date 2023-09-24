@@ -6,14 +6,20 @@ export default interface AccountType {
     _id?: EthereumAddress;
     /** Ethereum address of this account. Same value as _id */
     address: EthereumAddress;
-    /** Optional Account name */
+    /** Optional Account name. We use ENS name when account update their profile */
     name?: string,
     /** Optional verified Email address */
     email?: string;
     /** User email verification status */
     emailVerified?: boolean;
-    /** Ipfs hash for this account image */
+    /** 
+     * @deprecated - We are using `profileMedia` instead.
+     * Ipfs hash for this account image */
     image?: string; // ipfs hash
+    /** Profile media, ipfs hash or absolute url */
+    profileMedia?: string,
+    /** Profile media type. The data type of profileMedia  */
+    profileMediaType?: string,
     /** Ipfs hash for this account banner */
     banner?: string; // ipfs hash
     /** A temporary role field to validate some actions. It's empty for ordinary account */

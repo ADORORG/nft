@@ -25,6 +25,12 @@ export function getNftContractBaseURI(chainId: number) {
 
 /** Backend api routes */
 const apiRoutes = {
+    /** Update account Profile */
+    updateProfile: "/api/account/updateProfile",
+    /** Update account profile pic using token media */
+    setProfilePic: "/api/account/setProfilePic",
+    /** Verify account email */
+    verifyAccountEmail: "/api/account/verifyEmail",
     /** Mint in a primary sale mint event */
     mintOnEvent: "/api/event/mint/:eventDocId",
     /** Create a new collection */
@@ -47,6 +53,10 @@ const apiRoutes = {
     getContractByAddress: "/api/contract/account/:address",
     /** Get token market orders */
     getTokenMarketOrders: "/api/market/token/:tokenDocId",
+    /** Get a single active order on token */
+    getActiveMarketOrder: "/api/market/active/order/:tokenDocId",
+    /** Get market offers on token */
+    getActiveOffers: "/api/market/active/offers/:tokenDocId",
     /** Get token market order bids */
     getTokenMarketOrderBids: "/api/market/bid/:marketOrderDocId",
     /** Mark a market order as sold */

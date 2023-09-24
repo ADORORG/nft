@@ -12,7 +12,7 @@ export default interface NftTokenType /* extends Partial<Document> */ {
     /** Token amount being held by this owner. Always 1 for erc721 */
     quantity?: number;
     /** 
-     * @deprecated - This will be removed
+     * @deprecated - This will be removed.
      * Token supply. Always 1 for erc721 */
     supply?: number;
     /** Name of the token */
@@ -25,7 +25,7 @@ export default interface NftTokenType /* extends Partial<Document> */ {
     */
     image?: string;
     /**
-     * Alternative media for token. It could be an image/audio/video
+     * Token media. It could be an image/audio/video
      */
     media: string;
     /**

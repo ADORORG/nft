@@ -3,6 +3,7 @@ import { useState } from "react"
 import { toast } from "react-hot-toast"
 import { InputField } from "@/components/Form"
 import Button from "@/components/Button"
+import { useContractChain } from "@/hooks/contract"
 import { useERC1155, useERC721 } from "@/hooks/contract/nft"
 import { useAuthStatus } from "@/hooks/account"
 import { isEthereumAddress } from "@/utils/main"
@@ -16,6 +17,7 @@ export default function TransferToken(props: TokenPageProps & { done?: () => voi
     const [transferring, setTransferring] = useState(false)
     const [transferredOnchain, setTransferredOnchain] = useState(false)
     const [transferredOffchain, setTransferredOffchain] = useState(false)
+    const contractChain = useContractChain(token.contract)
     const { session } = useAuthStatus()
     const erc721Methods = useERC721()
     const erc1155Methods = useERC1155()
@@ -43,13 +45,22 @@ export default function TransferToken(props: TokenPageProps & { done?: () => voi
         setTransferredOnchain(true)
 
     }
-    const handleTransferOffchain = async () => {
+
+    /**
+     * We do not currently have a backend listener to log the transfer event.
+     * Thus, we send the transfer request to the backend to log the transfer event.
+     * @note - This is not a secure way to log the transfer event.
+     * If the owner of the token is different from the current account, we call this
+     * function with the new owner address.
+     * @param _newOwner 
+     */
+    const handleTransferOffchain = async (_newOwner: string = newOwner) => {
         const response = await fetcher(
             apiRoutes.transferToken,
             {
                 method: "POST",
                 body: JSON.stringify({
-                    token,
+                    tokenDocId: token._id,
                     newOwner,
                 })
             }
@@ -63,6 +74,7 @@ export default function TransferToken(props: TokenPageProps & { done?: () => voi
     const handleTransfer = async () => {
         try {
             setTransferring(true)
+            await contractChain.ensureContractChainAsync()
             /**
              * We do not have a backend listener to log the transfer event.
              * Thus, we check if the current account address is the still the owner of the token.
@@ -77,6 +89,20 @@ export default function TransferToken(props: TokenPageProps & { done?: () => voi
                     tokenId: token.tokenId,
                 })
                 isOwner = ownerAddress.toLowerCase() === session?.user?.address?.toLowerCase()
+
+                /* 
+                * If the owner is not the current account, we use this opportunity update our record for this token.
+                * This is not a secure way to log the transfer event.
+                */
+                if (!isOwner) {
+                    await handleTransferOffchain(ownerAddress)
+                    /* 
+                    * We are done here. We do not need to proceed with the transfer.
+                    */
+                    props.done?.()
+                    return
+                }
+
             } else {
                 const ownedAmount = await erc1155Methods.balanceOf({
                     contractAddress: token.contract.contractAddress,
@@ -85,13 +111,20 @@ export default function TransferToken(props: TokenPageProps & { done?: () => voi
                 })
                 // Account must be holding equal or more than the token amount to transfer
                 isOwner = ownedAmount >= tokenAmount
+
+                /**
+                * If the owner is not the current account, we use this opportunity update our record for this token.
+                * This is not a secure way to log the transfer event.
+                * @todo - How do we get the owner address of an erc1155 token?
+                * ERC1155 ownership is based on account balance.
+                */
             }
 
             if (!isOwner) {
                 /**
                  * @todo: Update the token record
                  */
-                throw new Error("You are not the owner of this token")
+                throw new Error("You do not own this token")
             }
 
             // handle the transfer
@@ -142,7 +175,7 @@ export default function TransferToken(props: TokenPageProps & { done?: () => voi
 
             <Button
                 variant="gradient"
-                className="w-3/4 self-center"
+                className=""
                 onClick={handleTransfer}
                 disabled={transferring || transferredOffchain}
                 loading={transferring}

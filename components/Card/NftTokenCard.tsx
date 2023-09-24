@@ -1,84 +1,54 @@
 "use client"
+import type { NftTokenProps, DropdownOptions } from "./types"
 import { useState } from "react"
-import type { PopulatedNftTokenType} from "@/lib/types/token"
-import { IPFS_GATEWAY } from "@/lib/app.config"
 import Link from "next/link"
 import { ChevronDown } from "react-bootstrap-icons"
 import MediaPreview from "@/components/MediaPreview"
 import UserAccountAvatar from "@/components/UserAccountAvatar"
 import CollectionAvatar from "@/components/CollectionAvatar"
 import Button from "@/components/Button"
-import TokenDropdownOption from "@/components/TokenPage/TokenDropdown"
-
-import QuickModal from "@/components/QuickModal"
-import AddTokenToMarket from "@/components/MarketOrderPage/AddTokenToMarket"
-import TransferToken from "@/components/TokenPage/TransferToken"
-import ShowOfferForm from "@/components/MarketOrderPage/ShowOfferForm"
-
 import Dropdown from "@/components/Dropdown"
-import { getChainIcon } from "@/components/ConnectWallet/ChainIcons"
+import TokenCardDropdownOptionHandlers from "@/components/Card/CardDropdownOptions"
 import { MediaSkeleton } from "@/components/Skeleton"
+import { getChainIcon } from "@/components/ConnectWallet/ChainIcons"
 import { useAuthStatus } from "@/hooks/account"
-import appRoutes from "@/config/app.route"
 import { replaceUrlParams, cutString } from "@/utils/main"
+import { IPFS_GATEWAY } from "@/lib/app.config"
+import appRoutes from "@/config/app.route"
 
-type NftTokenProps = {
-    token: PopulatedNftTokenType, 
-}
 
 export default function NftTokenCard(props: NftTokenProps) {
+    const [selectedDropdownOption, setSelectedDropdownOption] = useState<DropdownOptions>("")
+    const { token } = props
     const { session } = useAuthStatus()
     const accountIsTokenOwner = session?.user.address === props.token.owner.address
-    const { tokenId, name, image = "", media, mediaType, owner, contract, xcollection } = props.token
+    const { tokenId, name, image = "", media, mediaType, owner, contract, xcollection } = token
     const ChainIcon = getChainIcon(contract.chainId)
-
-    const { token } = props
-    const [showTransferModal, setShowTransferModal] = useState(false)
-    const [showSellModal, setShowSellModal] = useState(false)
-    const [showOfferModal, setShowOfferModal] = useState(false)
-
-    const sell = () => {
-        setShowSellModal(true)
-    }
-
-    const transfer = () => {
-        setShowTransferModal(true)
-    }
-
-    const setAsProfilePic = () => {
-
-    }
-
-    const copyTokenLink = () => {}
-
-    const makeOffer = () => {
-        setShowOfferModal(true)
-    }
-
+   
     const screens = [
         {
             name: "Transfer",
-            onClick: transfer,
+            onClick: () => setSelectedDropdownOption("transfer"),
             enabled: accountIsTokenOwner,        
         },
         {
             name: "Sell",
-            onClick: sell,
+            onClick: () => setSelectedDropdownOption("sell"),
             enabled: accountIsTokenOwner,          
         },
         {
             name: "Make offer",
-            onClick: makeOffer,
+            onClick: () => setSelectedDropdownOption("makeOffer"),
             enabled: !accountIsTokenOwner,          
         },
         {
             name: "Use as Profile Pic",
-            onClick: setAsProfilePic,
+            onClick: () => setSelectedDropdownOption("useAsProfilePic"),
             enabled: accountIsTokenOwner,        
         },
         {
             name: "Copy Token Link",
-            onClick: copyTokenLink,  
+            onClick: () => setSelectedDropdownOption("copyLink"),  
             enabled: true,          
         },
         
@@ -88,6 +58,12 @@ export default function NftTokenCard(props: NftTokenProps) {
      */
     return (
         <div>
+            <TokenCardDropdownOptionHandlers 
+                token={token} 
+                whichAction={selectedDropdownOption}
+                resetAction={() => setSelectedDropdownOption("")}
+
+            />
             <div className={`w-56 h-80 rounded p-4 bg-gray-100 dark:bg-gray-900 hover:bg-opacity-60 transition drop-shadow-xl`}>
                 {/* Chain Icon, top left */}
                 <div className="absolute z-10 top-1 left-1 bg-gray-300 dark:bg-gray-600 p-1 rounded">
@@ -190,40 +166,8 @@ export default function NftTokenCard(props: NftTokenProps) {
                         </div>
                     </div>
                 </div>
+           
             </div>
-
-            <QuickModal
-                show={showTransferModal}
-                onHide={() => setShowTransferModal(false)}
-                modalTitle={`Transfer Token ${token.name}#${token.tokenId}`}
-                className=""
-                modalBody={TransferToken}
-                // modalBodyClassName="lg:w-[410px] w-[310px]"
-                // modalBody props
-                token={token}
-            />
-            <QuickModal
-                show={showSellModal}
-                onHide={() => setShowSellModal(false)}
-                modalTitle={`Add ${token.name}#${token.tokenId} to market`}
-                className=""
-                modalBody={AddTokenToMarket}
-                // modalBodyClassName="lg:w-[410px] w-[310px]"
-                // modalBody props
-                token={token}
-            />
-
-            <QuickModal
-                show={showOfferModal}
-                onHide={() => setShowOfferModal(false)}
-                modalTitle={`Make offer for ${token.name}#${token.tokenId}`}
-                className=""
-                modalBody={ShowOfferForm}
-                // modalBodyClassName="lg:w-[410px] w-[310px]"
-                // modalBody props
-                token={token}
-                orders={[]}
-            />
         </div>
     )
 }

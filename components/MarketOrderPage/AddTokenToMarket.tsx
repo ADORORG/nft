@@ -341,7 +341,7 @@ export default function AddTokenToMarket(props: TokenPageProps) {
             currency,
             listTxHash,
             version: defaultMarketplaceVersion.toString(),
-            orderDeadline: signatureDeadline.toString(),
+            orderDeadline: signatureDeadline,
             orderSignature,
             approvalSignature
         } as const

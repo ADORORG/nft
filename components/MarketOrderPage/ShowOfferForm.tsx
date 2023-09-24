@@ -62,7 +62,7 @@ export default function ShowOfferForm(props: MarketOrdersProp & TokenPageProps) 
                 seller: props.token.owner,
                 buyer: session?.user,
                 orderSignature: '',
-                orderDeadline: offerDeadline.toString(),
+                orderDeadline: offerDeadline,
                 version: defaultMarketplaceVersion.toString()
             } satisfies MarketOrderType
             
