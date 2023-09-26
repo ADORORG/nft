@@ -29,7 +29,7 @@
     "jotai": "^2.2.2",
     "mongodb-memory-server": "^8.13.0",
     "mongoose": "^7.2.2",
-    "next": "13.4.4",
+    "next": "^13.5.3",
     "next-auth": "^4.22.1",
     "postcss": "^8.4.24",
     "react": "18.2.0",
