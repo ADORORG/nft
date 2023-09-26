@@ -107,15 +107,15 @@ export const collectionCategories = [
       slug: 'collectibles'
     },
     {
-      name: 'AI',
-      slug: 'ai'
+      name: 'VI',
+      slug: 'vi'
     },
     {
       name: 'Games',
       slug: 'games'
     },
     {
-      name: 'Books',
-      slug: 'books'
+      name: 'Education',
+      slug: 'education'
     }
 ] as const

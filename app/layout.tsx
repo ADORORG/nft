@@ -62,8 +62,8 @@ export const footerNav = {
       href: externalLinks.discord
     },
     {
-      name: "Telegram",
-      href: externalLinks.telegram
+      name: "Geneva",
+      href: externalLinks.geneva
     }
   ],
   legal: [
@@ -78,9 +78,7 @@ export const footerNav = {
   ],
   social: {
     twitter: externalLinks.twitter,
-    facebook: externalLinks.facebook,
     github: externalLinks.github,
-    instagram: externalLinks.instagram
   }
 }
 
