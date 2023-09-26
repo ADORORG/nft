@@ -1,9 +1,8 @@
 import type { PageProps } from "../types"
-import Image from "@/components/Image"
 import Banner from "@/components/Banner"
 import SocialIcon from "@/components/SocialIcon"
+import AccountAvatar from "@/components/UserAccountAvatar"
 import { FiatCurrencyDisplay } from "@/components/Currency"
-
 // Server
 import mongoooseConnectionPromise from "@/wrapper/mongoose_connect"
 import { setAccountDetails, getTraderAccountMarketValue } from "@/lib/handlers"
@@ -29,7 +28,6 @@ export default async function Page({params: {address}}: {params: PageProps}) {
     const { account, accountMarketValue} = await getServerSideData(address.toLowerCase())
     const {
         name,
-        image,
         discord,
         twitter,
     } = account
@@ -37,11 +35,11 @@ export default async function Page({params: {address}}: {params: PageProps}) {
     return (
         <Banner className="pb-8 mt-8">
             <Banner.Image>
-                <Image 
-                    src={image}
-                    alt=""
-                    data={address}
-                    width={400}
+                <AccountAvatar
+                    account={account}
+                    width={160}
+                    height={160}
+                    className="rounded"
                 />
             </Banner.Image>
             

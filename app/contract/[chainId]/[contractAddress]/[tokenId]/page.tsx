@@ -57,7 +57,7 @@ export default async function Page({params}: {params: PageProps}) {
     
     return (
         <div className="flex flex-col lg:flex-row gap-4 justify-center items-center lg:items-stretch h-max">
-            <div className="border-2 border-gray-100 dark:border-gray-800 rounded px-4 shadow-xl">
+            <div className="border-2 border-gray-100 dark:border-gray-800 rounded shadow-xl">
                 <SingleTokenPage token={token as any} />
             </div>
             <div className="border border-gray-50 dark:border-gray-900 rounded px-6 shadow-2xl">

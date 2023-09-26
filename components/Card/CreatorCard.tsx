@@ -3,6 +3,7 @@ import type AccountType from "@/lib/types/account"
 import Link from "next/link"
 import Image from "@/components/Image"
 import Dropdown from "@/components/Dropdown"
+import AccountAvatar from "@/components/UserAccountAvatar"
 import { ThreeDotsVertical } from "react-bootstrap-icons"
 import { cutAddress, replaceUrlParams } from "@/utils/main"
 import appRoute from "@/config/app.route"
@@ -14,20 +15,18 @@ type CreatorCardProps = {
 
 
 export default function CreatorCard({creatorAccount, currencyNode}: CreatorCardProps) {
-    const { address = "0x0", image = "" } = creatorAccount || {}
+    const { address = "0x0" } = creatorAccount || {}
     const viewAccount = replaceUrlParams(appRoute.viewAccount, {address: address.toLowerCase()})
     const accountRoute = ["token", "collection", "marketplace"].map(r => ({href: `${viewAccount}/${r}`, label: r}))
 
     return (
         <div className="lg:h-[150px] lg:w-[370px] flex lg:flex-row flex-col justify-start items-center gap-2 p-1 bg-gray-200 dark:bg-gray-900 transition dark:bg-opacity-70 dark:hover:bg-opacity-90 rounded shadow-lg">
-            <div className="p-1">
-                <Image 
-                    className="w-[220px] rounded border border-gray-300" 
-                    src={image}
-                    data={address}
-                    alt=""
-                    width={300}
-                    height={300}
+            <div className="p-2">
+                <AccountAvatar
+                    account={creatorAccount}
+                    width={120}
+                    height={120}
+                    className="rounded border border-gray-300"
                 />
             </div>
 

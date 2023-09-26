@@ -7,7 +7,7 @@ import { replaceUrlParams } from "@/utils/main"
 
 // Server
 import mongoooseConnectionPromise from '@/wrapper/mongoose_connect'
-import { getTokensByQuery, estimateTokenByQuery, countTokenByQuery } from "@/lib/handlers"
+import { getTokensByQuery, countTokenByQuery } from "@/lib/handlers"
 
 const DOCUMENT_BATCH = 25
 
@@ -37,7 +37,7 @@ export default async function Page({address, pagination: pageNumber}: PageProps)
 
     return (
         <div>
-            <div className="flex flex-row justify-center md:justify-start flex-wrap gap-4 my-4 pt-8">
+            <div className="flex flex-row justify-center md:justify-start flex-wrap gap-4 mb-10 pt-6 pb-12">
                 {   
                     accountTokens &&
                     accountTokens.length ?

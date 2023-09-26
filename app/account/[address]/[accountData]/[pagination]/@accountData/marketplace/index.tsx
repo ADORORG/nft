@@ -36,7 +36,7 @@ export default async function Page({address, pagination: pageNumber}: PageProps)
 
     return (
         <div>
-            <div className="flex flex-row justify-center md:justify-start flex-wrap gap-4 my-4 pt-8">
+            <div className="flex flex-row justify-center md:justify-start flex-wrap gap-4 mb-10 pt-6 pb-12">
                 {   
                     marketOrders &&
                     marketOrders.length ?

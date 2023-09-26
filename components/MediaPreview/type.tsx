@@ -14,4 +14,7 @@ export default interface MediaPreviewProps extends React.HTMLAttributes<HTMLImag
     loadingComponent?: React.ReactNode,
     /** Provide a target to reselect a file */
     htmlFor?: string,
+
+    width?: number | string,
+    height?: number | string,
 }

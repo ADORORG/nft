@@ -55,7 +55,8 @@ export default async function Page({params: {slug}}: {params: {slug: string}}) {
                         <Link title={owner?.address} href={appRoute.viewAccount.replace(":address", owner?.address)}>
                             <AccountAvatar 
                                 account={owner} 
-                                width={32} 
+                                width={28} 
+                                height={28} 
                                 className="rounded" 
                             />
                         </Link>

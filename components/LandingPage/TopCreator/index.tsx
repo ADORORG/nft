@@ -12,7 +12,7 @@ export default function TopCreator({creators}: TopCreatorProps) {
   return (
     <div className="bg-white dark:bg-gray-950 p-4 lg:p-8">
       <div className="container mx-auto">
-        <h1 className="py-16 text-3xl text-center text-gray-800 dark:text-white text-4xl lg:text-6xl">
+        <h1 className="py-16 text-2xl text-center text-gray-800 dark:text-white">
             NFT Creators <br/>
             <span className="text-lg text-gray-600 dark:text-gray-400">Some creators making a difference</span>
         </h1>

@@ -15,8 +15,8 @@ export default function CollectionCard(props: CollectionCardProps) {
     const {name, slug, owner, media, mediaType, image} = props.collection
 
     return (
-        <div className="flex flex-col">
-            <Bordered className="my-3 h-[260px] w-[260px] flex justify-center items-center">
+        <div className="flex flex-col h-[260px] w-[260px]">
+            <Bordered className="my-3 w-full h-full flex justify-center items-center">
                 <MediaPreview
                     type={mediaType || "image/*"}
                     src={`${IPFS_GATEWAY}${media || image}`}
@@ -24,18 +24,20 @@ export default function CollectionCard(props: CollectionCardProps) {
                     className="max-h-[250px]"
                 />
             </Bordered>
-            <div className="flex justify-between items-center px-2">
+            <div className="flex flex-row justify-between items-center px-2">
                 <h5 className="opacity-70">
                     <Link href={replaceUrlParams(appRoutes.viewCollection, {slug})}>
                         {cutString(name, 20)}
                     </Link>
                 </h5>
-                <UserAccountAvatar 
-                    account={owner}
-                    width={24}
-                    height={24}
-                    title={`Owner: ${owner.address}`}
-                />
+                <div>
+                    <UserAccountAvatar 
+                        account={owner}
+                        width={28}
+                        height={28}
+                        title={`Owner: ${owner.address}`}
+                    />
+                </div>
             </div>
         </div>
     )

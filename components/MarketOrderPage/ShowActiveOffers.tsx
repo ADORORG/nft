@@ -201,6 +201,7 @@ function ShowSingleActiveOffer(props: MarketOrderProp) {
                 <AccountAvatar
                     account={props.order.buyer}
                     height={24}
+                    width={24}
                 />
             </span>
             <span>

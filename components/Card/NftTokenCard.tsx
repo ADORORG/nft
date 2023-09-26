@@ -1,8 +1,8 @@
 "use client"
 import type { NftTokenProps, DropdownOptions } from "./types"
 import { useState } from "react"
-import Link from "next/link"
 import { ChevronDown } from "react-bootstrap-icons"
+import Link from "next/link"
 import MediaPreview from "@/components/MediaPreview"
 import UserAccountAvatar from "@/components/UserAccountAvatar"
 import CollectionAvatar from "@/components/CollectionAvatar"
@@ -15,7 +15,6 @@ import { useAuthStatus } from "@/hooks/account"
 import { replaceUrlParams, cutString } from "@/utils/main"
 import { IPFS_GATEWAY } from "@/lib/app.config"
 import appRoutes from "@/config/app.route"
-
 
 export default function NftTokenCard(props: NftTokenProps) {
     const [selectedDropdownOption, setSelectedDropdownOption] = useState<DropdownOptions>("")
@@ -62,9 +61,8 @@ export default function NftTokenCard(props: NftTokenProps) {
                 token={token} 
                 whichAction={selectedDropdownOption}
                 resetAction={() => setSelectedDropdownOption("")}
-
             />
-            <div className={`w-56 h-80 rounded p-4 bg-gray-100 dark:bg-gray-900 hover:bg-opacity-60 transition drop-shadow-xl`}>
+            <div className={`relative w-56 h-80 rounded p-4 bg-gray-100 dark:bg-gray-900 hover:bg-opacity-60 transition drop-shadow-xl`}>
                 {/* Chain Icon, top left */}
                 <div className="absolute z-10 top-1 left-1 bg-gray-300 dark:bg-gray-600 p-1 rounded">
                     <ChainIcon className="h-5 w-5" />
@@ -132,8 +130,8 @@ export default function NftTokenCard(props: NftTokenProps) {
                             <div className="flex flex-row items-center gap-3">
                                 <UserAccountAvatar 
                                     account={owner}
-                                    width={24}
-                                    height={24}
+                                    width={28}
+                                    height={28}
                                     title={`Owner: ${owner.address}`}
                                 />
                                 <CollectionAvatar

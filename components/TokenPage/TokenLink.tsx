@@ -33,6 +33,8 @@ export default function TokenLink(props: TokenPageProps) {
                 <span>Owner:&nbsp;</span>
                 <UserAccountAvatarWithLink
                     account={props.token.owner}
+                    width={24}
+                    height={24}
                 />
             </div>
             {/* Token External link */}
