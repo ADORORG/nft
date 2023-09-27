@@ -36,6 +36,8 @@ export function EventMintExpanded(props: EventMintProps) {
                     <UserAccountAvatarWithLink 
                         account={eventData.owner}
                         className="w-4 h-4 text-sm"
+                        width={28}
+                        height={28}
                     />
                 </div>
             </div>
@@ -85,6 +87,8 @@ export function EventMintCollapsed(props: EventMintProps) {
                     <UserAccountAvatarWithLink 
                         account={eventData.owner}
                         className="w-4 h-4 text-sm"
+                        width={28}
+                        height={28}
                     />
                 </div>
             </div>
@@ -169,6 +173,8 @@ export function EventMintCollapsedSmall(props: EventMintProps) {
                         <UserAccountAvatarWithLink 
                             account={eventData.owner}
                             className="w-4 h-4 text-sm"
+                            width={28}
+                            height={28}
                         />
                     </div>
                     <p className="break-all">

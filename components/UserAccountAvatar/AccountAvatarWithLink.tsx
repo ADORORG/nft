@@ -20,7 +20,7 @@ const UserAccountAvatarWithLink: React.FC<AccountAvatarWithLinkProps> = ({accoun
         <Link 
             href={appRoutes.viewAccount.replace(":address", address)}
             title={address}
-            className="flex gap-1 items-center"
+            className="flex gap-2 items-center"
         >
             <UserAccountAvatar 
                 account={account} 
@@ -28,8 +28,9 @@ const UserAccountAvatarWithLink: React.FC<AccountAvatarWithLinkProps> = ({accoun
                 height={height}
                 className={`rounded border border-gray-100 dark:border-gray-800 ${className}`}
             />
-            &nbsp;
-            {cutAddress(address, prefix, suffix)}
+            <span>
+                {cutAddress(address, prefix, suffix)}
+            </span>
         </Link>
     )
 }

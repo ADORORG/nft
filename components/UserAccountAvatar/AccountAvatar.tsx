@@ -22,14 +22,16 @@ export default function AccountAvatar(props: AccountAvatarProps) {
     const imgUrl = (profileMedia || image) && `${IPFS_GATEWAY}${profileMedia || image}`
 
     return (
-        <MediaPreview
-            src={imgUrl || imageData(address, Number(width || height))}
-            type={profileMediaType || "image/*"}
-            loadingComponent={<MediaSkeleton className="w-full h-full" />}
-            previewClassName="flex justify-center items-center w-full h-full"
-            className={`max-w-[${width}px] max-h-[${height}px] rounded`}
-            width={width}
-            height={height}
-        />
+        <div>
+            <MediaPreview
+                src={imgUrl || imageData(address, Number(width || height))}
+                type={profileMediaType || "image/*"}
+                loadingComponent={<MediaSkeleton className="w-full h-full" />}
+                previewClassName="flex justify-center items-center w-full h-full"
+                className={`max-w-[${width}px] max-h-[${height}px] rounded`}
+                width={width}
+                height={height}
+            />
+        </div>
     )
 }
