@@ -7,7 +7,7 @@ export default interface AccountType {
     /** Ethereum address of this account. Same value as _id */
     address: EthereumAddress;
     /** Optional Account name. We use ENS name when account update their profile */
-    name?: string,
+    name?: string;
     /** Optional verified Email address */
     email?: string;
     /** User email verification status */
@@ -16,10 +16,10 @@ export default interface AccountType {
      * @deprecated - We are using `profileMedia` instead.
      * Ipfs hash for this account image */
     image?: string; // ipfs hash
-    /** Profile media, ipfs hash or absolute url */
-    profileMedia?: string,
+    /** Profile media; ipfs hash or absolute url */
+    profileMedia?: string;
     /** Profile media type. The data type of profileMedia  */
-    profileMediaType?: string,
+    profileMediaType?: string;
     /** Ipfs hash for this account banner */
     banner?: string; // ipfs hash
     /** A temporary role field to validate some actions. It's empty for ordinary account */
@@ -29,7 +29,6 @@ export default interface AccountType {
     /** An optional Discord invite absolute url */
     discord?: string;
     /** An optional Telegram group/channel url */
-    telegram?: string;
     createdAt?: Date;
     updatedAt?: Date;
 }

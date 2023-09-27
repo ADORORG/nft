@@ -1,5 +1,4 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import type { NextRequest, NextResponse } from 'next/server'
 import NextAuth, { getServerSession, type NextAuthOptions} from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import mongoooseConnectionPromise from '@/wrapper/mongoose_connect'
@@ -65,11 +64,24 @@ export const nextAuthOptions = (req?: NextApiRequest): NextAuthOptions => {
       },
 
       session({ session, token }: { session: any; token: any }) {
-        const { email, emailVerified, roles, address, _id } = token.user
+        const { 
+          email, 
+          emailVerified, 
+          roles, 
+          address,
+          discord,
+          twitter,
+          profileMediaType, 
+          profileMedia, 
+          _id } = token.user
         const user: Record<string, unknown> = {
           email,
           emailVerified,
           address,
+          discord,
+          twitter,
+          profileMediaType,
+          profileMedia,
           _id
         }
         // if there's role, add it to user

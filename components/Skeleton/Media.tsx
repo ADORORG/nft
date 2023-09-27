@@ -4,7 +4,7 @@ export default function MediaSkeleton({className}: {className?: string}) {
     return (
         <div
             role="status"
-            className={`flex items-center justify-center h-56 max-w-sm bg-gray-300 rounded animate-pulse dark:bg-gray-700 ${className}`}
+            className={`flex items-center justify-center max-w-sm bg-gray-300 rounded animate-pulse dark:bg-gray-700 ${className}`}
             >
             <svg
                 className="w-10 h-10 text-gray-200 dark:text-gray-600"

@@ -7,11 +7,11 @@ import mongooseConnectPromise from '@/wrapper/mongoose_connect'
 async function verifyAccountEmail(request: NextRequest, _: {}, { user }: {user: AccountType}) {
     const body = await request.json()
     const accountUpdateData = body as Partial<AccountType>
-    const { name, twitter, discord, telegram } = accountUpdateData
+    const { name, twitter, discord } = accountUpdateData
 
     await mongooseConnectPromise
     const updatedAccount = await setAccountDetails(user._id as string, {
-        name, twitter, discord, telegram
+        name, twitter, discord,
     })
 
     return NextResponse.json({

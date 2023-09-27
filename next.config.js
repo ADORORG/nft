@@ -68,6 +68,11 @@ const nextConfig = {
                 destination: '/account/:address/marketplace/1',
                 permanent: false
             },
+            {
+                source: '/profile',
+                destination: '/profile/view',
+                permanent: false
+            },
             
         ]
     },

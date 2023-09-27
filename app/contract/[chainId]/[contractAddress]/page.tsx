@@ -23,7 +23,7 @@ async function getServerSideData(params: PageProps) {
     const contract = await getContractByAddress(contractAddress, Number(chainId)) as PopulatedContractType
     const tokens = await getTokensByQuery({
         contract: contract
-    }, {}) as PopulatedNftTokenType[] // Max of 100 results
+    }, {limit: 50}) as PopulatedNftTokenType[] // Max of 50 results
 
     return {
         tokens,
