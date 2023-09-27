@@ -24,7 +24,6 @@ const AccountSchema = new Schema<AccountType>({
     profileMediaType: String,
     twitter: String,
     discord: String,
-    telegram: String,
     roles: [String], // a quick hack added to allow admin add currencies
     createdAt: {type: Date},
     updatedAt: {type: Date}
