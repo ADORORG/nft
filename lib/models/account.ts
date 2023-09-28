@@ -17,7 +17,7 @@ const AccountSchema = new Schema<AccountType>({
         validate: function(v: string) { return isEthereumAddress(v)}
     }, // eth address, same as _id
     name: String,
-    email: String,
+    email: {type: String, lowercase: true},
     emailVerified: {type: Boolean, default: false},
     image: String,
     profileMedia: String,

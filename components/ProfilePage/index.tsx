@@ -6,6 +6,7 @@ import LoadingSpinner from "@/components/LoadingSpinner"
 import UpdateAvatar from "./UpdateAvatar"
 import UpdateProfile from "./UpdateProfile"
 import ViewProfile from "./ViewProfile"
+import VerifyEmail from "./VerifyEmail"
 
 export default function ProfilePage(props: {profileData: profileData}) {
     const { isConnected, session } = useAuthStatus()
@@ -36,5 +37,9 @@ export default function ProfilePage(props: {profileData: profileData}) {
 
     if (props.profileData === "updateAvatar") {
         return <UpdateAvatar />
+    }
+
+    if (props.profileData === "verifyEmail") {
+        return <VerifyEmail />
     }
 }

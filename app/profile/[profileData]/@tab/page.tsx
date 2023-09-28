@@ -1,4 +1,5 @@
-import type { profileData } from "../types"
+import type { profileData } from "@/components/ProfilePage/types"
+import { Check2Circle } from "react-bootstrap-icons"
 import TabNavigation from "@/components/TabNav"
 import appRoutes from "@/config/app.route"
 
@@ -20,6 +21,11 @@ export default async function Page({params}: {params: {profileData: profileData}
             label: "Set Avatar",
             link: `${appRoutes.setProfile}/updateAvatar`,
             active: profileData === "updateAvatar"
+        },
+        {
+            label: <span className="flex"><span>Verify Email</span> <Check2Circle className="h-3 w-3 text-gray-500" /></span>,
+            link: `${appRoutes.setProfile}/verifyEmail`,
+            active: profileData === "verifyEmail"
         }
     ]
 
@@ -28,6 +34,7 @@ export default async function Page({params}: {params: {profileData: profileData}
         <div className="my-4">
             <TabNavigation
                 tabs={statusTabs}
+                className="justify-between"
             />
         </div>
     )

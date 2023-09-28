@@ -6,7 +6,8 @@ interface TabNavigationProps {
         label: React.ReactNode,
         link: string,
         active?: boolean
-    }[]
+    }[],
+    className?: string
 }
 
 export default function TabNavigation(props: TabNavigationProps) {
@@ -16,10 +17,10 @@ export default function TabNavigation(props: TabNavigationProps) {
 
     return (
         <div className="font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700">
-            <ul className="flex flex-wrap flex-row">
+            <ul className={`flex flex-wrap flex-row ${props.className}`}>
                 {
                     props.tabs.map((tab) => (
-                        <li className="mr-2" key={tab.link}>
+                        <li className="" key={tab.link}>
                             <Link href={tab.link} className={tab.active ? activeClassName : inactiveClassName}>
                                 {tab.label}                                    
                             </Link>

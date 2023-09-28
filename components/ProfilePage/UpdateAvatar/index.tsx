@@ -62,7 +62,7 @@ export default function UpdateAvatar() {
 
     return (
         <div className="">
-            <div className="pb-8 pt-4">
+            <div className="py-4">
                 {/* Token Media */}
                 <label htmlFor="profileMedia" className="my-4 text-sm font-medium">Profile Avatar</label>      
                 {
@@ -88,7 +88,7 @@ export default function UpdateAvatar() {
 
             <Button
                 onClick={handleSubmit}
-                className="my-6 rounded"
+                className="rounded"
                 variant="gradient"
                 loading={loading}
                 disabled={loading}

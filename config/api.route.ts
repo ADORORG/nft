@@ -31,6 +31,8 @@ const apiRoutes = {
     setProfilePic: "/api/account/setProfilePic",
     /** Verify account email */
     verifyAccountEmail: "/api/account/verifyEmail",
+    /** Request email Otp */
+    requestEmailOtp: "/api/account/requestEmailOtp",
     /** Mint in a primary sale mint event */
     mintOnEvent: "/api/event/mint/:eventDocId",
     /** Create a new collection */

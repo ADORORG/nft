@@ -84,7 +84,8 @@ export function isAddressZero(addr: string): boolean {
  * @param email 
  * @returns
  */
-export function isValidEmail(email: string): boolean {
+export function isValidEmail(email?: string): boolean {
+	if (!email) return false;
 	const re = /\S+@\S+\.\S+/;
 	return re.test(email);
 }

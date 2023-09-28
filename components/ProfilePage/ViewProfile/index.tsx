@@ -1,4 +1,5 @@
 "use client"
+import { Check2Circle } from "react-bootstrap-icons"
 import { useAuthStatus } from "@/hooks/account"
 import AccountAvatar from "@/components/UserAccountAvatar"
 
@@ -8,6 +9,7 @@ export default function ViewProfile() {
         address,
         name,
         email,
+        emailVerified,
         twitter,
         discord
     } = session?.user || {}
@@ -36,7 +38,10 @@ export default function ViewProfile() {
             </p>
             <p className={fieldClassName}>
                 <span>Email</span>
-                <span>{email || notSet}</span>
+                <span className="flex">
+                    <span>{email || notSet} </span>
+                    {emailVerified && <Check2Circle title="Email verified" className="text-gray-600 ms-2" />}
+                </span>
             </p>
             <p className={fieldClassName}>
                 <span>Twitter</span>

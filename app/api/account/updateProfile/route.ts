@@ -1,5 +1,7 @@
 import type AccountType from '@/lib/types/account'
 import { type NextRequest, NextResponse } from 'next/server'
+import { CustomRequestError } from '@/lib/error/request'
+import { isValidEmail } from '@/lib/utils/main'
 import { setAccountDetails } from '@/lib/handlers'
 import { withRequestError, withSession } from '@/wrapper'
 import mongooseConnectPromise from '@/wrapper/mongoose_connect'
@@ -8,6 +10,10 @@ async function updateProfile(request: NextRequest, _: {}, { user }: {user: Accou
     const body = await request.json()
     const accountUpdateData = body as Partial<AccountType>
     const { name, twitter, discord, email } = accountUpdateData
+
+    if (!isValidEmail(email)) {
+        throw new CustomRequestError('Invalid email address', 400) 
+    }
 
     await mongooseConnectPromise
     const updatedAccount = await setAccountDetails(user._id as string, {

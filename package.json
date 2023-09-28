@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "dev-custom": "NODE_OPTIONS='--max-old-space-size=4096' next dev",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -16,6 +17,7 @@
     "@pinata/sdk": "^2.1.0",
     "@types/identicon.js": "^2.3.1",
     "@types/node": "20.2.5",
+    "@types/nodemailer": "^6.4.11",
     "@types/react": "18.2.8",
     "@types/react-copy-to-clipboard": "^5.0.4",
     "@types/react-dom": "18.2.4",
@@ -31,6 +33,7 @@
     "mongoose": "^7.2.2",
     "next": "13.4.4",
     "next-auth": "^4.22.1",
+    "nodemailer": "^6.9.5",
     "postcss": "^8.4.24",
     "react": "18.2.0",
     "react-bootstrap-icons": "^1.10.3",

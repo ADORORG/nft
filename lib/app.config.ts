@@ -3,7 +3,7 @@ export const AppInfo = {
   description: 'Expression is essential',
   website: 'https://adors.org',
 	support: 'support@adors.org',
-  logoUrl: '/logo.svg'
+  logoUrl: 'https://adors.org/logo.svg'
 } as const
 
 // Also configured in next.config.js

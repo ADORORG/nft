@@ -9,7 +9,7 @@ export default function Layout(props: AccountLayoutProps) {
 
     return (
         <div className="bg-white dark:bg-gray-950">
-            <div className="max-w-md mx-auto py-6 px-4 lg:px-0">
+            <div className="max-w-lg min-h-[500px] mx-auto py-6 px-4 lg:px-0">
                 {props.tab}
                 {props.profileData}
             </div>
