@@ -1,7 +1,7 @@
 import type AccountType from "@/lib/types/account"
 import Image from "@/components/Image"
 import MediaPreview from "@/components/MediaPreview"
-import { MediaSkeleton } from "@/components/Skeleton"
+// import { MediaSkeleton } from "@/components/Skeleton"
 import imageData from "@/utils/icon"
 import { IPFS_GATEWAY } from "@/lib/app.config"
 
