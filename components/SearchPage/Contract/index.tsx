@@ -1,4 +1,5 @@
 import LoadingSpinner from "@/components/LoadingSpinner"
+import { ContractCard } from "@/components/Card"
 import { useContractSearch } from "@/hooks/fetch/search"
 
 export default function ContractSearch({searchQuery}: {searchQuery: string}) {
@@ -24,10 +25,10 @@ export default function ContractSearch({searchQuery}: {searchQuery: string}) {
         <div className="flex flex-wrap gap-4">
             { 
                 contracts.map((contract) => (
-                    <div 
-                        key={contract._id?.toString()}>
-                        <p>{contract.label}</p>
-                    </div>
+                    <ContractCard 
+                        key={contract._id?.toString()}
+                        contract={contract}
+                    />
                 ))
             }
         </div>

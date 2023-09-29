@@ -12,7 +12,7 @@ const ContractSchema = new Schema<ContractType>({
     royaltyReceiver: {type: String},
     nftSchema: {type: String, required: true, enum: NFT_CONTRACT_SCHEMA, lowercase: true},
     nftEdition: {type: String, required: true, enum: NFT_CONTRACT_EDITION, default: 'private', lowercase: true}, 
-    // only require if not an imported contract
+    // Required if not an imported contract
     version: {type: String, required: function() { return !(this as any).imported }},
     imported: {type: Boolean, default: false},
     owner: {type: String, ref: accounts, required: true, index: true},
