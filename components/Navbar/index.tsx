@@ -2,11 +2,12 @@
 import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { Search as SearchIcon, TextRight as BarsLeft, X as XIcon } from "react-bootstrap-icons"
+import { TextRight as BarsLeft, X as XIcon } from "react-bootstrap-icons"
 import { useAuthStatus } from "@/hooks/account"
 import { replaceUrlParams } from "@/utils/main"
 import { ConnectWalletButton, NetworkChainSelect, ConnectedWalletButton } from "@/components/ConnectWallet"
 import ThemeSwitcher from "@/components/ThemeSwitcher"
+import SearchForm from "@/components/SearchForm"
 import Dropdown from "@/components/Dropdown"
 import appRoutes from "@/config/app.route"
 
@@ -28,6 +29,7 @@ export default function Navbar({ topNav }:{ topNav: TopNavProps }) {
     {name: "My Orders", href: replaceUrlParams(appRoutes.viewAccountMarketOrders, {address: address?.toLowerCase() as string})},
     {name: "Set Profile", href: appRoutes.setProfile},  
   ]
+
 
   return (
     <nav className="relative bg-white shadow dark:bg-gray-950">
@@ -60,18 +62,7 @@ export default function Navbar({ topNav }:{ topNav: TopNavProps }) {
                 
                 {/* Mobile Menu open: "block", Menu closed: "hidden" */}
                 <div className={`${isOpen ? "translate-x-0 opacity-100" : "opacity-0 -translate-x-full"} absolute inset-x-0 z-20 w-full px-6 py-4 transition-all duration-300 ease-in-out bg-white dark:bg-gray-950 lg:mt-0 lg:p-0 lg:top-0 lg:relative lg:bg-transparent lg:w-auto lg:opacity-100 lg:translate-x-0 lg:flex lg:flex-1 lg:items-center lg:justify-end`}>
-                    
-                  <div className="lg:flex-auto relative lg:ml-10 mt-4 md:mt-0">
-                      <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                          <SearchIcon className="w-5 h-5 text-gray-400" aria-hidden="true" />
-                      </span>
-                      <input 
-                        type="text" 
-                        className="w-full md:w-5/6 lg:2/3 py-2 pl-10 pr-4 text-gray-800 bg-white border rounded dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-none dark:focus:border-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 focus:ring-blue-300" 
-                        placeholder="Search items, collections, accounts" 
-                      />
-                  </div>
-
+                  <SearchForm />
                   <div className="justify-start lg:items-center gap-8 flex flex-col lg:flex-row my-8 lg:mx-8">
                       {
                         navLink.map(({name, href}, i) => (

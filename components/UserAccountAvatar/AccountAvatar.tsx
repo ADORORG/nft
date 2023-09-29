@@ -1,5 +1,5 @@
 import type AccountType from "@/lib/types/account"
-// import Image from "@/components/Image"
+import Image from "@/components/Image"
 import MediaPreview from "@/components/MediaPreview"
 import { MediaSkeleton } from "@/components/Skeleton"
 import imageData from "@/utils/icon"
@@ -15,7 +15,7 @@ export default function AccountAvatar(props: AccountAvatarProps) {
 
     if (!account) {
         account = {
-            address: "0x0"
+            address: "0x".padEnd(32, "0")
         }
     }
     const { image = "", profileMedia, profileMediaType, address } = account
@@ -26,7 +26,17 @@ export default function AccountAvatar(props: AccountAvatarProps) {
             <MediaPreview
                 src={imgUrl || imageData(address, Number(width || height))}
                 type={profileMediaType || "image/*"}
-                loadingComponent={<MediaSkeleton className={``} />}
+                loadingComponent={
+                    // Use Temporary Image which uses the address to generate a placeholder
+                    <Image 
+                        data={account.address} 
+                        alt="" 
+                        src={profileMedia}
+                        width={width}
+                        height={height}
+                        className="rounded"
+                    />
+                }
                 previewClassName="flex justify-center items-center w-full h-full"
                 className={`max-w-[${width}px] max-h-[${height}px] rounded`}
                 width={width}

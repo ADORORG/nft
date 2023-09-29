@@ -1,11 +1,11 @@
 
-interface AccountLayoutProps {
+interface ProfileLayoutProps {
     // children: React.ReactNode,
     tab: React.ReactNode,
     profileData: React.ReactNode,
 }
 
-export default function Layout(props: AccountLayoutProps) {
+export default function Layout(props: ProfileLayoutProps) {
 
     return (
         <div className="bg-white dark:bg-gray-950">

@@ -20,7 +20,9 @@ const appRoutes = {
     createErc721: "/create/erc721",
     /** Create ERC1155 contract */
     createErc1155: "/create/erc1155",
-    /** Set user profile */
+    /** Search page */
+    search: "/search",
+    /** View, update, and verify user profile */
     setProfile: "/profile/",
     // setProfile: "/account/setProfile",
     /** Explore account address */

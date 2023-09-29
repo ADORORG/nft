@@ -47,6 +47,12 @@ const apiRoutes = {
     createMarketOrder: "/api/create/market",
     /** Create market auction bid */
     createMarketAuctionBid: "/api/create/bid/:marketOrderDocId",
+    /** Search Collection */
+    searchCollection: "/api/search/collection",
+    /** Search Contract */
+    searchContract: "/api/search/contract",
+    /** Search nft contract event */
+    searchEvent: "/api/search/event",
     /** Get a single collection */
     getCollectionBySlug: "/api/collection/slug/:slug",
     /** Get account collections by owners' address */

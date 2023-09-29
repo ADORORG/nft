@@ -31,8 +31,8 @@ const NftContractSaleEventSchema = new Schema<NftContractSaleEventType>({
     nftEdition: {type: String, required: true, enum: NFT_CONTRACT_EDITION.filter(edition => edition !== 'private'), lowercase: true},
     // Token minted in this sale event will have the following properties.
     // These properties will be saved to the token model when a token is minted.
-    tokenName: {type: String, required: true},
-    tokenDescription: String,
+    tokenName: {type: String, required: true, index: true},
+    tokenDescription: {type: String, required: true},
     redeemableContent: String,
     transferrable: {type: Boolean, default: true},
     media: {type: String, required: true},
