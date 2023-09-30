@@ -265,7 +265,7 @@ export default function CreateTokenForm() {
                      {/* Tags  */}
                      <div className="mt-4 mb-6">
                         <InputField
-                            label="Tags (Optional)"
+                            label="Tags (max 6)"
                             type="text"
                             name="tags"
                             placeholder="art, 3D, pin"

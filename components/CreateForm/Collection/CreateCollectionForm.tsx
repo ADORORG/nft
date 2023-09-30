@@ -236,7 +236,7 @@ export default function CreateCollectionForm() {
                     {/* Tags  */}
                     <div className="my-2">
                         <InputField
-                            label="Tags"
+                            label="Tags (max 6)"
                             type="text"
                             name="tags"
                             placeholder="art, 3D, pin"
