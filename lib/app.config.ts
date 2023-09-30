@@ -7,7 +7,7 @@ export const AppInfo = {
 } as const
 
 // Also configured in next.config.js
-export const IPFS_GATEWAY = 'https://ipfs.io/ipfs/'
+export const IPFS_GATEWAY = process.env.NEXT_PUBLIC_PINATA_GATEWAY
 
 export const fiatCurrencies = [
   {
