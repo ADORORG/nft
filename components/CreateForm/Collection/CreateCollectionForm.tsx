@@ -300,7 +300,8 @@ export default function CreateCollectionForm() {
                             <MediaPreview 
                                 type={collectionData.mediaType}
                                 htmlFor="collectionMedia"
-                                previewClassName=""
+                                previewClassName="h-[250px] w-[250px] md:h-[350px] md:w-[350px]"
+                                className="max-h-[250px] max-h-[350px]"
                                 src={tempMediaObjectUrl}
                             />
                         }
