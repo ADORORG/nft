@@ -25,10 +25,13 @@ export default function EventSearch({searchQuery}: {searchQuery: string}) {
         <div className="flex flex-wrap gap-4">
             {
                 events.map((event) => (
-                    <EventMintCardSmall
+                    <div
                         key={event._id?.toString() as string}
-                        eventData={event}
-                    />
+                        className="py-4">
+                        <EventMintCardSmall
+                            eventData={event}
+                        />
+                    </div>
                 ))
             }
         </div>

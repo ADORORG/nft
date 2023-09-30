@@ -28,7 +28,7 @@ export default function CollectionSearch({searchQuery}: {searchQuery: string}) {
                 collections.map((collection) => (
                     <div
                         key={collection._id?.toString() as string}
-                        className="my-3"
+                        className="py-4"
                     >
                         <CollectionCard
                             collection={collection}
