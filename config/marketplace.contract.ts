@@ -1,4 +1,3 @@
-import { type PopulatedNftTokenType } from "@/lib/types/token"
 
 type ChainMarketplaceMap = {
     [key: string]: `0x${string}`

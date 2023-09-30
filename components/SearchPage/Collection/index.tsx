@@ -26,10 +26,14 @@ export default function CollectionSearch({searchQuery}: {searchQuery: string}) {
         <div className="flex flex-wrap gap-4">
             {
                 collections.map((collection) => (
-                    <CollectionCard
+                    <div
                         key={collection._id?.toString() as string}
-                        collection={collection}
-                    />
+                        className="my-3"
+                    >
+                        <CollectionCard
+                            collection={collection}
+                        />
+                    </div>
                 ))
             }          
         </div>
