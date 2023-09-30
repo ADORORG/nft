@@ -11,7 +11,7 @@ export default function CreateEventFormIndex(props: CreateEventFormProps) {
     return (
         <div>
             {
-                session?.user.address ?
+                session?.user?.address ?
                 <CreateEventForm {...props} />
                 :
                 <div className="flex flex-row justify-center items-center">
