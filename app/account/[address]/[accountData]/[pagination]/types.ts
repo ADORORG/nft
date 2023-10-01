@@ -1,6 +1,6 @@
 
 
-export type AccountDataType = "token" | "collection" | "marketplace"
+export type AccountDataType = "token" | "collection" | "event" | "marketplace"
 
 export interface PageProps {
     address: string,

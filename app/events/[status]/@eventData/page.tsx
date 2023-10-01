@@ -5,7 +5,6 @@ import { EventMintCollapsedSmall } from "@/components/EventMint"
 import mongoooseConnectionPromise from "@/wrapper/mongoose_connect"
 import { getEventsByQuery } from "@/lib/handlers"
 
-
 async function getServerSideData(status: EventStatusType) {
     await mongoooseConnectionPromise
 

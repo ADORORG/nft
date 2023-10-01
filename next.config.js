@@ -69,6 +69,11 @@ const nextConfig = {
                 permanent: false
             },
             {
+                source: '/account/:address/event',
+                destination: '/account/:address/event/1',
+                permanent: false
+            },
+            {
                 source: '/profile',
                 destination: '/profile/view',
                 permanent: false

@@ -22,13 +22,17 @@ export default async function Page({params}: {params: PageProps}) {
             active: accountData === "collection"
         },
         {
+            label: "Event",
+            link: `${accountPathname}/event`,
+            active: accountData === "event"
+        },
+        {
             label: "Marketplace",
             link: `${accountPathname}/marketplace`,
             active: accountData === "marketplace"
         }
     ]
-
- 
+    
     return (
         <div className="my-4">
             <TabNavigation

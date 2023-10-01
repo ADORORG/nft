@@ -148,3 +148,28 @@ export function setEventData(_id: Types.ObjectId | string, updateData: Record<st
     .lean()
     .exec()
 }
+
+
+/**
+ * Count events by query filter
+ * @param query - a filter object
+ * @returns a document count
+ */
+export function countEventByQuery(query: Record<string, unknown>) {
+    return NftContractEventModel.countDocuments({
+        ...query
+    })
+    .exec()
+}
+
+/**
+ * Get event estimate by optional query filter
+ * @param query - a filter object
+ * @returns a document count
+ */
+export function estimateEventByQuery(query: Record<string, unknown>) {
+    return NftContractEventModel.estimatedDocumentCount({
+        ...query
+    })
+    .exec()
+}

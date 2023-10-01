@@ -23,11 +23,29 @@ export default function Navbar({ topNav }:{ topNav: TopNavProps }) {
   const [isOpen, setIsOpen] = useState(false)
   const {name, logoUrl, navLink} = topNav
 
+  const getHref = (route: string) => replaceUrlParams(route, {address: address?.toLowerCase() as string})
+
   const accountLinks = [
-    {name: "My Token", href: replaceUrlParams(appRoutes.viewAccountToken, {address: address?.toLowerCase() as string})},
-    {name: "My Collection", href: replaceUrlParams(appRoutes.viewAccountCollection, {address: address?.toLowerCase() as string})},
-    {name: "My Orders", href: replaceUrlParams(appRoutes.viewAccountMarketOrders, {address: address?.toLowerCase() as string})},
-    {name: "Set Profile", href: appRoutes.setProfile},  
+    {
+      name: "My Token", 
+      href: getHref(appRoutes.viewAccountToken)
+    },
+    {
+      name: "My Collection", 
+      href: getHref(appRoutes.viewAccountCollection)
+    },
+    {
+      name: "My Orders", 
+      href: getHref(appRoutes.viewAccountMarketOrders)
+    },
+    {
+      name: "My Event",
+      href: getHref(appRoutes.viewAccountSaleEvent)
+    },
+    {
+      name: "Set Profile", 
+      href: appRoutes.setProfile
+    },  
   ]
 
 
