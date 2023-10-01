@@ -69,6 +69,11 @@ const nextConfig = {
                 permanent: false
             },
             {
+                source: '/account/:address/contract',
+                destination: '/account/:address/contract/1',
+                permanent: false
+            },
+            {
                 source: '/account/:address/event',
                 destination: '/account/:address/event/1',
                 permanent: false

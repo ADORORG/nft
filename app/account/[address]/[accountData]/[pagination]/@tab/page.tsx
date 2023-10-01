@@ -27,12 +27,17 @@ export default async function Page({params}: {params: PageProps}) {
             active: accountData === "event"
         },
         {
+            label: "Contract",
+            link: `${accountPathname}/contract`,
+            active: accountData === "contract"
+        },
+        {
             label: "Marketplace",
             link: `${accountPathname}/marketplace`,
             active: accountData === "marketplace"
         }
     ]
-    
+
     return (
         <div className="my-4">
             <TabNavigation

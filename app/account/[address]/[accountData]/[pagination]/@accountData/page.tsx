@@ -3,22 +3,18 @@ import CollectionData from "./collection"
 import TokenData from "./token"
 import MarketplaceData from "./marketplace"
 import SaleEvent from "./event"
+import AccountContract from "./contract"
+
 
 export default async function Page({params}: {params: PageProps}) {
 
-    if (params.accountData === "token") {
-        return <TokenData {...params} />
+    const accountDataMap = {
+        token: <TokenData {...params} />,
+        collection: <CollectionData {...params} />,
+        marketplace: <MarketplaceData {...params} />,
+        event: <SaleEvent {...params} />,
+        contract: <AccountContract {...params} />
     }
 
-    if (params.accountData === "collection") {
-        return <CollectionData {...params} />
-    }
-
-    if (params.accountData === "marketplace") {
-        return <MarketplaceData {...params} />
-    }
-
-    if (params.accountData === "event") {
-        return <SaleEvent {...params} />
-    }
+    return accountDataMap[params.accountData] || null
 }

@@ -35,6 +35,8 @@ const appRoutes = {
     viewAccountMarketOrders: "/account/:address/marketplace",
     /** View sale event created by account */
     viewAccountSaleEvent: "/account/:address/marketplace",
+    /** View account contracts */
+    viewAccountContract: "/account/:address/contract",
     /** Explore token & collection page */
     explore: "#",
     /** Marketplace page */

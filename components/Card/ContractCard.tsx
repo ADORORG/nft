@@ -1,7 +1,8 @@
+"use client"
 import type { PopulatedContractType } from "@/lib/types/contract"
 import Link from "next/link"
 import { Link45deg } from "react-bootstrap-icons"
-import { cutAddress, replaceUrlParams } from "@/utils/main"
+import { cutAddress, replaceUrlParams, cutString } from "@/utils/main"
 import { useChainById } from "@/hooks/contract"
 import { getChainIcon } from "@/components/ConnectWallet/ChainIcons"
 import { UserAccountAvatarWithLink } from "@/components/UserAccountAvatar"
@@ -10,7 +11,7 @@ import appRoutes from "@/config/app.route"
 export default function ContractCard({ contract }: { contract: PopulatedContractType }) {
     const {
         contractAddress,
-        // label,
+        label,
         symbol,
         // nftEdition,
         nftSchema,
@@ -22,7 +23,7 @@ export default function ContractCard({ contract }: { contract: PopulatedContract
     const contractLink = replaceUrlParams(appRoutes.viewContract, { contractAddress, chainId: chainId.toString() })
     
     return (
-        <div className="p-3 w-70 h-36 drop-shadow-md rounded p-3 bg-gray-100 dark:bg-gray-900 hover:opacity-80 transition">
+        <div className="w-70 h-36 drop-shadow-md rounded p-3 bg-gray-100 dark:bg-gray-900 hover:opacity-80 transition">
             <div className="flex flex-col gap-2">
                 <p className="flex items-center">
                     <span>CA: &nbsp;</span>
@@ -32,10 +33,9 @@ export default function ContractCard({ contract }: { contract: PopulatedContract
                     </Link>
                 </p>
 
-                <div className="flex flex-row gap-2">
-                    <span>Symbol: {symbol?.substring?.(3)}</span>
-                    <span>Schema: {nftSchema}</span>
-                </div>
+                <p className="">
+                    <span>Name: {cutString(label, 14)} ({nftSchema})</span>
+                </p>
 
                 <div className="flex flex-row gap-2">
                     <span>Chain: </span>

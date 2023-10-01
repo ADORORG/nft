@@ -43,6 +43,10 @@ export default function Navbar({ topNav }:{ topNav: TopNavProps }) {
       href: getHref(appRoutes.viewAccountSaleEvent)
     },
     {
+      name: "My Contract",
+      href: getHref(appRoutes.viewAccountContract)
+    },
+    {
       name: "Set Profile", 
       href: appRoutes.setProfile
     },  
