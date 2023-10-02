@@ -12,7 +12,7 @@ export default function ContractCard({ contract }: { contract: PopulatedContract
     const {
         contractAddress,
         label,
-        symbol,
+        // symbol,
         // nftEdition,
         nftSchema,
         chainId,
