@@ -91,7 +91,7 @@ export function getCurrencyByQuery(query: Record<string, unknown>) {
  * @returns all cryptocurrencies
  */
 export function getAllCurrencies() {
-    return CurrencyModel.find()
+    return CurrencyModel.find({})
     .lean()
     .exec();
 }
