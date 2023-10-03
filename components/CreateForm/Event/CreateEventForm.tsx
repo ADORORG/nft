@@ -57,7 +57,9 @@ export default function CreateEventForm({nftEdition}: CreateEventFormProps) {
         setNftSaleEventData({
             ...nftSaleEventData,
             nftEdition,
-            supply: nftEditionType.isOneOfOne ? 1 : nftSaleEventData.supply
+            supply: nftEditionType.isOneOfOne ? 1 : nftSaleEventData.supply,
+            royalty: nftSaleEventData.royalty || 0,
+            price: nftSaleEventData.price || 0,
         })
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [nftEdition])
@@ -109,8 +111,8 @@ export default function CreateEventForm({nftEdition}: CreateEventFormProps) {
         ] as const
 
         const eventDataFields = [
-            "feeRecipient", "price", "start", "end", "royalty",
-            "royaltyReceiver", "mediaType", "tokenName"
+            "feeRecipient", "start", "end",
+            "royaltyReceiver", "mediaType", "tokenName", "tokenDescription"
         ] as const
         
         // If an existing contract is not selected, validate the new contract field

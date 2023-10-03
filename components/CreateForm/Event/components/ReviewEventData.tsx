@@ -4,6 +4,7 @@ import { useChainById } from "@/hooks/contract"
 import { useAccountContract, useAccountCollection } from "@/hooks/fetch"
 import { useAuthStatus } from "@/hooks/account"
 import { fromRoyaltyPercent, getEventContractEditionData, nftEditionChecker } from "@/utils/contract"
+import { cutString } from "@/utils/main"
 import Button from "@/components/Button"
 
 export default function ReviewEventData(props: EventDataFormProps) {
@@ -16,6 +17,7 @@ export default function ReviewEventData(props: EventDataFormProps) {
 
     const {
         tokenName,
+        tokenDescription,
         maxMintPerWallet, 
         start, 
         end, 
@@ -46,6 +48,12 @@ export default function ReviewEventData(props: EventDataFormProps) {
                 </span>
             </p>
             <p className={fieldClassName}>
+                <span>Description</span>
+                <span>
+                    {cutString(tokenDescription, 20) || notSet}
+                </span>
+            </p>
+            <p className={fieldClassName}>
                 <span>Network</span>
                 <span>
                     {chain?.name || notSet}
@@ -57,7 +65,7 @@ export default function ReviewEventData(props: EventDataFormProps) {
             </p>
             <p className={fieldClassName}>
                 <span>Royalty</span>
-                <span>{royalty ? `${fromRoyaltyPercent(royalty)}%` : notSet}</span>
+                <span>{royalty !== undefined ? `${fromRoyaltyPercent(royalty)}%` : notSet}</span>
             </p>
             <p className={fieldClassName}>
                 <span>Royalty Receiver</span>
@@ -113,7 +121,7 @@ export default function ReviewEventData(props: EventDataFormProps) {
             <p className={fieldClassName}>
                 <span>Transferrable</span>
                 {/* Transferrable by default */}
-                <span>{(transferrable === undefined || transferrable) ? "Yes" : "No"}</span>
+                <span>{(transferrable === undefined || transferrable) ? "Yes" : "No (SouldBound)"}</span>
             </p>
         </div>
     )
