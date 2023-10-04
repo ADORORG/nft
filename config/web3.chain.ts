@@ -47,8 +47,10 @@ const chainList = [
 /**
  * Supported chain id is provided in .env
  * in a comma separated string
+ * @note - ETH mainnet (chain id 1) is used if no chain is provided in .env. file
  */
-const supportedChainIds = process.env.NEXT_PUBLIC_SUPPORTED_CHAIN_ID?.split(",")
-const supportedChains = chainList.filter(c => supportedChainIds?.includes(c.id.toString()) )
+const supportedChainIds = process.env.NEXT_PUBLIC_SUPPORTED_CHAIN_ID || "1"
+const chainIds = supportedChainIds?.split(",")
+const supportedChains = chainList.filter(c => chainIds?.includes(c.id.toString()) )
 
 export default supportedChains
