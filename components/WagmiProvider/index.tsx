@@ -1,6 +1,6 @@
 "use client"
 import { WagmiConfig } from "wagmi"
-import myWagmiConfig from "@/web3.config"
+import myWagmiConfig from "@/config/web3.config"
 
 export default function WagmiProvider({children}: {children: React.ReactNode}) {
 

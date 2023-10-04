@@ -6,53 +6,10 @@ import { LedgerConnector } from "wagmi/connectors/ledger"
 import { MetaMaskConnector } from "wagmi/connectors/metaMask"
 import { SafeConnector } from "wagmi/connectors/safe"
 import { WalletConnectConnector } from "wagmi/connectors/walletConnect"
-import {
-  mainnet,
-  polygon,
-  optimism,
-  goerli,
-  bsc,
-  baseGoerli,
-  type Chain
-} from "wagmi/chains"
 import { alchemyProvider } from "wagmi/providers/alchemy"
 import { publicProvider } from "wagmi/providers/public"
 import { AppInfo } from "@/lib/app.config"
-
-const supportedChains = [
-    mainnet, 
-    polygon, 
-    optimism, 
-    /** Add base mainnet */
-    {
-        id: 8453,
-        name: "Base",
-        network: "base-mainnet",
-        nativeCurrency: {
-            name: "Ether",
-            symbol: "ETH",
-            decimals: 18
-        },
-        blockExplorers: {
-            default: {
-                name: "Basescan",
-                url: "https://basescan.org"
-            }
-        },
-        rpcUrls: {
-            default: {
-                http: ["https://mainnet.base.org"]
-            },
-            public: {
-                http: ["https://mainnet.base.org"]
-            }
-        }
-    } satisfies Chain,
-    bsc,
-    // testnet
-    goerli,
-    baseGoerli
-]
+import supportedChains from "./web3.chain"
 
 const { chains, publicClient } = configureChains(
     supportedChains,
@@ -112,4 +69,4 @@ const wagmiConfig = createConfig({
 })
 
 export default wagmiConfig
-export { supportedChains, supportedWalletConnectors }
+export { supportedWalletConnectors }
