@@ -3,7 +3,7 @@ import { useCallback } from "react"
 import { getAddress } from "viem"
 import { usePublicClient, useWalletClient } from "wagmi"
 import { promiseDelay } from "@/utils/main"
-import supportedChains from "@/config/web3.chain"
+import { supportedChains } from "@/config/web3.config"
 import erc20Abi from "@/abi/erc20"
 
 export function useContractChain(contract: Pick<ContractType, "chainId">) {

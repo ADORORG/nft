@@ -2,8 +2,7 @@
 import { toast } from "react-hot-toast"
 import { ConnectWalletContext } from "@/components/ConnectWallet"
 import { useAuthStatus } from "@/hooks/account"
-import { supportedWalletConnectors } from "@/config/web3.config"
-import supportedChains from "@/config/web3.chain"
+import { supportedWalletConnectors, supportedChains } from "@/config/web3.config"
 
 export default function WalletConnectWrapper({ children}: { children: React.ReactNode}) {
     const { requestSignOut } = useAuthStatus()
