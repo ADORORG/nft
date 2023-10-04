@@ -9,7 +9,7 @@ import {
   } from "wagmi/chains"
   
 
-const supportedChains = [
+const chainList = [
     mainnet, 
     polygon, 
     optimism, 
@@ -44,5 +44,11 @@ const supportedChains = [
     baseGoerli
 ]
 
+/**
+ * Supported chain id is provided in .env
+ * in a comma separated string
+ */
+const supportedChainIds = process.env.NEXT_PUBLIC_SUPPORTED_CHAIN_ID?.split(",")
+const supportedChains = chainList.filter(c => supportedChainIds?.includes(c.id.toString()) )
 
 export default supportedChains
