@@ -14,13 +14,7 @@ export function getNftContractBaseURI(chainId: number) {
      * uri = 'https://nft.adors.org/contract/5/0x'
      * token uri for token Id `1` will be https://nft.adors.org/contract/5/0x/1
      */
-
-    if (process.env.NODE_ENV === 'production') {
-        return `https://nft.adors.org/contract/${chainId}/`
-    }
-
-    // For staging/development
-    return `https://testnet-nft.adors.org/contract/${chainId}/`
+    return `${process.env.NEXT_PUBLIC_CONTRACT_BASE_URI}${chainId}/`
 }
 
 /** Backend api routes */

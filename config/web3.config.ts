@@ -49,7 +49,7 @@ const safeConnector = new SafeConnector({
 const walletConnectConnector = new WalletConnectConnector({
     chains,
     options: {
-        projectId: "c959e4e094bf2538d3f364baddf2c92c"
+        projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID as string
     }
 })
 
