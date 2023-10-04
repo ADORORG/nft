@@ -4,7 +4,6 @@ import { SelectWithIcon } from "@/components/Select"
 import { useAtom } from "jotai"
 import { appTheme } from "@/store/common"
 
-
 export default function ThemeSwitcher({view}: {view?: "inline" | "dropdown"}) {
     const [themeValue, setThemeValue] = useAtom(appTheme)
 
