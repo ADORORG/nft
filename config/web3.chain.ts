@@ -1,5 +1,5 @@
 import {
-    mainnet,
+    // mainnet,
     // polygon,
     // optimism,
     // bsc,
@@ -9,7 +9,7 @@ import {
 } from "wagmi/chains"
 
 const supportedChains = [
-    mainnet, 
+    // mainnet, 
     // polygon, 
     // optimism, 
     /** Add base mainnet */
