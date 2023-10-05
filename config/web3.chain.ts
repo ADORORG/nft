@@ -1,19 +1,19 @@
 import {
-    // mainnet,
-    // polygon,
-    // optimism,
+    mainnet,
+    polygon,
+    optimism,
+    // goerli,
     // bsc,
-    goerli,
-    baseGoerli,
-    // type Chain
+    // baseGoerli,
+    type Chain
 } from "wagmi/chains"
 
 const supportedChains = [
-    // mainnet, 
-    // polygon, 
-    // optimism, 
+    mainnet, 
+    polygon, 
+    optimism, 
     /** Add base mainnet */
-   /*  {
+    {
         id: 8453,
         name: "Base",
         network: "base-mainnet",
@@ -36,12 +36,12 @@ const supportedChains = [
                 http: ["https://mainnet.base.org"]
             }
         }
-    } satisfies Chain, */
+    } satisfies Chain,
     // bsc,
-
     // testnet
-    goerli,
-    baseGoerli
+    // goerli,
+    // baseGoerli
 ]
+
 
 export default supportedChains
