@@ -5,7 +5,8 @@ import type NftTokenType from '../types/token';
 const { collections: xcollections, tokens, contracts, accounts } = dbCollections;
 
 const TokenSchema = new Schema<NftTokenType>({
-    tokenId: {type: Number, required: true, min: 0},
+    tokenId: {type: Number, min: 0, required: function() { return !(this as any).draft }},
+    draft: { type: Boolean, default: true },
     supply: Number,
     name: String,
     description: String,
@@ -23,7 +24,7 @@ const TokenSchema = new Schema<NftTokenType>({
     transferrable: {type: Boolean, default: true},
     xcollection: {type: Schema.Types.ObjectId, ref: xcollections, index: true}, // 'collection' is a reserved keyword in Mongoose
     contract: {type: Schema.Types.ObjectId, ref: contracts, required: true, index: true},
-    owner: {type: String, ref: accounts, required: true, index: true},    
+    owner: {type: String, ref: accounts, required: true, index: true},  
     createdAt: {type: Date},
     updatedAt: {type: Date}
 }, {

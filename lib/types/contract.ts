@@ -28,6 +28,8 @@ export default interface NftContractType /* extends Partial<Document> */ {
     /** An optional label for this contract */
     label?: string;
     symbol?: string;
+    /** The status of this contract. True if deployed on chain. Otherwise false */
+    draft: boolean;
     createdAt?: Date;
     updatedAt?: Date;
 }
