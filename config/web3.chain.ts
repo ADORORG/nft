@@ -3,8 +3,8 @@ import {
     // polygon,
     // optimism,
     // bsc,
-    goerli,
     baseGoerli,
+    goerli,
     // type Chain
 } from "wagmi/chains"
 
