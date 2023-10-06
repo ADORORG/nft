@@ -60,7 +60,7 @@ export default interface NftTokenType /* extends Partial<Document> */ {
     /** The current owner of this token */
     owner: EthereumAddress | AccountType; 
     /** The status of this token. True if minted on chain. Otherwise false */
-    draft: boolean;
+    draft?: boolean;
     createdAt?: Date;
     updatedAt?: Date;
 }

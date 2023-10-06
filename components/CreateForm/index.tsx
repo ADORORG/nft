@@ -71,8 +71,8 @@ export default function RenderCreateOption() {
                             isConnected &&
                             accountContracts &&
                             accountContracts.length &&
-                            // Only show contracts that are private edition or not edition
-                            accountContracts.filter(contract => !contract.nftEdition || contract.nftEdition === "private")
+                            // Only show contracts that are private edition or not edition and has contract address (not draft)
+                            accountContracts.filter(contract => contract.contractAddress &&  (!contract.nftEdition || contract.nftEdition === "private"))
                             .map(contract => (
                                 <Select.Option 
                                     key={contract._id?.toString()}
