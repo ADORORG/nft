@@ -31,7 +31,7 @@ export default function TokenCardDropdownOptionHandlers({token, whichAction, res
         const tokenUrl = replaceUrlParams(appRoutes.viewToken, {
             chainId: token.contract.chainId.toString(), 
             contractAddress: token.contract.contractAddress,
-            tokenId: token.tokenId.toString()
+            tokenId: token?.tokenId?.toString() || ""
         })
         copyToClipboard(window.location.origin + tokenUrl, () => toast.success("Token link copied to clipboard"))
         resetAction()

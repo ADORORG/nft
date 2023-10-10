@@ -47,6 +47,12 @@ const apiRoutes = {
     searchContract: "/api/search/contract",
     /** Search nft contract event */
     searchEvent: "/api/search/event",
+    /** Get draft token */
+    getDraftToken: "/api/draft/token",
+    /** Get draft contract */
+    getDraftContract: "/api/draft/contract",
+    /** Get draft event */
+    getDraftEvent: "/api/draft/event",
     /** Get a single collection */
     getCollectionBySlug: "/api/collection/slug/:slug",
     /** Get account collections by owners' address */

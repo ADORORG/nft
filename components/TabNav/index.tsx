@@ -6,7 +6,7 @@ interface TabNavigationProps {
         label: React.ReactNode,
         link: string,
         active?: boolean
-        useLInk?: boolean
+        uselink?: boolean
     }[],
     className?: string
 }
@@ -19,10 +19,10 @@ export default function TabNavigation(props: TabNavigationProps) {
         <div className="font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700">
             <ul className={`flex flex-wrap flex-row ${props.className}`}>
                 {
-                    props.tabs.map(({useLInk = true, link, label, active, ...otherProps}) => (
+                    props.tabs.map(({uselink = true, link, label, active, ...otherProps}) => (
                         <li key={link} {...otherProps}>
                             {
-                                useLInk ?
+                                uselink ?
                                 <Link href={link} className={active ? activeClassName : inactiveClassName}>
                                     {label}                                    
                                 </Link>

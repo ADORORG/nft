@@ -16,21 +16,21 @@ export default function SearchPage() {
         {
             label: "Collection",
             link: `#!collection`,
-            useLInk: false,
+            uselink: false,
             active: searchType === "collection",
             onClick: () => setSearchType("collection")
         },
         {
             label: "Event", 
             link: `#!event`,
-            useLInk: false,
+            uselink: false,
             active: searchType === "event",
             onClick: () => setSearchType("event")
         },
         {
             label: "Contract",
             link: `#!contract`,
-            useLInk: false,
+            uselink: false,
             active: searchType === "contract",
             onClick: () => setSearchType("contract")
         }

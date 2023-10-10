@@ -1,7 +1,6 @@
 "use client"
 import type AccountType from "@/lib/types/account"
 import Link from "next/link"
-import Image from "@/components/Image"
 import Dropdown from "@/components/Dropdown"
 import AccountAvatar from "@/components/UserAccountAvatar"
 import { ThreeDotsVertical } from "react-bootstrap-icons"

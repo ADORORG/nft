@@ -32,13 +32,13 @@ export default function TransferToken(props: TokenPageProps & { done?: () => voi
             await erc721Methods.transferFrom({
                 contractAddress: token.contract.contractAddress,
                 newOwner,
-                tokenId: token.tokenId
+                tokenId: token.tokenId as number
             })
         } else {
             await erc1155Methods.safeTransferFrom({
                 contractAddress: token.contract.contractAddress,
                 newOwner,
-                tokenId: token.tokenId,
+                tokenId: token.tokenId as number,
                 amount: tokenAmount
             })
         }
@@ -86,7 +86,7 @@ export default function TransferToken(props: TokenPageProps & { done?: () => voi
             if (isErc721) {
                 const ownerAddress = await erc721Methods.ownerOf({
                     contractAddress: token.contract.contractAddress,
-                    tokenId: token.tokenId,
+                    tokenId: token.tokenId as number,
                 })
                 isOwner = ownerAddress.toLowerCase() === session?.user?.address?.toLowerCase()
 
@@ -106,7 +106,7 @@ export default function TransferToken(props: TokenPageProps & { done?: () => voi
             } else {
                 const ownedAmount = await erc1155Methods.balanceOf({
                     contractAddress: token.contract.contractAddress,
-                    tokenId: token.tokenId,
+                    tokenId: token.tokenId as number,
                     accountAddress: session?.user?.address
                 })
                 // Account must be holding equal or more than the token amount to transfer

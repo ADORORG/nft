@@ -22,7 +22,8 @@ async function getServerSideData(params: PageProps) {
     await mongoooseConnectionPromise
     const contract = await getContractByAddress(contractAddress, Number(chainId)) as PopulatedContractType
     const tokens = await getTokensByQuery({
-        contract: contract
+        contract: contract,
+        tokenId: { $exists: true, $ne: null },
     }, {limit: 50}) as PopulatedNftTokenType[] // Max of 50 results
 
     return {

@@ -29,19 +29,22 @@ async function createNewContract(request: NextRequest, _: any, { user }: {user: 
 
         const draftQuery = {
             _id: contract._id,
-            owner: contract.owner,
+            owner: user,
             draft: true
         }
 
         const prevContracts = await getContractsByQuery(draftQuery, {limit: 1})
 
-        if (prevContracts.length) {
+        if (!prevContracts.length) {
             throw new CustomRequestError('Draft contract not found', 400)
         }
 
         newContract = await getOrCreateContractByQuery(draftQuery, {
             version: contract.version,
-            contractAddress: contract.contractAddress,
+            label: contract.label,
+            symbol: contract.symbol,
+            royalty: contract.royalty,
+            contractAddress: contract.contractAddress.toLowerCase(),
             chainId: contract.chainId,
             draft: false
         })

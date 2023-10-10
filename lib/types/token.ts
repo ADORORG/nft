@@ -7,8 +7,8 @@ import type ContractType from './contract';
 export default interface NftTokenType /* extends Partial<Document> */ {
     /** The document objectId */
     _id?: Types.ObjectId;
-    /** NFT token id */
-    tokenId: number;
+    /** NFT token id. `null` for draft token (not minted)*/
+    tokenId?: number;
     /** Token amount being held by this owner. Always 1 for erc721 */
     quantity?: number;
     /** 
@@ -59,8 +59,8 @@ export default interface NftTokenType /* extends Partial<Document> */ {
     contract: Types.ObjectId | ContractType;
     /** The current owner of this token */
     owner: EthereumAddress | AccountType; 
-    /** The status of this token. True if minted on chain. Otherwise false */
-    draft?: boolean;
+    /** The status of this token. `false` if minted on chain. Otherwise true (not minted) */
+    draft: boolean;
     createdAt?: Date;
     updatedAt?: Date;
 }

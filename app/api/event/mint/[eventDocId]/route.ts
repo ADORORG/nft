@@ -54,6 +54,7 @@ async function mintOnSaleEvent(request: NextRequest, { params }: {params: {event
             contract: mintEventData.contract,
             xcollection: mintEventData.xcollection,
             owner: owners[index]._id as string,
+            draft: false
         } satisfies NftTokenType
     }), {
         // Do not validate because we are manually creating the token

@@ -37,6 +37,7 @@ const CardList = () => {
       token: {
           tokenId: 1,
           supply: 1,
+          draft: false,
           contract: {
             label: "some contract",
             symbol: "SOME",

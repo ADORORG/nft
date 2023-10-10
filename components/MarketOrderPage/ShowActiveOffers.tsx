@@ -119,14 +119,14 @@ function ShowSingleActiveOffer(props: MarketOrderProp) {
         if (hasOffchainSupport) {
             // request for approval signature
             const [{tokenContractName, tokenContractNonce}] = await Promise.all([
-                signatures.getContractStaticParams({contractAddress: tokenContractAddress, tokenId})
+                signatures.getContractStaticParams({contractAddress: tokenContractAddress, tokenId: tokenId as number})
             ])
             const approvalSignature = await signatures.approvalSignature({
                 tokenContractName,
                 tokenContractChainId,
                 tokenContractAddress,
                 tokenContractNonce,
-                tokenId,
+                tokenId: tokenId as number,
                 marketplaceContractAddress,
                 signatureDeadline: Number(orderDeadline)
             }) as string
@@ -141,7 +141,7 @@ function ShowSingleActiveOffer(props: MarketOrderProp) {
                 address: getAddress(tokenContractAddress),
                 abi: erc721ABI,
                 functionName: "getApproved",
-                args: [BigInt(tokenId)]
+                args: [BigInt(tokenId as number)]
             })
 
             if (approvedAddress.toLowerCase() !== marketplaceContractAddress.toLowerCase()) {
@@ -149,7 +149,7 @@ function ShowSingleActiveOffer(props: MarketOrderProp) {
                     address: getAddress(tokenContractAddress),
                     abi: erc721ABI,
                     functionName: "approve",
-                    args: [marketplaceContractAddress, BigInt(tokenId)]
+                    args: [marketplaceContractAddress, BigInt(tokenId as number)]
                 })
             }
 

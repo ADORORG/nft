@@ -23,7 +23,7 @@ export default function AttributeForm(props: AttributeFormProps) {
 	}
 
     /**
-     * Add attribute to the attribue stack
+     * Add attribute to the attribute stack
      */
 	const addAttribute = () => {
 		let newAttributes = deepClone(props.attributes)

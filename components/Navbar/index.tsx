@@ -50,6 +50,10 @@ export default function Navbar({ topNav }:{ topNav: TopNavProps }) {
       name: "Set Profile", 
       href: appRoutes.setProfile
     },  
+    {
+      name: "View Draft", 
+      href: appRoutes.viewDraft
+    },  
   ]
 
 

@@ -262,7 +262,7 @@ export function useAuctionOrder() {
                 value: bigOrderPrice,
                 args: [
                     getAddress(token.contract.contractAddress),
-                    BigInt(token.tokenId),
+                    BigInt(token.tokenId as number),
                 ]
             })
         } else {
@@ -282,7 +282,7 @@ export function useAuctionOrder() {
                 functionName: "createBidERC20",
                 args: [
                     getAddress(token.contract.contractAddress),
-                    BigInt(token.tokenId),
+                    BigInt(token.tokenId as number),
                     bigOrderPrice
                 ]
             })
@@ -320,7 +320,7 @@ export function useAuctionOrder() {
             functionName: "finaliseAuction",
             args: [
                 getAddress(token.contract.contractAddress),
-                BigInt(token.tokenId),
+                BigInt(token.tokenId as number),
             ]
         })
 
@@ -375,7 +375,7 @@ export function useFixedPriceOrder(order: PopulatedMarketOrderType) {
                 value: bigOrderPrice,
                 args: [
                     getAddress(order.token.contract.contractAddress),
-                    BigInt(order.token.tokenId),
+                    BigInt(order.token.tokenId as number),
                     onchainOrderData,
                     order.orderSignature as any,
                     order.approvalSignature as any
@@ -401,7 +401,7 @@ export function useFixedPriceOrder(order: PopulatedMarketOrderType) {
                 functionName: "atomicBuyERC20",
                 args: [
                     getAddress(order.token.contract.contractAddress),
-                    BigInt(order.token.tokenId),
+                    BigInt(order.token.tokenId as number),
                     onchainOrderData,
                     order.orderSignature as any,
                     order.approvalSignature as any
@@ -440,7 +440,7 @@ export function useFixedPriceOrder(order: PopulatedMarketOrderType) {
                 functionName: "buyWithERC20",
                 args: [
                     getAddress(order.token.contract.contractAddress),
-                    BigInt(order.token.tokenId),
+                    BigInt(order.token.tokenId as number),
                 ]
             })
 
@@ -456,7 +456,7 @@ export function useFixedPriceOrder(order: PopulatedMarketOrderType) {
                 value: bigOrderPrice,
                 args: [
                     getAddress(order.token.contract.contractAddress),
-                    BigInt(order.token.tokenId),
+                    BigInt(order.token.tokenId as number),
                 ]
             })
 
@@ -501,7 +501,7 @@ export function useFixedPriceOrder(order: PopulatedMarketOrderType) {
                 functionName: "executeOfferWithPermitERC20",
                 args: [
                     getAddress(order.token.contract.contractAddress),
-                    BigInt(order.token.tokenId),
+                    BigInt(order.token.tokenId as number),
                     onchainOrderData,
                     order.orderSignature as any,
                     approvalSignature as any,
@@ -521,7 +521,7 @@ export function useFixedPriceOrder(order: PopulatedMarketOrderType) {
                 functionName: "executeOfferERC20",
                 args: [
                     getAddress(order.token.contract.contractAddress),
-                    BigInt(order.token.tokenId),
+                    BigInt(order.token.tokenId as number),
                     onchainOrderData,
                     order.orderSignature as any,
                 ]
@@ -563,7 +563,7 @@ export function useMarketOffer() {
             marketplaceContractVersion: marketplaceVersion,
             tokenContractChainId: order.token.contract.chainId,
             tokenContractAddress: order.token.contract.contractAddress,
-            tokenId: order.token.tokenId,
+            tokenId: order.token.tokenId as number,
             paymentToken: order.currency.address,
             bigOrderPrice,
             signatureDeadline: order.orderDeadline as number

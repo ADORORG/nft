@@ -175,7 +175,7 @@ export default function AddTokenToMarket(props: TokenPageProps) {
         /**
          * We don't want to call these functions until we need them
          */
-        const nftContractStaticParams = callFunctionLater(signatures.getContractStaticParams, {contractAddress: tokenContractAddress, tokenId})
+        const nftContractStaticParams = callFunctionLater(signatures.getContractStaticParams, {contractAddress: tokenContractAddress, tokenId: tokenId as number})
         const marketplaceStaticParams = callFunctionLater(signatures.getMarketplaceStaticParams, {marketplaceContractAddress})
        
         /** Auction listing happens onchain for the current defaultMarketplaceVersion.
@@ -198,7 +198,7 @@ export default function AddTokenToMarket(props: TokenPageProps) {
                 marketplaceContractName: marketplaceName,
                 tokenContractChainId,
                 tokenContractAddress,
-                tokenId,
+                tokenId: tokenId as number,
                 bigOrderPrice,
                 paymentToken: currency.address,
                 signatureDeadline
@@ -209,7 +209,7 @@ export default function AddTokenToMarket(props: TokenPageProps) {
                 tokenContractChainId,
                 tokenContractAddress,
                 tokenContractNonce,
-                tokenId,
+                tokenId: tokenId as number,
                 marketplaceContractAddress,
                 signatureDeadline
             })
@@ -226,7 +226,7 @@ export default function AddTokenToMarket(props: TokenPageProps) {
                     tokenContractChainId,
                     tokenContractAddress,
                     tokenContractNonce,
-                    tokenId,
+                    tokenId: tokenId as number,
                     marketplaceContractAddress,
                     signatureDeadline
                 })
@@ -260,7 +260,7 @@ export default function AddTokenToMarket(props: TokenPageProps) {
                     address: getAddress(tokenContractAddress),
                     abi: tokenContractAbi,
                     functionName: "getApproved",
-                    args: [BigInt(tokenId)]
+                    args: [BigInt(tokenId as number)]
                 })
 
                 if (approvedAddress.toLowerCase() !== marketplaceContractAddress.toLowerCase()) {
@@ -268,7 +268,7 @@ export default function AddTokenToMarket(props: TokenPageProps) {
                         address: getAddress(tokenContractAddress),
                         abi: tokenContractAbi,
                         functionName: "approve",
-                        args: [marketplaceContractAddress, BigInt(tokenId)]
+                        args: [marketplaceContractAddress, BigInt(tokenId as number)]
                     })
                 }
             }
@@ -283,7 +283,7 @@ export default function AddTokenToMarket(props: TokenPageProps) {
                         functionName: "createAuctionListingWithPermit",
                         args: [
                             getAddress(tokenContractAddress),
-                            BigInt(tokenId),
+                            BigInt(tokenId as number),
                             bigOrderPrice,
                             bigOrderBuyNowPrice,
                             BigInt(auctionDuration),
@@ -300,7 +300,7 @@ export default function AddTokenToMarket(props: TokenPageProps) {
                         functionName: "createAuctionListing",
                         args: [
                             getAddress(tokenContractAddress),
-                            BigInt(tokenId),
+                            BigInt(tokenId as number),
                             bigOrderPrice,
                             bigOrderBuyNowPrice,
                             BigInt(auctionDuration),
@@ -315,7 +315,7 @@ export default function AddTokenToMarket(props: TokenPageProps) {
                     functionName: "createFixedListing",
                     args: [
                         getAddress(tokenContractAddress),
-                        BigInt(tokenId),
+                        BigInt(tokenId as number),
                         bigOrderPrice,
                         getAddress(currency.address)
                     ]

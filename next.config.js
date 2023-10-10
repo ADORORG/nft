@@ -83,7 +83,6 @@ const nextConfig = {
                 destination: '/profile/view',
                 permanent: false
             },
-            
         ]
     },
 }

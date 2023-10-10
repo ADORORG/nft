@@ -15,7 +15,8 @@ async function getServerSideData({address, pageNumber}: {address: string, pageNu
     await mongoooseConnectionPromise
     
     const query = {
-        owner: address.toLowerCase()    
+        owner: address.toLowerCase(),
+        tokenId: { $exists: true, $ne: null },
     }
 
     const [ accountTokens, accountTokenCount ] = await Promise.all([

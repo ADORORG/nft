@@ -128,7 +128,7 @@ export default function RootLayout({
               <WalletAuthWrapper>
                 <AdminWrapper>
                   <Navbar topNav={topNav} />
-                  <div className="min-h-[400px] bg-gray-50 dark:bg-gray-950">
+                  <div className="min-h-[400px] bg-gray-0 dark:bg-gray-950">
                     {children}
                   </div>
                   <Footer footerNav={footerNav} />
