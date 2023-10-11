@@ -7,7 +7,7 @@ const { contracts, accounts } = dbCollections;
 
 const ContractSchema = new Schema<ContractType>({
     contractAddress: {type: String, index: true, lowercase: true, required: function() { return !(this as any).draft }},
-    draft: { type: Boolean, default: true },
+    draft: { type: Boolean, default: function() { return !(this as any).contractAddress }},
     chainId: {type: Number, required: true, min: 0},
     royalty: {type: Number, default: 0},
     royaltyReceiver: {type: String},

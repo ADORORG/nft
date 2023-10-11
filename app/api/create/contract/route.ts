@@ -2,9 +2,10 @@ import mongooseConnectPromise from '@/wrapper/mongoose_connect'
 import { CustomRequestError } from '@/lib/error/request'
 import { validateContract, createContract, getContractsByQuery, getOrCreateContractByQuery } from '@/lib/handlers'
 import { withRequestError, withSession } from '@/wrapper'
+import { isEthereumAddress } from '@/lib/utils/main'
 import { type NextRequest, NextResponse } from 'next/server'
-import AccountType from '@/lib/types/account'
-import NftContractType from '@/lib/types/contract'
+import type AccountType from '@/lib/types/account'
+import type NftContractType from '@/lib/types/contract'
 
 async function createNewContract(request: NextRequest, _: any, { user }: {user: AccountType}) {
     const contract = await request.json() as NftContractType
@@ -23,14 +24,18 @@ async function createNewContract(request: NextRequest, _: any, { user }: {user: 
     if (contract._id) {
         // we are updating the contract.
         // Contract address must be provided
-        if (!contract.contractAddress) {
+        if (!isEthereumAddress(contract.contractAddress)) {
             throw new CustomRequestError('Contract address is missing', 400)
         }
 
         const draftQuery = {
             _id: contract._id,
             owner: user,
-            draft: true
+            draft: true,
+            $or: [
+                {contractAddress: {$eq: ""}},
+                {contractAddress: {$exists: false}}
+            ] 
         }
 
         const prevContracts = await getContractsByQuery(draftQuery, {limit: 1})

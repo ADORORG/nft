@@ -178,13 +178,16 @@ export default function ContractForm({contract, setContract}: ContractFormProps)
                     variant="gradient"
                     rounded
                     onClick={handleSubmit}
-                    disabled={loading}
+                    disabled={loading || !!contract?.contractAddress}
                     loading={loading}
                 >
                     {
+                        !!contract?.contractAddress ?
+                        "Deployed"
+                        :
                         contract._id && contract.draft 
                         ? 
-                        "Deploy" 
+                        "Deploy"
                         :
                         "Start Deployment"
                     }
