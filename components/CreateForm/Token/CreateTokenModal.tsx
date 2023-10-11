@@ -123,6 +123,7 @@ export default function CreateTokenModal({ tokenData, setTokenData, resetForm, m
                         _id: savedDraft._id,
                         media: savedDraft.media
                     })
+                    toast("Token saved as draft")
                 }
                 // mint token
                 const mintedToken = await handleMinting()

@@ -16,7 +16,7 @@ async function getServerSideData({draftType, draftDocId}: {draftType: DraftDataT
         contract: getContractsByQuery
     }
 
-    const draftData = await draftMap[draftType]({_id: draftDocId, draft: true}, {limit: 1})
+    const draftData = await draftMap[draftType]({_id: draftDocId, draft: true}, {limit: 1, select: ""})
     
     return {
         draftData: draftData[0]

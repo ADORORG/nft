@@ -33,7 +33,11 @@ async function createNewToken(request: NextRequest, _: any, { user }: {user: Acc
         newToken = await getAndUpdateTokenByQuery({
             _id: nftToken._id,
             owner: user,
-            draft: true
+            draft: true,
+            $or: [
+                {tokenId: {$eq: undefined}},
+                {tokenId: {$exists: false}}
+            ] 
         }, {
             ...nftToken,
             draft: false,

@@ -6,7 +6,6 @@ import Link from "next/link"
 import { useState } from "react"
 import { toast } from "react-hot-toast"
 import { splitAtWhiteSpaceOrComma } from "@/utils/main"
-import { toRoyaltyPercent } from "@/utils/contract"
 import { validateFile } from "@/utils/file"
 import { useMediaObjectUrl } from "@/hooks/media/useObjectUrl"
 import {
@@ -14,10 +13,10 @@ import {
     InputField,
     TextArea,
     SwitchCheckbox,
-    RangeInput
 } from "@/components/Form"
 import { Select } from "@/components/Select"
 import { MediaPreview } from "@/components/MediaPreview"
+import RoyaltySlider from "@/components/RoyaltySlider"
 import AttributeForm from "@/components/AttributeForm"
 import QuickModal from "@/components/QuickModal"
 import TagList from "@/components/TagList"
@@ -50,7 +49,6 @@ export default function CreateTokenForm(props: CreateTokenFormProps) {
     const [tokenMedia, setTokenMedia] = useState<File | null>(null)
     /** Modal for minting and uploading token data */
     const [showModal, setShowModal] = useState(false)
-    const [royaltyPercent, setRoyaltyPercent] = useState(0)
     const tempMediaObjectUrl = useMediaObjectUrl(tokenMedia)
     const isErc721 = tokenData?.contract?.nftSchema === "erc721"
 
@@ -182,18 +180,11 @@ export default function CreateTokenForm(props: CreateTokenFormProps) {
                         </div>
 
                         {/* Token Royalty */}
-                        <div className="flex flex-col gap-3 mb-4">
-                            <span>Royalty ({royaltyPercent}%)</span>
-                            <RangeInput
-                                max={50}
-                                step={1}
-                                value={royaltyPercent}
-                                onChange={e => {
-                                    const value = Number(e.target.value)
-                                    setRoyaltyPercent(value)
-                                    // set contract royalty
-                                    setTokenData({ ...tokenData, royalty: toRoyaltyPercent(value) })
-                                }}
+                        <div className="">
+                            <RoyaltySlider
+                                setRoyaltyValue={value => setTokenData({...tokenData, royalty: value})}
+                                labelText="Token Royalty"
+                                value={tokenData?.royalty || 0}
                             />
                         </div>
 

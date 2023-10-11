@@ -195,7 +195,7 @@ export function getTokensByContract(contractId: Types.ObjectId | string, skip: n
  */
 export function getTokenByQuery(
     query: Record<string, unknown>, 
-    select: string = ''
+    select: string = ' -redeemableContent'
     ) {
     
     const leanOption = {lean: true}
@@ -224,7 +224,7 @@ export function getTokenByQuery(
         new: true,
         upsert: false
     })
-    .select(select + ' -redeemableContent')
+    .select(select)
     .populate(populate)
     .lean()
     .exec()
@@ -248,7 +248,7 @@ export function getTokensByQuery(
         limit = 100,
         skip = 0,
         sort = {createdAt: -1},
-        select = ''
+        select = '-redeemableContent'
     } = options
     
     const leanOption = {lean: true}
@@ -274,7 +274,7 @@ export function getTokensByQuery(
     .sort(sort)
     .skip(skip)
     .limit(limit)
-    .select(select + '-redeemableContent')
+    .select(select)
     .populate(populate)
     .lean()
     .exec()

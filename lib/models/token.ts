@@ -6,7 +6,7 @@ const { collections: xcollections, tokens, contracts, accounts } = dbCollections
 
 const TokenSchema = new Schema<NftTokenType>({
     tokenId: {type: Number, min: 0, required: function() { return !(this as any).draft }},
-    draft: { type: Boolean, default: true },
+    draft: { type: Boolean, default: function() { return !(this as any).tokenId }},
     supply: Number,
     name: String,
     description: String,
