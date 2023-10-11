@@ -15,7 +15,7 @@ export function getSettledPromiseValue(settledPromised: any, altValue: any = [])
 }
 
 /**
- * Check that 
+ * Check that prop is in object
  * @param obj 
  * @param prop 
  * @returns 
@@ -165,6 +165,10 @@ export function serializeData(data: any[] | {[key: string]: any}): any[] | {[key
 
 export function onlyAlphaNumeric(str: string) {
 	return str.replace(/[^a-zA-Z0-9]/g, '');
+}
+
+export function onlyAlphaNumericAndWhiteSpace(str: string) {
+	return str.replace(/[^a-zA-Z0-9\s]/g, '');
 }
 
 /**

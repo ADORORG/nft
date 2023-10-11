@@ -314,7 +314,6 @@ export function getAndUpdateTokenByQuery(
         new: true,
         upsert
     })
-    .select('-redeemableContent')
     .populate(populate)
     .lean()
     .exec()

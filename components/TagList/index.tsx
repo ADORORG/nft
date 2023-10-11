@@ -1,5 +1,4 @@
 import Tag from "@/components/Tag"
-import { splitAtWhiteSpaceOrComma } from "@/utils/main"
 
 interface TagListProps extends React.AllHTMLAttributes<HTMLSpanElement> {
     tags?: string
@@ -13,7 +12,7 @@ export default function TagList(props: TagListProps) {
     }
 
     return (
-            splitAtWhiteSpaceOrComma(tags)
+            tags.trim().split(" ")
             .map((tag, index) =>
                 <Tag 
                     key={tag+index}

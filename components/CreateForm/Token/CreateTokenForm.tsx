@@ -3,10 +3,11 @@ import type { PopulatedNftTokenType } from "@/lib/types/token"
 import type CollectionType from "@/lib/types/collection"
 import type NftContractType from "@/lib/types/contract"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { toast } from "react-hot-toast"
-import { splitAtWhiteSpaceOrComma } from "@/utils/main"
 import { validateFile } from "@/utils/file"
+import { replaceUrlParams } from "@/utils/main"
 import { useMediaObjectUrl } from "@/hooks/media/useObjectUrl"
 import {
     FileDropzone,
@@ -19,7 +20,7 @@ import { MediaPreview } from "@/components/MediaPreview"
 import RoyaltySlider from "@/components/RoyaltySlider"
 import AttributeForm from "@/components/AttributeForm"
 import QuickModal from "@/components/QuickModal"
-import TagList from "@/components/TagList"
+import TagInput from "@/components/TagInput"
 import Button from "@/components/Button"
 import CreateTokenModal from "./CreateTokenModal"
 import appRoutes from "@/config/app.route"
@@ -30,7 +31,8 @@ interface CreateTokenFormProps {
     setTokenData: (token: Partial<PopulatedNftTokenType>) => void,
     accountCollections?: CollectionType[],
     accountContracts?: NftContractType[],
-    enableMediaChange?: boolean
+    enableMediaChange?: boolean,
+    resetForm?: () => void
 }
 
 export default function CreateTokenForm(props: CreateTokenFormProps) {
@@ -40,6 +42,7 @@ export default function CreateTokenForm(props: CreateTokenFormProps) {
         accountContracts,
         enableMediaChange = true,
         setTokenData,
+        resetForm
     } = props
 
     /** Stack of form fields */
@@ -51,14 +54,16 @@ export default function CreateTokenForm(props: CreateTokenFormProps) {
     const [showModal, setShowModal] = useState(false)
     const tempMediaObjectUrl = useMediaObjectUrl(tokenMedia)
     const isErc721 = tokenData?.contract?.nftSchema === "erc721"
+    const router = useRouter()
+    const tokenCreated = !!(tokenData?.tokenId && tokenData._id && !tokenData.draft)
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value, type } = e.target
         if (type === "checkbox" && "checked" in e.target) {
-            setTokenData({ ...tokenData, [name]: e.target.checked })
+            setTokenData({ [name]: e.target.checked })
 
         } else {
-            setTokenData({ ...tokenData, [name]: value })
+            setTokenData({ [name]: value })
         }
     }
 
@@ -69,16 +74,9 @@ export default function CreateTokenForm(props: CreateTokenFormProps) {
     const handleMediaFile = (files: FileList | null) => {
         if (files?.length) {
             validateFile(files[0], { ext: allowMediaExtension, size: maxMediaSize })
-            setTokenData({ ...tokenData, mediaType: files[0].type })
+            setTokenData({ mediaType: files[0].type })
             setTokenMedia(files[0])
         }
-    }
-
-    /**
-     * Reset all the form field. This must be done before creating a new token
-    */
-    const resetForm = () => {
-        setTokenData({})
     }
 
     /**
@@ -182,7 +180,7 @@ export default function CreateTokenForm(props: CreateTokenFormProps) {
                         {/* Token Royalty */}
                         <div className="">
                             <RoyaltySlider
-                                setRoyaltyValue={value => setTokenData({...tokenData, royalty: value})}
+                                setRoyaltyValue={value => setTokenData({royalty: value})}
                                 labelText="Token Royalty"
                                 value={tokenData?.royalty || 0}
                             />
@@ -218,26 +216,11 @@ export default function CreateTokenForm(props: CreateTokenFormProps) {
 
                     {/* Tags  */}
                     <div className="mt-4 mb-6">
-                        <InputField
-                            label="Tags (max 6)"
-                            type="text"
-                            name="tags"
-                            placeholder="art, 3D, pin"
-                            onChange={handleInputChange}
-                            onBlur={e => {
-                                // Limit tags to 6
-                                const { value } = e.target
-                                const tags = splitAtWhiteSpaceOrComma(value).slice(0, 6).join(", ")
-                                setTokenData({ ...tokenData, tags })
-                            }}
-                            value={tokenData?.tags || ""}
-                            autoComplete="off"
-                            className="rounded focus:transition-all duration-400"
+                        <TagInput
+                            setTags={tags => setTokenData({ tags })}
+                            tags={tokenData?.tags}
+                            maxTags={6}
                         />
-
-                        <p className="my-2">
-                            <TagList tags={tokenData?.tags} />
-                        </p>
                     </div>
 
                     {/* Attributes */}
@@ -249,7 +232,7 @@ export default function CreateTokenForm(props: CreateTokenFormProps) {
                         <AttributeForm
                             attributes={tokenData?.attributes || [defaultAttributes]}
                             onChange={newAttributes => {
-                                setTokenData({ ...tokenData, attributes: [...newAttributes] })
+                                setTokenData({ attributes: [...newAttributes] })
                             }}
                         />
                     </div>
@@ -272,7 +255,7 @@ export default function CreateTokenForm(props: CreateTokenFormProps) {
                             id="account-contracts"
                             onChange={e => {
                                 const contract = accountContracts?.find(c => c._id?.toString() === e.target.value)
-                                setTokenData({ ...tokenData, contract })
+                                setTokenData({ contract })
                             }}
                             name="contract"
                             value={tokenData?.contract?._id?.toString() || ""}
@@ -316,7 +299,7 @@ export default function CreateTokenForm(props: CreateTokenFormProps) {
                             id="account-collections"
                             onChange={e => {
                                 const xcollection = accountCollections?.find(c => c._id?.toString() === e.target.value)
-                                setTokenData({ ...tokenData, xcollection })
+                                setTokenData({ xcollection })
                             }}
                             name="xcollection"
                             value={tokenData?.xcollection?._id?.toString() || ""}
@@ -389,24 +372,28 @@ export default function CreateTokenForm(props: CreateTokenFormProps) {
                     variant="gradient"
                     rounded
                     onClick={handleSubmit}
+                    disabled={tokenCreated}
                 >
                     {
+                        tokenCreated ?
+                        "Token created"
+                        :
                         tokenData._id && !tokenData.tokenId ?
-                            "Mint token"
-                            :
-                            tokenData.tokenId ?
-                                "Update token"
-                                :
-                                "Create token"
+                        "Mint token"
+                        :
+                        tokenData._id && tokenData.draft ?
+                        "Update token"
+                        :
+                        "Create token"
                     }
                 </Button>
                 {
-                    (tokenData?.tokenId && tokenData._id) ?
+                    (tokenCreated) ?
                         // Reset to mint new token
                         <Button
                             className="px-3 bg-gray-600"
                             rounded
-                            onClick={resetForm}
+                            onClick={() => resetForm?.()}
                         >Mint another</Button>
                         :
                         null
@@ -419,12 +406,24 @@ export default function CreateTokenForm(props: CreateTokenFormProps) {
             */}
             <QuickModal
                 show={showModal}
-                onHide={setShowModal}
+                // disable modal closing
+                // will be closed when done
+                onHide={() => false }
                 modalBody={CreateTokenModal}
                 modalTitle="Create Token"
                 tokenData={tokenData}
                 setTokenData={setTokenData}
                 mediaFile={tokenMedia}
+                done={() => {
+                    if (tokenCreated) {
+                        const viewTokenUrl =  replaceUrlParams(appRoutes.viewToken, {
+                            chainId: tokenData?.contract?.chainId.toString() as string,
+                            contractAddress: tokenData?.contract?.contractAddress as string,
+                            tokenId: tokenData?.tokenId?.toString() || ""
+                        })
+                        router.push(viewTokenUrl)         
+                    }
+                }}
             />
         </div>
     )

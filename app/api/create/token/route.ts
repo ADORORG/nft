@@ -11,12 +11,6 @@ import { type NextRequest, NextResponse } from 'next/server'
 async function createNewToken(request: NextRequest, _: any, { user }: {user: AccountType}) {
     const nftToken = await request.json() as PopulatedNftTokenType
     nftToken.owner = user
-
-    // validate the token data
-    const isValidToken = await validateToken(nftToken)
-    if (!isValidToken) {
-        throw new CustomRequestError('Token data is invalid', 400)
-    }
     /** 
      * If nftToken._id, draft was created.
      * otherwise, it's a new token
@@ -39,7 +33,6 @@ async function createNewToken(request: NextRequest, _: any, { user }: {user: Acc
                 {tokenId: {$exists: false}}
             ] 
         }, {
-            ...nftToken,
             draft: false,
             tokenId: nftToken.tokenId,
         }, false)
@@ -49,7 +42,13 @@ async function createNewToken(request: NextRequest, _: any, { user }: {user: Acc
         }
 
     } else {
-        if ((!nftToken.media && !nftToken.media.startsWith('data:'))) {
+         // validate the token data
+        const isValidToken = await validateToken(nftToken)
+        if (!isValidToken) {
+            throw new CustomRequestError('Token data is invalid', 400)
+        }
+        
+        if ((!nftToken.media || !nftToken.media.startsWith('data:'))) {
             throw new CustomRequestError('Please provide a valid token media', 400)
         }
         // Convert dataURI to readable stream

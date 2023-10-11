@@ -1,27 +1,24 @@
 import type { PopulatedNftTokenType } from "@/lib/types/token"
 import { useState, useCallback } from "react"
-import { useRouter } from "next/navigation"
 import { CodeSlash, CloudCheck, BagCheck } from "react-bootstrap-icons"
 import { toast } from "react-hot-toast"
 import { useAccount } from "wagmi"
 import { fetcher, getFetcherErrorMessage } from "@/utils/network"
-import { replaceUrlParams } from "@/utils/main"
 import { readSingleFileAsDataURL } from "@/utils/file"
 import { useContractChain } from "@/hooks/contract"
 import { useERC721, useERC1155 } from "@/hooks/contract/nft"
 import Stepper from "@/components/Stepper"
 import Button from "@/components/Button"
 import apiRoutes from "@/config/api.route"
-import appRoutes from "@/config/app.route"
 
 interface CreateTokenModalProps {
     tokenData: PopulatedNftTokenType,
     setTokenData: (token: Partial<PopulatedNftTokenType>) => void,
-    resetForm?: () => void,
+    done?: (/* createdToken: Partial<PopulatedNftTokenType> */) => void,
     mediaFile?: File | null
 }
 
-export default function CreateTokenModal({ tokenData, setTokenData, resetForm, mediaFile }: CreateTokenModalProps) {
+export default function CreateTokenModal({ tokenData, setTokenData, done, mediaFile }: CreateTokenModalProps) {
     const isErc721 = tokenData.contract.nftSchema.toLowerCase() === "erc721"
     const currentStage: "mint" | "save" | "market" = tokenData._id ? tokenData.tokenId ? "market" : "mint" : "save"
     const [loading, setLoading] = useState(false)
@@ -29,7 +26,6 @@ export default function CreateTokenModal({ tokenData, setTokenData, resetForm, m
     const erc721Method = useERC721() 
     const erc1155Method = useERC1155()
     const contractChain = useContractChain({chainId: tokenData.contract.chainId})
-    const router = useRouter()
     /** 
     * Progress steps
     */
@@ -50,8 +46,8 @@ export default function CreateTokenModal({ tokenData, setTokenData, resetForm, m
         },
         market: {
             title: "Marketplace",
-            subtitle: "Add to market",
-            done: false,
+            subtitle: "Ready to sell",
+            done: !tokenData.draft,
             active: false,
             icon: <BagCheck className="" />
         },
@@ -64,14 +60,20 @@ export default function CreateTokenModal({ tokenData, setTokenData, resetForm, m
         })
 
         if (response.success) {
-            return response.data
+            return response.data as PopulatedNftTokenType
         }
     }, [])
 
+    const saveDraftTokenData = useCallback(async (newNftToken: PopulatedNftTokenType) => {
+        const savedDraft = await saveTokenData(newNftToken)
+        setTokenData({_id: savedDraft?._id})
+        return savedDraft
+    }, [saveTokenData, setTokenData])
+
     const updateTokenId = useCallback(async (token: PopulatedNftTokenType) => {
-        const updatedToken = await saveTokenData(token)
-        setTokenData({...tokenData, draft: updatedToken.draft, tokenId: updatedToken?.tokenId})
-    }, [tokenData, saveTokenData, setTokenData])
+        await saveTokenData(token)
+        setTokenData({draft: false})
+    }, [saveTokenData, setTokenData])
 
     const handleMinting = useCallback(async () => {
         await contractChain.ensureContractChainAsync()
@@ -80,19 +82,19 @@ export default function CreateTokenModal({ tokenData, setTokenData, resetForm, m
         if (isErc721) {
             writeResult = await erc721Method.mint({
                 contractAddress: tokenData.contract.contractAddress,
-                royalty: tokenData?.royalty || tokenData.contract.royalty,
+                royalty: tokenData?.royalty || tokenData.contract.royalty || 0,
                 receiverAddress: address as string
             })
         } else {
             writeResult = await erc1155Method.create({
                 contractAddress: tokenData.contract.contractAddress,
                 initialSupply: tokenData?.quantity || 1,
-                royalty: tokenData?.royalty || tokenData.contract.royalty,
+                royalty: tokenData?.royalty || tokenData.contract.royalty || 0,
                 receiverAddress: address as string
             })
         }
 
-        const updatedToken = {...tokenData, tokenId: writeResult?.tokenId}
+        const updatedToken = {tokenId: writeResult?.tokenId}
         setTokenData(updatedToken)
         return updatedToken
     }, [address, contractChain, erc1155Method, erc721Method, isErc721, tokenData, setTokenData])
@@ -109,47 +111,44 @@ export default function CreateTokenModal({ tokenData, setTokenData, resetForm, m
                     mediaDataURL = await new Promise<string>(resolve => readSingleFileAsDataURL(mediaFile as Blob, resolve as any))
                 }
 
-                const savedDraft = await saveTokenData({
+                await saveDraftTokenData({
                     ...tokenData, 
                     tokenId: undefined,
                     draft: true,
-                    media: tokenData.media || mediaDataURL || ""
+                    media: (mediaDataURL ? mediaDataURL : tokenData.media) as string
+                }).then(async draftToken => {
+                    toast("Token saved as draft")
+                    // mint token
+                    const mintResult = await handleMinting()
+                    return {
+                        ...draftToken,
+                        tokenId: mintResult?.tokenId
+                    }
+                }).then(async draftToken => {
+                    // update token id in database
+                    await updateTokenId(draftToken as PopulatedNftTokenType)
+                    return draftToken
+                }).catch(error => {
+                    console.error(error)
                 })
 
-                // set the token document _id
-                if (savedDraft._id) {
-                    setTokenData({
-                        ...tokenData, 
-                        _id: savedDraft._id,
-                        media: savedDraft.media
-                    })
-                    toast("Token saved as draft")
-                }
-                // mint token
-                const mintedToken = await handleMinting()
-                // update token id in database
-                await updateTokenId(mintedToken)
             } else if (tokenData._id && !tokenData.tokenId) {
                 // Token already saved to database as draft
                 // mint token
-                const mintedToken = await handleMinting()
-                // update token id in database
-                await updateTokenId(mintedToken)
+                await handleMinting()
+                .then(async mintResult => {
+                    // update token id in database
+                    return updateTokenId({...tokenData, tokenId: mintResult?.tokenId})
+                }).catch(error => {
+                    console.error(error)
+                })
+
             } else if (tokenData.draft) {
                 await updateTokenId(tokenData)
             }
 
-            toast.success("Token created successfully")
-            if (tokenData.tokenId && tokenData._id && !tokenData.draft) {
-                const viewTokenUrl =  replaceUrlParams(appRoutes.viewToken, {
-                    chainId: tokenData.contract.chainId.toString(),
-                    contractAddress: tokenData.contract.contractAddress,
-                    tokenId: tokenData?.tokenId?.toString() || ""
-                })
-                resetForm?.()
-                router.push(viewTokenUrl)
-            }
-            
+            done?.()
+           
         } catch (error) {
             console.error(error)
             toast.error(getFetcherErrorMessage(error))

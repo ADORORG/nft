@@ -9,7 +9,7 @@ import {
     collectionDataStore,
     collectionCreatedStore
 } from "@/store/form"
-import { onlyAlphaNumeric, splitAtWhiteSpaceOrComma } from "@/lib/utils/main"
+import { onlyAlphaNumeric } from "@/lib/utils/main"
 import { readSingleFileAsDataURL, validateFile } from "@/utils/file"
 import { collectionCategories } from "@/lib/app.config"
 import { useAuthStatus } from "@/hooks/account"
@@ -23,7 +23,7 @@ import { Select } from "@/components/Select"
 import { ConnectWalletButton } from "@/components/ConnectWallet"
 import { MediaPreview } from "@/components/MediaPreview"
 import { fetcher, getFetcherErrorMessage } from "@/utils/network"
-import TagList from "@/components/TagList"
+import TagInput from "@/components/TagInput"
 import Button from "@/components/Button"
 import apiRoutes from "@/config/api.route"
 import appRoute from "@/config/app.route"
@@ -235,26 +235,11 @@ export default function CreateCollectionForm() {
                     </div>
                     {/* Tags  */}
                     <div className="my-2">
-                        <InputField
-                            label="Tags (max 6)"
-                            type="text"
-                            name="tags"
-                            placeholder="art, 3D, pin"
-                            onChange={handleInputChange}
-                            onBlur={e => {
-                                // Limit tags to 6
-                                const {value} = e.target
-                                const tags = splitAtWhiteSpaceOrComma(value).slice(0, 6).join(", ")
-                                setCollectionData({...collectionData, tags})
-                            }}
-                            value={collectionData?.tags || ""}
-                            autoComplete="off"
-                            className="rounded focus:transition-all duration-400"
+                        <TagInput
+                            setTags={tags => setCollectionData({ ...collectionData, tags })}
+                            tags={collectionData?.tags || ""}
+                            maxTags={6}
                         />
-
-                        <p className="my-4">
-                            <TagList tags={collectionData?.tags} />
-                        </p>
                     </div>
                     {/* External Url */}
                     <div className="my-2">
