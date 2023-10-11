@@ -6,9 +6,9 @@ import { toast } from "react-hot-toast"
 import { useNftDeployer } from "@/hooks/contract/nft"
 import { fetcher, getFetcherErrorMessage } from "@/utils/network"
 import { replaceUrlParams } from "@/utils/main"
-import { toRoyaltyPercent } from "@/utils/contract"
-import { InputField, RangeInput } from "@/components/Form"
+import { InputField } from "@/components/Form"
 import { NetworkChainSelect } from "@/components/ConnectWallet"
+import RoyaltySlider from "@/components/RoyaltySlider"
 import Button from "@/components/Button"
 import apiRoutes from "@/config/api.route"
 import appRoutes from "@/config/app.route"
@@ -28,7 +28,6 @@ interface ContractFormProps {
  */
 export default function ContractForm({contract, setContract}: ContractFormProps) {
     const router = useRouter()
-    const [royaltyPercent, setRoyaltyPercent] = useState(0)
     const [loading, setLoading] = useState(false)
     const { deployNftContract } = useNftDeployer({
         chainId: contract.chainId as number
@@ -93,6 +92,7 @@ export default function ContractForm({contract, setContract}: ContractFormProps)
                 // set the contract document _id
                 if (savedDraft._id) {
                     setContract({...contract, _id: savedDraft._id})
+                    toast("Contract saved as draft")
                 }
                 // deploy contract 
                 const deployResult = await handleDeployment()
@@ -155,19 +155,12 @@ export default function ContractForm({contract, setContract}: ContractFormProps)
                     labelClassName="my-3"
                 />
                 {/* Contract default Royalty */}
-                <div className="flex flex-col gap-3 mb-4">
-                    <span>Contract Royalty ({royaltyPercent}%)</span>
-                    <RangeInput
-                        max={50}
-                        step={1}
-                        value={royaltyPercent}
-                        onChange={e => {
-                            const value = Number(e.target.value)
-                            setRoyaltyPercent(value)
-                            // set contract royalty
-                            setContract({...contract, royalty: toRoyaltyPercent(value)})
-                        }}
+                <div className="">
+                    <RoyaltySlider
+                        setRoyaltyValue={value => setContract({...contract, royalty: value})}
+                        labelText="Contract Royalty"
                         disabled={loading}
+                        value={contract?.royalty || 0}
                     />
                 </div>
             </div>

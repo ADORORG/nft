@@ -26,7 +26,7 @@ export default function RoyaltySlider(props: RoyaltySliderProps) {
     const [royaltyPercent, setRoyaltyPercent] = useState(fromRoyaltyPercent(value))
 
     return (
-        <div>
+        <div className="flex flex-col gap-3 mb-4">
             <span>{labelText} ({royaltyPercent}%)</span>
                     <RangeInput
                         max={max}
