@@ -6,7 +6,7 @@ import { validateFile, readSingleFileAsArrayBuffer } from "@/utils/file"
 import { replaceUrlParams } from "@/utils/main"
 import { useMediaObjectUrl } from "@/hooks/media/useObjectUrl"
 import { MediaPreview } from "@/components/MediaPreview"
-import { FileInput } from "@/components/Form"
+import { FileInput, FileDropzone } from "@/components/Form"
 import NavigationButton from "@/components/NavigationButton"
 import { allowMediaExtension, maxMediaSize } from "@/config/media"
 import apiRoutes from "@/config/api.route"
@@ -28,10 +28,14 @@ export default function CreateTokenMedia(props: CreateTokenSubComponentProps) {
      * @param e Event handler
      */
     const handleMediaFile = (files: FileList | null) => {
-        if (files?.length) {
-            validateFile(files[0], { ext: allowMediaExtension, size: maxMediaSize })
-            setTokenData({ mediaType: files[0].type })
-            setTokenMedia(files[0])
+        try {
+            if (files?.length) {
+                validateFile(files[0], { ext: allowMediaExtension, size: maxMediaSize })
+                setTokenData({ mediaType: files[0].type })
+                setTokenMedia(files[0])
+            }
+        } catch (error: any) {
+            toast.error(error.message)
         }
     }
 
@@ -74,44 +78,53 @@ export default function CreateTokenMedia(props: CreateTokenSubComponentProps) {
 
     return (
         <div className="flex flex-col gap-4 pb-4">
-            <div className="self-center h-[250px] w-[250px] mb-[120px]">
-                {/* Token Media */}
+            <div>
                 <label
                     htmlFor="nftTokenMedia"
                     className="my-4 flex flex-col gap-2">
-                    <span>Media</span>
+                    <span>Media (Drop or click to choose)</span>
                     <span className="text-gray-500 text-sm">Once you create an item it may not be changed in the future</span>
                 </label>
-                {
-                    (tokenData?.media || tempMediaObjectUrl) &&
-                    <MediaPreview
-                        type={tokenData?.mediaType}
-                        htmlFor="nftTokenMedia"
-                        previewClassName=""
-                        src={tempMediaObjectUrl || (IPFS_GATEWAY as string) + tokenData?.media}
-                    />
-                }
-                <div className={tokenData?.media || tempMediaObjectUrl ? "hidden" : ""}>
-                    <FileInput
-                        id="nftTokenMedia"
-                        label="Token Media"
-                        fileExtensionText={
-                            <span className="flex flex-col gap-2">
-                                <span>Recommended: 30MB max </span>
-                                {allowMediaExtension?.join(", ")}
-                            </span>
+
+                <FileDropzone
+                    mediaHandler={handleMediaFile}
+                    className="flex justify-center items-center h-[320px] w-[320px] mb-[20px] rounded"
+                >
+                    <div className="self-center max-h-[250px] max-w-[250px]">
+                        {/* Token Media */}
+                        {
+                            (tokenData?.media || tempMediaObjectUrl) &&
+                            <MediaPreview
+                                type={tokenData?.mediaType}
+                                htmlFor="nftTokenMedia"
+                                previewClassName="max-h-[250px] max-w-[250px]"
+                                className="max-h-[250px] max-w-[250px]"
+                                src={tempMediaObjectUrl || (IPFS_GATEWAY as string) + tokenData?.media}
+                            />
                         }
-                        accept={allowMediaExtension?.map(x => "." + x).join(", ")}
-                        labelClassName="hover:transition-all duration-700"
-                        onChange={e => {
-                            try {
-                                handleMediaFile(e.target.files)
-                            } catch (error: any) {
-                                toast.error(error.message)
-                            }
-                        }}
-                    />
-                </div>
+                        <div className={tokenData?.media || tempMediaObjectUrl ? "hidden" : ""}>
+                            <FileInput
+                                id="nftTokenMedia"
+                                label="Token Media"
+                                fileExtensionText={
+                                    <span className="flex flex-col gap-2">
+                                        <span>Recommended: 30MB max </span>
+                                        {allowMediaExtension?.join(", ")}
+                                    </span>
+                                }
+                                accept={allowMediaExtension?.map(x => "." + x).join(", ")}
+                                labelClassName="hover:transition-all duration-700"
+                                onChange={e => {
+                                    try {
+                                        handleMediaFile(e.target.files)
+                                    } catch (error: any) {
+                                        toast.error(error.message)
+                                    }
+                                }}
+                            />
+                        </div>
+                    </div>
+                </FileDropzone>
             </div>
 
             {/* Navigation buttons */}
