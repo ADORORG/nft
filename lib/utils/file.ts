@@ -1,9 +1,17 @@
-import { Readable } from 'stream'
+import { Readable, PassThrough } from 'stream'
 
-export function bufferToStream(myBuffer: Buffer, path: string) {
+export function bufferToStream(myBuffer: Buffer, path?: string) {
 	let stream: Readable & {path?: string} = Readable.from(myBuffer);
 		stream.path = path;
 		return stream;
+}
+
+export function requestBodyToStream(bodyStream: Readable) {
+  // return Readable.from([bodyStream])
+  const newStream = new Readable();
+  newStream.push(bodyStream);
+  newStream.push(null);
+  return newStream;
 }
 
 export function getFileNameFromDataUrl(dataUrl: string, name = 'file') {
@@ -55,3 +63,17 @@ export function isDataURL(image: string) {
     return false;
   }
   
+
+export function createCustomReadableFromExistingReadable(existingReadable: Readable) {
+    const customReadable = new PassThrough()
+  
+    existingReadable.on('data', (chunk: any) => {
+      customReadable.push(chunk)
+    })
+  
+    existingReadable.on('end', () => {
+      customReadable.push(null); // Signal the end of the custom stream
+    })
+  
+    return customReadable;
+}

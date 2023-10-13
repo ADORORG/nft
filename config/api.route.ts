@@ -86,6 +86,16 @@ const apiRoutes = {
     addNewCurrency: "/api/currency/add",
     /** Update a currency. Substituting the currency _id for 'currencyDocId' in params  */
     updateCurrency: "/api/currency/update/:currencyDocId",
+
+    // V2 routes
+    /** Create a new token */
+    createTokenV2: "/api/v2/create/token",
+    /** Upload file for a token */
+    uploadTokenMedia: "/api/v2/create/media/token/:docId",
+    /** Upload file for a collection */
+    uploadCollectionMedia: "/api/v2/create/media/collection/:docId",
+    /** Upload file for a event */
+    uploadEventMedia: "/api/v2/create/media/event/:docId",
 }
 
 export default apiRoutes

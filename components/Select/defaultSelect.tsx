@@ -13,7 +13,7 @@ export default function Select(props: SelectProps) {
 
     return (
         <select 
-            className={`block w-full md:w-5/6 lg:2/3 p-2.5 text-sm bg-white border dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 dark:focus:border-purple-300 focus:outline-none focus:ring focus:ring-opacity-40 focus:ring-purple-900 ${className}`}
+            className={`block w-full p-2.5 text-sm bg-white border dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 dark:focus:border-purple-300 focus:outline-none focus:ring focus:ring-opacity-40 focus:ring-purple-900 ${className}`}
 
             {...selectProps}
             

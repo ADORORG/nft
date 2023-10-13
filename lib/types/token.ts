@@ -27,7 +27,7 @@ export default interface NftTokenType /* extends Partial<Document> */ {
     /**
      * Token media. It could be an image/audio/video
      */
-    media: string;
+    media?: string;
     /**
      * The type of media content if provided. Examples video/mp4, image/png
      */
@@ -54,7 +54,7 @@ export default interface NftTokenType /* extends Partial<Document> */ {
      * The collection to which this token belongs.
      * 'collection' is a reserved keyword in Mongoose, hence, 'xcollection' is used
      */
-    xcollection?: Types.ObjectId | CollectionType; 
+    xcollection: Types.ObjectId | CollectionType; 
     /** The contract to which this token belongs */
     contract: Types.ObjectId | ContractType;
     /** The current owner of this token */

@@ -237,6 +237,36 @@ export function getCollectionValueInDollar(query: Record<string, unknown>) {
     return CollectionModel.aggregate<TotalMarketValueInDollarType>(aggregateQuery).exec()
 }
 
+/**
+ * Get one collection and update
+ * @param query 
+ * @param update 
+ * @param upsert 
+ * @returns 
+ */
+export function getAndUpdateCollectionByQuery(
+  query: Record<string, unknown>, 
+  update: Record<string, unknown>, 
+  upsert?: false
+) {
+  
+  const leanOption = {lean: true}
+  const populate = [
+    {
+        path: 'owner',
+        select: '-email -roles -emailVerified -__v',
+        options: leanOption
+    }
+] satisfies PopulateOptions[]
+
+  return CollectionModel.findOneAndUpdate(query, update, {
+      new: true,
+      upsert
+  })
+  .populate(populate)
+  .lean()
+  .exec()
+}
 
 /**
  * Count collection by query filter

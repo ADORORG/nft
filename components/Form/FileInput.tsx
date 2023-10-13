@@ -1,7 +1,7 @@
 import { forwardRef } from "react"
 import type { InputExtendedProps } from "./types"
 
-function FileDropzone(props: InputExtendedProps, ref: React.ForwardedRef<HTMLInputElement>) {
+function FileInput(props: InputExtendedProps, ref: React.ForwardedRef<HTMLInputElement>) {
     const {label, labelClassName, fileExtensionText, className, ...inputProps} = props
 
     return (
@@ -33,4 +33,4 @@ function FileDropzone(props: InputExtendedProps, ref: React.ForwardedRef<HTMLInp
     )
 }
 
-export default forwardRef(FileDropzone)
+export default forwardRef(FileInput)

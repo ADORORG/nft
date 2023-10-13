@@ -15,7 +15,7 @@ import { collectionCategories } from "@/lib/app.config"
 import { useAuthStatus } from "@/hooks/account"
 import { useMediaObjectUrl } from "@/hooks/media/useObjectUrl"
 import {
-    FileDropzone,
+    FileInput,
     InputField,
     TextArea
 } from "@/components/Form"
@@ -291,7 +291,7 @@ export default function CreateCollectionForm() {
                             />
                         }
                         <div className={!!mediaFile ? "hidden" : ""}>
-                            <FileDropzone
+                            <FileInput
                                 id="collectionMedia"
                                 label="Collection Media"
                                 fileExtensionText={allowMediaExtension.join(", ")}
@@ -322,7 +322,7 @@ export default function CreateCollectionForm() {
                             />
                         }
                         <div className={!!bannerFile ? "hidden" : ""}>
-                            <FileDropzone
+                            <FileInput
                                 id="collectionBanner"     
                                 label="Collection Banner"
                                 fileExtensionText={allowMediaExtension.join(", ")}

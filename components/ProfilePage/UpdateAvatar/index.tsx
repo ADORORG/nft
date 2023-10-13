@@ -4,7 +4,7 @@ import { toast } from "react-hot-toast"
 import { validateFile, readSingleFileAsDataURL } from "@/utils/file"
 import { fetcher, getFetcherErrorMessage } from "@/utils/network"
 import { useMediaObjectUrl } from "@/hooks/media/useObjectUrl"
-import { FileDropzone } from "@/components/Form"
+import { FileInput } from "@/components/Form"
 import { MediaPreview } from "@/components/MediaPreview"
 import Button from "@/components/Button"
 import apiRoutes from "@/config/api.route"
@@ -75,7 +75,7 @@ export default function UpdateAvatar() {
                     />
                 }
                 <div className={!!profileMedia ? "hidden" : "h-[250px] w-[250px]"}>
-                    <FileDropzone
+                    <FileInput
                         id="profileMedia"
                         label="Profile Avatar"
                         fileExtensionText={allowMediaExtension.join(", ")}

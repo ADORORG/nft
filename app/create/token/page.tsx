@@ -1,4 +1,4 @@
-import CreateToken from "@/components/CreateForm/Token/CreateToken"
+import CreateToken from "@/components/CreateFormV2/Token"
 
 export default function Page() {
     return (

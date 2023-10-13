@@ -31,3 +31,45 @@ export function getFetcherErrorMessage(error: any): string {
     }
     return message
 }
+
+
+/**
+ * Read the progress of a fetch response
+ * @param response 
+ * @param setProgress 
+ */
+export function readFetchResponseProgress(response: Promise<Response>, setProgress: (value: number) => void) {
+    response.then(res => {
+        if (!res.ok) {
+            throw new Error("Network response was not ok")
+        }
+        const contentLength = res.headers.get("Content-Length")
+
+        if (contentLength === null) {
+            return
+        }
+
+        const expectedContentLength = parseInt(contentLength, 10)
+        let loadedContentLength = 0
+
+        const reader = res.body?.getReader()
+
+        function readChunkLength() {
+            reader?.read().then(({value, done}) => {
+                if (done) {
+                    return
+                }
+
+                loadedContentLength += value.length
+                const percentage = Math.round(loadedContentLength / expectedContentLength) * 100
+
+                setProgress(percentage)
+
+                readChunkLength()
+            })
+        }
+
+        readChunkLength()
+
+    }).catch(console.error)
+}

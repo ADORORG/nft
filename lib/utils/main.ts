@@ -52,6 +52,7 @@ export function isEthereumTransactionHash(hash: string): boolean {
  * @returns the shortened address
  */
 export function cutAddress(addr: string, prefix = 5, suffix = 4): string {
+	if (!addr) return '';
     const start = addr.substring(0, prefix);
     const end = addr.substring(addr.length - suffix);
     return `${start}...${end}`;
@@ -204,6 +205,12 @@ export function formatNumber(value: number | bigint | string, options: Record<st
 export function splitAtWhiteSpaceOrComma(str: string): Array<string> {
 	if (!str || typeof str !== 'string') return [];
 	return str.trim().split(/[,\s]+/).filter(Boolean); // split at comma or space
+}
+
+export function camelCaseToSentence(camelCaseStr: string) {
+	return camelCaseStr
+		.replace(/([A-Z])/g, ' $1')
+		.replace(/^./, (str) => str.toUpperCase())
 }
 
 /**

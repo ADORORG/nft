@@ -149,6 +149,48 @@ export function setEventData(_id: Types.ObjectId | string, updateData: Record<st
     .exec()
 }
 
+/**
+ * Get one event and update
+ * @param query 
+ * @param update 
+ * @param upsert 
+ * @returns 
+ */
+export function getAndUpdateEventByQuery(
+    query: Record<string, unknown>, 
+    update: Record<string, unknown>, 
+    upsert?: false
+  ) {
+    
+    const leanOption = {lean: true}
+    const populate = [
+        {
+            path: 'xcollection',
+            options: leanOption
+        },
+        {
+            path: 'contract',
+            options: leanOption
+        },
+        {
+            path: 'currency',
+            options: leanOption
+        },
+        {
+            path: 'owner',
+            select: '-email -roles -emailVerified -__v',
+            options: leanOption
+        }
+    ] satisfies PopulateOptions[]
+
+    return NftContractEventModel.findOneAndUpdate(query, update, {
+        new: true,
+        upsert
+    })
+    .populate(populate)
+    .lean()
+    .exec()
+  }
 
 /**
  * Count events by query filter

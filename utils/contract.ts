@@ -16,7 +16,7 @@ export function toRoyaltyPercent(value: number, base: number = 100) {
  * @returns 
  * @example fromRoyaltyPercent(4900, 100) // 49
  */
-export function fromRoyaltyPercent(value: number, base: number = 100) {
+export function fromRoyaltyPercent(value: number = 0, base: number = 100) {
     return Math.round(value / base)
 }
 

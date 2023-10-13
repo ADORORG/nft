@@ -1,7 +1,7 @@
 export { default as Input } from "./Input"
 export { default as InputField } from "./InputField"
 export { default as InputExtended } from "./InputExtended"
-export { default as FileDropzone } from "./FileDropzone"
+export { default as FileInput } from "./FileInput"
 export { default as TextArea } from "./TextArea"
 export { default as FloatingInput } from "./FloatingInput"
 export { default as SwitchCheckbox } from "./Switch"

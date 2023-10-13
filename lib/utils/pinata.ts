@@ -12,6 +12,15 @@ export async function uploadMediaToIPFS(fileData: any, fileId: string) {
 
 		return result.IpfsHash;
 	} catch (err: any) {
+		console.error('uploadMediaToIPFS', err)
+		throw new Error(err.message || err);
+	}
+}
+
+export async function unPinIPFS(hash: string) {
+	try {
+		await pinata.unpin(hash)
+	} catch (err: any) {
 		throw new Error(err.message || err);
 	}
 }

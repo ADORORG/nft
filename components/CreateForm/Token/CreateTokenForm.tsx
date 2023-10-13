@@ -10,7 +10,7 @@ import { validateFile } from "@/utils/file"
 import { replaceUrlParams } from "@/utils/main"
 import { useMediaObjectUrl } from "@/hooks/media/useObjectUrl"
 import {
-    FileDropzone,
+    FileInput,
     InputField,
     TextArea,
     SwitchCheckbox,
@@ -341,7 +341,7 @@ export default function CreateTokenForm(props: CreateTokenFormProps) {
                             />
                         }
                         <div className={tokenData?.media || tempMediaObjectUrl ? "hidden" : ""}>
-                            <FileDropzone
+                            <FileInput
                                 id="nftTokenMedia"
                                 label="Token Media"
                                 fileExtensionText={

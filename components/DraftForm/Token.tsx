@@ -1,19 +1,8 @@
 "use client"
 import type { PopulatedNftTokenType } from "@/lib/types/token"
-import { useState } from "react"
-import CreateTokenForm from "@/components/CreateForm/Token/CreateTokenForm"
-import { isHttpUrl } from "@/utils/main"
-import { IPFS_GATEWAY } from "@/lib/app.config"
+import CreateTokenForm from "@/components/CreateFormV2/Token/CreateTokenForm"
 
-export default function DraftTokenForm({ _draftToken }: { _draftToken: PopulatedNftTokenType }) {
-    const [draftToken, setDraftToken] = useState(_draftToken)
-
-    const updateTokenData = (tokenData: Partial<PopulatedNftTokenType>) => {
-        setDraftToken((prev) => ({
-            ...prev,
-            ...tokenData
-        }))
-    }
+export default function DraftTokenForm({ draftToken }: { draftToken: PopulatedNftTokenType }) {
 
     return (
         <div className="flex flex-col">
@@ -22,11 +11,9 @@ export default function DraftTokenForm({ _draftToken }: { _draftToken: Populated
             <CreateTokenForm
                 tokenData={{
                     ...draftToken,
-                    media: isHttpUrl(draftToken.media) ? draftToken.media : IPFS_GATEWAY + draftToken.media,
-                    royalty: draftToken.royalty || draftToken.contract?.royalty || 0,
+                    royalty: draftToken?.royalty || draftToken?.contract?.royalty || 0,
+                    quantity: draftToken.quantity || 1,
                 }}
-                enableMediaChange={false}
-                setTokenData={updateTokenData}
                 accountCollections={[{...draftToken.xcollection}]}
                 accountContracts={[{...draftToken.contract}]}
             />
