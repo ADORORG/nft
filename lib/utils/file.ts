@@ -64,7 +64,7 @@ export function isDataURL(image: string) {
   }
   
 
-export function createCustomReadableFromExistingReadable(existingReadable: Readable) {
+export function createCustomReadableFromExistingReadable(existingReadable: any /* Readable (throws on build) */) {
     const customReadable = new PassThrough()
   
     existingReadable.on('data', (chunk: any) => {
