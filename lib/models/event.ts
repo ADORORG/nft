@@ -21,6 +21,8 @@ const NftContractSaleEventSchema = new Schema<NftContractSaleEventType>({
     ethRaised: {type: Number, default: 0},
     owner: {type: String, ref: accounts, required: true, index: true},    
     partitionId: {type: Number, min: 1, required: function() { return ['generative_series', 'limited_edition', 'one_of_one'].includes((this as any).nftEdition) }},
+    draft: { type: Boolean },
+    
     // The following properties are passed to the contract when firstly deployed.
     // However, they are configurable by the contract owner.
     // When changed by the owner, these properties will be updated here but not in the contract.

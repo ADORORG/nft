@@ -31,6 +31,8 @@ export default interface NftContractSaleEventType {
      * Partitioned contracts: ERC721_Partitioned, ERC1155
     */
     partitionId?: number;
+    /** The status of this event. `false` if minted on chain. Otherwise true (not minted) */
+    draft: boolean;
     createdAt?: Date;
     updatedAt?: Date;
 
