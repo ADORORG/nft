@@ -19,7 +19,7 @@ async function mintOnSaleEvent(request: NextRequest, { params }: {params: {event
 
     // Connect to mongoose
     await mongooseConnectPromise
-    const mintEventData = await getEventById(params.eventDocId) as PopulatedNftContractEventType
+    const mintEventData = await getEventById({_id: params.eventDocId}) as PopulatedNftContractEventType
     if (!mintEventData) {
         throw new CustomRequestError('Invalid event data', 400)
     }

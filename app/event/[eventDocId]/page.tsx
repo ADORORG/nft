@@ -7,7 +7,7 @@ import { getEventById } from "@/lib/handlers"
 
 async function getServerSideData({eventDocId}: {eventDocId: string}) {
     await mongoooseConnectionPromise
-    return getEventById(eventDocId) as Promise<PopulatedNftContractEventType>
+    return getEventById({_id: eventDocId, draft: false}) as Promise<PopulatedNftContractEventType>
 }
 
 export default async function ViewSingleEvent({params}: {params: {eventDocId: string}}) {

@@ -52,7 +52,7 @@ export async function createNftContractEvent(contract: NftContractEventType) {
  * @param _id - Event objectId 
  * @returns a populated event data
  */
-export function getEventById(_id: Types.ObjectId | string) {
+export function getEventById(query: Record<string, unknown>) {
     const leanOption = {lean: true}
     const populate = [
         {
@@ -74,7 +74,7 @@ export function getEventById(_id: Types.ObjectId | string) {
         }
     ] satisfies PopulateOptions[]
 
-    return NftContractEventModel.findById(_id)
+    return NftContractEventModel.findOne(query)
     .populate(populate)
     .lean()
     .exec()
