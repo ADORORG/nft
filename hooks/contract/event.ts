@@ -275,7 +275,7 @@ export function useLimitedEditionSaleEvent() {
                 contractName,
                 contractSymbol,
                 baseURI,
-                BigInt(eventConfig.supply),
+                BigInt(eventConfig.supply as number),
                 {
                     feeRecipient: getAddress(eventConfig.feeRecipient),
                     royaltyReceiver: getAddress(eventConfig.royaltyReceiver),
@@ -339,7 +339,7 @@ export function useLimitedEditionSaleEvent() {
             address: getAddress(contractAddress),
             functionName: "createPartition",
             args: [
-                BigInt(eventConfig.supply),
+                BigInt(eventConfig.supply as number),
                 {
                     maxMintPerWallet: BigInt(eventConfig.maxMintPerWallet),
                     transferrable: eventConfig.transferrable,

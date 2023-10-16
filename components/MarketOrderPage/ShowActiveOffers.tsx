@@ -105,7 +105,7 @@ function ShowSingleActiveOffer(props: MarketOrderProp) {
         const {
             tokenId,
             contract: {
-                contractAddress: tokenContractAddress,
+                contractAddress: tokenContractAddress = "",
                 chainId: tokenContractChainId
             }
         } = props.order.token

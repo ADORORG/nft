@@ -68,7 +68,7 @@ export default function MarketListingCard({marketOrder, size = "md"}: MarketList
                             href={
                                 replaceUrlParams(appRoutes.viewToken, {
                                     tokenId: token?.tokenId?.toString() || "",
-                                    contractAddress: token.contract.contractAddress,
+                                    contractAddress: token.contract?.contractAddress || "",
                                     chainId: token.contract.chainId.toString()
                                 })
                             }

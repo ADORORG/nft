@@ -16,7 +16,7 @@ export default function ContractAvatar(props: ContractAvatarProps) {
             href={
                 replaceUrlParams(appRoutes.viewContract, {
                     chainId: props.contract.chainId.toString(),
-                    contractAddress: props.contract.contractAddress
+                    contractAddress: props.contract?.contractAddress || ""
                 })
             }
             className="flex gap-1 items-center"
@@ -29,7 +29,7 @@ export default function ContractAvatar(props: ContractAvatarProps) {
                 {...otherProps}
             />
             &nbsp;
-            <span>{cutAddress(props.contract.contractAddress)}</span>
+            <span>{cutAddress(props.contract?.contractAddress)}</span>
         </Link>
     )
 }

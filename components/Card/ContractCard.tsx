@@ -10,7 +10,7 @@ import appRoutes from "@/config/app.route"
 
 export default function ContractCard({ contract }: { contract: PopulatedContractType }) {
     const {
-        contractAddress,
+        contractAddress = "",
         label,
         // symbol,
         // nftEdition,

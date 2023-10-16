@@ -123,7 +123,7 @@ export default function AddTokenToMarket(props: TokenPageProps) {
         const {
             tokenId,
             contract: {
-                contractAddress: tokenContractAddress,
+                contractAddress: tokenContractAddress = "",
                 version: tokenContractVersion,
                 chainId: tokenContractChainId
             }

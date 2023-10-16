@@ -11,7 +11,7 @@ import MintCompleted from "./MintCompleted"
 export default function MintCard(props: EventMintProps) {
     const { eventData } = props
     const accountMintCount = useAccountMintCount({
-        contractAddress: eventData.contract.contractAddress, 
+        contractAddress: eventData.contract?.contractAddress as string, 
         partitionId: eventData.partitionId
     })
     const [quantity, setQuantity] = useState(1)
@@ -91,7 +91,7 @@ export default function MintCard(props: EventMintProps) {
                             {eventData.supplyMinted || 0} minted
                         </span>
                         <span>
-                            {eventData.supply > 0 ? `${eventData.supply} total` : "unlimited"}
+                            {(eventData?.supply && eventData.supply > 0) ? `${eventData.supply} total` : "unlimited"}
                         </span>
                     </div>
 
@@ -100,7 +100,7 @@ export default function MintCard(props: EventMintProps) {
                             nftEditionType.isOpenEdition ?
                             100
                             :
-                            ((eventData.supplyMinted || 0) / eventData.supply) * 100
+                            ((eventData.supplyMinted || 0) / (eventData.supply || 0)) * 100
                         }
                         variant="gradient"
                         size="sm"

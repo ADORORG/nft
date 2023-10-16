@@ -49,7 +49,7 @@ async function createNewContract(request: NextRequest, _: any, { user }: {user: 
             label: contract.label,
             symbol: contract.symbol,
             royalty: contract.royalty,
-            contractAddress: contract.contractAddress.toLowerCase(),
+            contractAddress: contract?.contractAddress?.toLowerCase(),
             chainId: contract.chainId,
             draft: false
         })

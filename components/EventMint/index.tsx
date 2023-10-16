@@ -186,7 +186,7 @@ export function EventMintCollapsedSmall(props: EventMintProps) {
                                 nftEditionType.isOpenEdition ?
                                 100
                                 :
-                                ((eventData.supplyMinted || 0) / eventData.supply) * 100
+                                ((eventData.supplyMinted || 0) / (eventData.supply || 0)) * 100
                             }
                             variant="gradient"
                             size="sm"
@@ -203,7 +203,7 @@ export function EventMintCollapsedSmall(props: EventMintProps) {
                             {
                                 eventData.end < Date.now() ?
                                 "Ended" :
-                                nftEditionType.isLimitedSupply && eventData.supplyMinted >= eventData.supply ?
+                                nftEditionType.isLimitedSupply && (eventData.supplyMinted || 0) >= (eventData.supply || 0) ?
                                 "Minted out" :
                                 `Collect (${
                                     parseFloat(eventData.price.toString()) <= 0 ?

@@ -81,13 +81,13 @@ export default function CreateTokenModal({ tokenData, setTokenData, done, mediaF
 
         if (isErc721) {
             writeResult = await erc721Method.mint({
-                contractAddress: tokenData.contract.contractAddress,
+                contractAddress: tokenData.contract?.contractAddress || "",
                 royalty: tokenData?.royalty || tokenData.contract.royalty || 0,
                 receiverAddress: address as string
             })
         } else {
             writeResult = await erc1155Method.create({
-                contractAddress: tokenData.contract.contractAddress,
+                contractAddress: tokenData.contract?.contractAddress || "",
                 initialSupply: tokenData?.quantity || 1,
                 royalty: tokenData?.royalty || tokenData.contract.royalty || 0,
                 receiverAddress: address as string

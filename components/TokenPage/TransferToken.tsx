@@ -12,6 +12,7 @@ import apiRoutes from "@/config/api.route"
 
 export default function TransferToken(props: TokenPageProps & { done?: () => void }) {
     const { token } = props
+    const { contractAddress: tokenContractAddress =  "" } = token.contract
     const [tokenAmount, setTokenAmount] = useState(1) // default to 1 erc721 token
     const [newOwner, setNewOwner] = useState("")
     const [transferring, setTransferring] = useState(false)
@@ -30,13 +31,13 @@ export default function TransferToken(props: TokenPageProps & { done?: () => voi
 
         if (isErc721) {
             await erc721Methods.transferFrom({
-                contractAddress: token.contract.contractAddress,
+                contractAddress: tokenContractAddress,
                 newOwner,
                 tokenId: token.tokenId as number
             })
         } else {
             await erc1155Methods.safeTransferFrom({
-                contractAddress: token.contract.contractAddress,
+                contractAddress: tokenContractAddress,
                 newOwner,
                 tokenId: token.tokenId as number,
                 amount: tokenAmount
@@ -85,7 +86,7 @@ export default function TransferToken(props: TokenPageProps & { done?: () => voi
 
             if (isErc721) {
                 const ownerAddress = await erc721Methods.ownerOf({
-                    contractAddress: token.contract.contractAddress,
+                    contractAddress: tokenContractAddress,
                     tokenId: token.tokenId as number,
                 })
                 isOwner = ownerAddress.toLowerCase() === session?.user?.address?.toLowerCase()
@@ -105,7 +106,7 @@ export default function TransferToken(props: TokenPageProps & { done?: () => voi
 
             } else {
                 const ownedAmount = await erc1155Methods.balanceOf({
-                    contractAddress: token.contract.contractAddress,
+                    contractAddress: tokenContractAddress,
                     tokenId: token.tokenId as number,
                     accountAddress: session?.user?.address
                 })

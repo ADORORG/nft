@@ -52,7 +52,7 @@ export function isEthereumTransactionHash(hash: string): boolean {
  * @param suffix - suffix length
  * @returns the shortened address
  */
-export function cutAddress(addr: string, prefix = 5, suffix = 4): string {
+export function cutAddress(addr?: string, prefix = 5, suffix = 4): string {
 	if (!addr) return '';
     const start = addr.substring(0, prefix);
     const end = addr.substring(addr.length - suffix);
