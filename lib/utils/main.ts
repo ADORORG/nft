@@ -29,7 +29,8 @@ export function typeGuarded<T>(obj: any, prop: string): obj is T {
 * @param address - '0x' prefixed Ethereum Address to validate
 * @returns
 */
-export function isEthereumAddress(address: string): boolean {
+export function isEthereumAddress(address?: string): boolean {
+	if (!address) return false;
     return (/^(0x){1}[0-9a-fA-F]{40}$/i.test(address));
 }
 

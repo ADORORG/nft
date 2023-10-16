@@ -8,7 +8,7 @@ export async function validateContract(document: any) {
         await ContractModel.validate(document)
         return true
     } catch(error) {
-        // console.log(error)
+        console.log(error)
         return false
     }
 }

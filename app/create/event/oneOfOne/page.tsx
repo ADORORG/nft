@@ -1,4 +1,4 @@
-import CreateEventForm from "@/components/CreateForm/Event"
+import CreateEventForm from "@/components/CreateFormV2/Event"
 
 export default function CreateOneOfOneEdition() {
 

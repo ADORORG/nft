@@ -11,24 +11,20 @@ export default function FileDropzone(props: FileDropzoneProps) {
 
     const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault()
-        e.stopPropagation()
         setDragging(true)
     }
 
     const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault()
-        e.stopPropagation()
         setDragging(false)
     }
 
     const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault()
-        e.stopPropagation()
     }
 
     const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault()
-        e.stopPropagation()
         setDragging(false)
 
         props.mediaHandler(e.dataTransfer.files)

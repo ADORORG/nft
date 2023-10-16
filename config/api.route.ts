@@ -90,6 +90,8 @@ const apiRoutes = {
     // V2 routes
     /** Create a new token */
     createTokenV2: "/api/v2/create/token",
+    /** Create nft minting event */
+    createEventV2: "/api/v2/create/event",
     /** Upload file for a token */
     uploadTokenMedia: "/api/v2/create/media/token/:docId",
     /** Upload file for a collection */

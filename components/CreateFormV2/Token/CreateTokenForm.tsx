@@ -16,10 +16,10 @@ export default function CreateTokenForm(props: CreateTokenFormProps) {
     }, [])
     const [screenIndex, setScreenIndex] = useState<0 | 1 | 2 | 3>(0) 
     const [nftTokenData, setNftTokenData] = useState(props.tokenData)
-     /** 
+    /** 
     * Progress steps
     */
-     const steps = {
+    const steps = {
         contractSelect: {
             title: "Contract & Collection",
             subtitle: "Select contract & collection",

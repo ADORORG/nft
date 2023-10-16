@@ -1,5 +1,5 @@
 import type { CreateTokenSubComponentProps } from "../types"
-import { useState } from "react"
+import { useState, useCallback } from "react"
 import toast from "react-hot-toast"
 import { getFetcherErrorMessage } from "@/utils/network"
 import { InputField, TextArea,SwitchCheckbox } from "@/components/Form"
@@ -21,7 +21,7 @@ export default function CreateTokenMetadata(props: CreateTokenSubComponentProps)
     const isErc721 = tokenData?.contract?.nftSchema === "erc721"
     const defaultAttributes = { trait_type: "", value: "" }
 
-    const handleNextScreen = async () => {
+    const handleNextScreen = useCallback(async () => {
         try {
             setLoading(true)
 
@@ -45,7 +45,7 @@ export default function CreateTokenMetadata(props: CreateTokenSubComponentProps)
         } finally {
             setLoading(false)
         }
-    }
+    }, [tokenData, saveTokenData, nextSreen])
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value, type } = e.target

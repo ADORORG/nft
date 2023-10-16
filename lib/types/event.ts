@@ -19,11 +19,11 @@ export default interface NftContractSaleEventType {
     /** Price of each nft token in this sale event in eth */
     price: number;
     /** Total supply of nft tokens in this sale event. Unlimited for Open Edition */
-    supply: number;
+    supply?: number;
     /** Total nft tokens minted so far in this sale event */
-    supplyMinted: number;
+    supplyMinted?: number;
     /** Total eth raised so far in this sale event */
-    ethRaised: number;
+    ethRaised?: number;
     /** The creator of this sale event */
     owner: EthereumAddress | AccountType; 
     /** Partition id of a limited edition
@@ -54,7 +54,7 @@ export default interface NftContractSaleEventType {
     /** Every tokens minted in this event will have this name */
     tokenName: string,
     /** Every tokens minted in this event will have this description */
-    tokenDescription?: string,
+    tokenDescription: string,
     /** Redeemable content if token has redeemable content */
     redeemableContent?: string;
     /** Is the nft token from this sale event transferrable? */
@@ -62,9 +62,9 @@ export default interface NftContractSaleEventType {
     /** Token attribute */
     attributes?: AttributeType[];
     /** Event Media. It could be an image/audio/video */
-    media: string;
+    media?: string;
     /** The type of media content. Examples video/mp4, image/png */
-    mediaType: string;
+    mediaType?: string;
      /** The smart contract for this sale event.
       * It handles minting and fee payment */
     contract: Types.ObjectId | ContractType;
