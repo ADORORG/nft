@@ -1,13 +1,15 @@
 import { PopulatedNftTokenType } from "@/lib/types/token"
 import { PopulatedContractType } from "@/lib/types/contract"
+import { PopulatedNftContractEventType } from "@/lib/types/event"
 import type { DraftDataType } from "@/components/DraftPage/types"
 import DraftTokenForm from "@/components/DraftForm/Token"
 import DraftContractForm from "@/components/DraftForm/Contract"
+import DraftEventForm from "@/components/DraftForm/Event"
 // server side
 import { getContractsByQuery, getTokensByQuery, getEventsByQuery } from '@/lib/handlers'
 import mongooseConnectPromise from '@/wrapper/mongoose_connect'
 
-// Do not revalidate this page
+// Do not revalidate this page within 24 hours
 export const revalidate = 86400
 
 async function getServerSideData({draftType, draftDocId}: {draftType: DraftDataType, draftDocId: string}) {
@@ -31,7 +33,7 @@ export default async function Page({params}: {params: { draftType: DraftDataType
 
     const draftMap = {
         token: <DraftTokenForm draftToken={draftData as PopulatedNftTokenType} />,
-        event: <div>event</div>,
+        event: <DraftEventForm draftEvent={draftData as PopulatedNftContractEventType} />,
         contract: <DraftContractForm draftContract={draftData as PopulatedContractType} />
     }
 

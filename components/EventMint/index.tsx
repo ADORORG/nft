@@ -240,8 +240,8 @@ export function EventMintCardSmall(props: EventMintProps) {
     )
 
     return (
-        <div>
-            <div className="flex flex-col w-[280px] bg-gray-100 dark:bg-gray-900 p-2">
+        <div className="w-[280px] h-[340px]">
+            <div className="flex flex-col bg-gray-100 dark:bg-gray-900 p-2">
                 <div className="flex self-center w-[280px] h-[270px] rounded">
                     <MediaPreview
                         src={`${IPFS_GATEWAY}${eventData.media}`}

@@ -41,7 +41,7 @@ export default function ContractDraft({address}: {address?: string}) {
                                     draftDocId: contract._id?.toString() as string
                                 })
                             }>
-                                <Button variant="gradient" className="rounded px-4">Edit</Button>
+                                <Button variant="gradient" className="rounded px-6">Edit</Button>
                             </Link>
                         </div>
                         <ContractCard 
