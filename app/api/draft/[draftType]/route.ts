@@ -17,6 +17,9 @@ async function getDraftData(_: NextRequest, { params }: {params: {draftType: Dra
         draftData = await getContractsByQuery({
             draft: true,
             owner: user._id,
+            // Only show private contracts.
+            // Other types are managed by Sale/Minting Event creation.
+            nftEdition: 'private'
         }, {limit: 10})
 
     } else if (draftType === 'token') {

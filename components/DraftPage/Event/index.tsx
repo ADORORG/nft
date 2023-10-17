@@ -7,7 +7,7 @@ import { useAccountDraftEvent } from "@/hooks/fetch/draft"
 import { replaceUrlParams } from "@/utils/main"
 import appRoutes from "@/config/app.route"
 
-export default function EventDraft({address}: {address?: string}) {
+export default function EventDraft({ address }: { address?: string }) {
     const { draftEvents, isLoading } = useAccountDraftEvent(address)
 
     if (isLoading) {
@@ -28,9 +28,9 @@ export default function EventDraft({address}: {address?: string}) {
 
     return (
         <div className="flex flex-wrap gap-4">
-            { 
+            {
                 draftEvents.map((event) => (
-                    <div 
+                    <div
                         key={event._id?.toString()}
                         className="w-[400px] h-[240px] relative"
                     >
@@ -43,8 +43,8 @@ export default function EventDraft({address}: {address?: string}) {
                             }>
                                 <Button variant="gradient" className="rounded px-6">Edit</Button>
                             </Link>
-                        </div>    
-                        <EventMintCollapsedSmall 
+                        </div>
+                        <EventMintCollapsedSmall
                             eventData={event}
                         />
                     </div>
