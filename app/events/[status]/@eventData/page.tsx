@@ -30,7 +30,7 @@ export default async function EventPage({params}: {params: {status: EventStatusT
     const saleEvents = await getServerSideData(currentTab)
 
     return (
-        <div className="flex flex-col flex-wrap md:flex-row items-center gap-6">
+        <div className="flex flex-col justify-center items-center md:justify-start md:flex-wrap md:flex-row mx-8 gap-6">
             {   
                 saleEvents.length > 0 ?
                 saleEvents.map((eventData) => (
