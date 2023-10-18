@@ -6,6 +6,9 @@ import { getMarketOrdersByQuery } from "@/lib/handlers"
 
 const ORDER_BATCH = 100
 
+// Revalidate every 30 seconds
+export const revalidate = 30000
+
 async function getServerSideData(pagination: number) {
     await mongoooseConnectionPromise
     return getMarketOrdersByQuery({status: "active"}, {

@@ -17,6 +17,10 @@ import {
   getEventsByQuery
 } from "@/lib/handlers"
 
+// Revalidate every 30 seconds
+export const revalidate = 30000
+
+
 async function getServerSideData() {
   await mongoooseConnectionPromise
   /**
