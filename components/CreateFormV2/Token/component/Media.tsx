@@ -2,7 +2,7 @@ import type { CreateTokenSubComponentProps } from "../types"
 import { useState } from "react"
 import { toast } from "react-hot-toast"
 import { fetcher, getFetcherErrorMessage } from "@/utils/network"
-import { validateFile, readSingleFileAsArrayBuffer } from "@/utils/file"
+import { validateFile, readSingleFileAsDataURL } from "@/utils/file"
 import { replaceUrlParams } from "@/utils/main"
 import { useMediaObjectUrl } from "@/hooks/media/useObjectUrl"
 import { MediaPreview } from "@/components/MediaPreview"
@@ -49,14 +49,18 @@ export default function CreateTokenMedia(props: CreateTokenSubComponentProps) {
                 nextSreen?.()
             } else if (tokenMedia && tokenData.draft && tokenData._id) {
                 // user wants to change the media
-                const FileBuffer = await new Promise<ArrayBuffer>(resolve => readSingleFileAsArrayBuffer(tokenMedia as Blob, resolve))
+                const FileData = await new Promise<string>(resolve => readSingleFileAsDataURL(tokenMedia as Blob, resolve))
+                
                 const response = await fetcher(replaceUrlParams(apiRoutes.uploadTokenMedia, {
                     docId: tokenData?._id?.toString() as string
                 }), {
                     method: "POST",
-                    body: FileBuffer,
+                    body: JSON.stringify({
+                        media: FileData,
+                        mediaType: tokenMedia.type
+                    }),
                     headers: {
-                        "Content-Type": tokenMedia.type
+                        "content-type": "application/json"
                     }
                 })
 

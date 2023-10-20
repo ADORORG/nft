@@ -6,12 +6,12 @@ import { NextResponse } from 'next/server'
 
 // Create a logger instance
 const logger = winston.createLogger({
-  level: 'info', // Set the log level (e.g., 'info', 'error', 'debug', 'warn')
+  level: 'error', // Set the log level (e.g., 'info', 'error', 'debug', 'warn')
   format: winston.format.json(), // Use JSON format for logs
   transports: [
     // Specify transports to output logs (e.g., console, file)
     new winston.transports.Console(),
-    new winston.transports.File({ filename: 'app.log' }) // Optional: Save logs to a file
+    // new winston.transports.File({ filename: 'app.log' }) // Optional: Save logs to a file
   ],
 })
 
@@ -77,7 +77,7 @@ export default function withRequestErrorr<T extends Function>(func: T) {
                 /** Mongoose Error code for duplicate entry is 11000
                  * Thus, we capped error to 599 to avoid http range error
                  */
-                const status = error.code < 599 || error.errorCode || 500
+                const status = error.code < 599 ? error.code : (error.errorCode || 500)
                 return NextResponse.json({
                     success: false,
                     message: getErrorMessage(error),
@@ -94,7 +94,7 @@ export default function withRequestErrorr<T extends Function>(func: T) {
             // log to error reporting service
             logger.error(error)
 
-            const status = error.code ?? error.errorCode ?? 500
+            const status = error.code < 599 ? error.code : (error.errorCode || 500)
             return NextResponse.json({
                 success: false,
                 message: getErrorMessage(error),
