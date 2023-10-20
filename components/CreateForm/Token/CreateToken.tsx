@@ -18,7 +18,7 @@ export default function CreateToken() {
     // const [nftTokenMedia, setNftTokenMedia] = useAtom(nftTokenMediaStore)
     // const [nftTokenData, setNftTokenData] = useAtom(nftTokenDataStore)
     const [nftTokenData, setNftTokenData] = useState<Partial<PopulatedNftTokenType>>({})
-    const targetContract = accountContracts?.find(c => c._id?.toString() === searchParams.get("contract"))
+    const targetContract = accountContracts?.find(c => c._id?.toString() === searchParams?.get("contract"))
     // console.log("nftTokenData", nftTokenData)
 
     const updateTokenData = (tokenData: Partial<PopulatedNftTokenType>) => {

@@ -12,7 +12,7 @@ export default function CreateToken() {
     const { session, isConnected } = useAuthStatus()
     const { accountContracts } = useAccountContract(session?.user.address)
     const { accountCollections } = useAccountCollection(session?.user.address)
-    const targetContract = accountContracts?.find(c => c._id?.toString() === searchParams.get("contract"))
+    const targetContract = accountContracts?.find(c => c._id?.toString() === searchParams?.get("contract"))
     // console.log("nftTokenData", nftTokenData)
 
     return (

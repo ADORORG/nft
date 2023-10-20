@@ -10,7 +10,7 @@ import ContractSearch from "./Contract"
 export default function SearchPage() {
     const [searchType, setSearchType] = useState<SearchType>("collection")
     const searchParams = useSearchParams()
-    const searchQuery = searchParams.get("q") || ""
+    const searchQuery = searchParams?.get("q") || ""
 
     const searchTabs = [
         {
