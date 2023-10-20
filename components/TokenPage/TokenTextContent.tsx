@@ -5,7 +5,7 @@ import { Eyeglasses } from "react-bootstrap-icons"
 export default function TokenTextContent(props: TokenPageProps) {
 
     return (
-        <div className="flex flex-col gap-4 mb-4">
+        <div className="flex flex-col gap-4 mb-1">
             <h1 className="leading-3 tracking-tight text-xl pt-4">
                 {props.token.name} #{props.token.tokenId}
             </h1>
@@ -18,6 +18,9 @@ export default function TokenTextContent(props: TokenPageProps) {
             </p>
             <div className="flex flex-row flex-wrap">
                 <TagList tags={props.token.tags} />
+            </div>
+            <div className="pt-3">
+                Token ID: {props.token.tokenId}
             </div>
         </div>
     )
