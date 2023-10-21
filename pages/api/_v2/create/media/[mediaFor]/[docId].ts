@@ -8,13 +8,13 @@ import { nextAuthOptions } from '@/app/api/auth/[...nextauth]/route'
 import mongooseConnectPromise from '@/wrapper/mongoose_connect'
 
 /* 
-* This @/app/api/v2/create/_media handles media upload for token, collection and event.
+* This @/app/api/v2/create/media handles media upload for token, collection and event.
 * However, there is a strict maximum size of upload 4.5MB for a serverless function.
 * We are using the the /pages/ api to bypass this limitation.
 */
-import collectionMedia from '@/app/api/v2/create/_media/[mediaFor]/[docId]/collection'
-import tokenMedia from '@/app/api/v2/create/_media/[mediaFor]/[docId]/token'
-import eventMedia from '@/app/api/v2/create/_media/[mediaFor]/[docId]/event'
+import collectionMedia from '@/app/api/v2/create/media/[mediaFor]/[docId]/collection'
+import tokenMedia from '@/app/api/v2/create/media/[mediaFor]/[docId]/token'
+import eventMedia from '@/app/api/v2/create/media/[mediaFor]/[docId]/event'
 
 type MediaForType = 'token' | 'collection' | 'event'
 

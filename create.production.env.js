@@ -23,7 +23,7 @@ function getENVs() {
                 return reject(stderr)
             }
     
-            console.info(`Matching envs: \n${stdout}`)
+            // console.info(`Matching envs: \n${stdout}`)
             return resolve(stdout)
         })
     })

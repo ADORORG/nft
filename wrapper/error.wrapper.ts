@@ -70,6 +70,7 @@ export default function withRequestErrorr<T extends Function>(func: T) {
 
         if (func.constructor && func.constructor.name === 'AsyncFunction') {
             return func(...restParams).catch((error: any) => {
+                console.log('error', error)
                 // send response
                 // log to error reporting service
                 logger.error(error)

@@ -37,7 +37,11 @@ async function createMediaForDocument(request: NextRequest, { params }: {params:
     } else {
         // Check if the doc has a previously pinned media and unpin
         if (validDoc.media) {
-            await unPinIPFS(validDoc.media)
+            try {
+                await unPinIPFS(validDoc.media)
+            } catch (error) {
+                // console.log('error', error)
+            }
         }
     }
 
