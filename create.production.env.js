@@ -11,6 +11,7 @@ async function main(envKeys = []) {
 
     if (envs.length) {
         const envContent = envs.map(([key, value]) => envKeys.includes(key) ? `${key}=${value}\n` : '')
+        console.log('envContent>>>', envContent)
         fs.writeFileSync('.env.production', envContent.join(''), 'utf-8')
         console.info('.env.production created!')
     } else {
