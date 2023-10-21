@@ -7,5 +7,6 @@ COPY package.json yarn.lock /app/
 RUN yarn install
 COPY . /app
 EXPOSE 3000
+RUN yarn create-prod-env
 RUN yarn build
 CMD ["yarn", "start"]

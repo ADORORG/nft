@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "dev-custom": "NODE_OPTIONS='--max-old-space-size=4096' next dev",
-    "dev-test-with-env": "node create.production.env.js && yarn dev-custom",
+    "dev-test-with-env": "yarn dev-custom",
+    "create-prod-env": "node create.production.env.js",
     "dev": "next dev",
-    "build": "node create.production.env.js && next build",
+    "build": "yarn create-prod-env && next build",
     "start": "next start",
     "lint": "next lint",
     "test": "jest"
