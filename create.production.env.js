@@ -31,12 +31,11 @@ function getENVs() {
 
 async function main(envKeys = []) {
     const envs = await getENVs()
-    console.log('process.env.DB_HOST>>>', process.env.DB_HOST)
 
     if (envs.length) {
         const envNeeded = envs.split("\n").filter(env => envKeys.includes(env.split('=')[0]))
         console.log('envContent>>>', envNeeded.join('\n'))
-        fs.writeFileSync('.env.production', envContent.join(''), 'utf-8')
+        fs.writeFileSync('.env.production', envNeeded.join('\n'), 'utf-8')
         console.info('.env.production created!', envNeeded.length)
     } else {
         console.info('No ENVs found')
@@ -60,6 +59,4 @@ main([
     'NEXT_PUBLIC_CONTRACT_BASE_URI',
     'NEXT_PUBLIC_ALCHEMY_ID',
     'NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID',
-    'QT_ACCESSIBILITY',
-    'GNOME_TERMINAL_SERVICE'
 ])
