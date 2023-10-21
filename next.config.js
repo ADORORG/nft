@@ -90,7 +90,7 @@ const nextConfig = {
     * Reference env variables here.
     * This is required if running on AWS Amplify
     */
-    env: {
+    /* env: {
         DB_HOST: process.env.DB_HOST,
         
         NEXTAUTH_URL: process.env.NEXTAUTH_URL,
@@ -110,7 +110,7 @@ const nextConfig = {
         NEXT_PUBLIC_CONTRACT_BASE_URI: process.env.NEXT_PUBLIC_CONTRACT_BASE_URI,
         NEXT_PUBLIC_ALCHEMY_ID: process.env.NEXT_PUBLIC_ALCHEMY_ID,
         NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID,
-    }
+    } */
 }
 
 module.exports = nextConfig
