@@ -8,10 +8,10 @@ const fs = require('fs')
 
 async function main(envKeys = []) {
     const envs = Array.from(Object.entries(process.env))
-
+    console.log('process.env.DB_HOST>>>', process.env.DB_HOST)
     if (envs.length) {
-        const envContent = envs.map(([key, value]) => envKeys.includes(key) ? `${key}=${value}\n` : '')
-        console.log('envContent>>>', envContent)
+        const envContent = envs.map(([key, value]) => envKeys.includes(key) ? `${key}=${value}\n` : '').filter(Boolean)
+        console.log('envContent>>>', envContent.join(''))
         fs.writeFileSync('.env.production', envContent.join(''), 'utf-8')
         console.info('.env.production created!')
     } else {
