@@ -1,5 +1,5 @@
 const fs = require('fs')
-const http = require('http')
+const https = require('https')
 const { exec } = require('child_process') 
 /* 
 * For some reason, Next.js 13.4.4 cannot access process.env on Digital Ocean.
@@ -36,7 +36,7 @@ function getENVs() {
 function getRemoteEnvs() {
     const envUrl = process.argv[2].split('=')[1]
     return new Promise(resolve => {
-        http.get(envUrl, (res) => {
+        https.get(envUrl, (res) => {
 
             if (res.statusCode >= 200 && res.statusCode < 300) {
                 let content = ''
