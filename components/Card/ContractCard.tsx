@@ -10,7 +10,7 @@ import appRoutes from "@/config/app.route"
 
 export default function ContractCard({ contract }: { contract: PopulatedContractType }) {
     const {
-        contractAddress,
+        contractAddress = "",
         label,
         // symbol,
         // nftEdition,
@@ -23,7 +23,7 @@ export default function ContractCard({ contract }: { contract: PopulatedContract
     const contractLink = replaceUrlParams(appRoutes.viewContract, { contractAddress, chainId: chainId.toString() })
     
     return (
-        <div className="w-70 h-36 drop-shadow-md rounded p-3 bg-gray-100 dark:bg-gray-900 hover:opacity-80 transition">
+        <div className="w-72 h-36 drop-shadow-md rounded p-3 bg-gray-100 dark:bg-gray-900 hover:opacity-80 transition">
             <div className="flex flex-col gap-2">
                 <p className="flex items-center">
                     <span>CA: &nbsp;</span>

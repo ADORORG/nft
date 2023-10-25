@@ -31,7 +31,7 @@ export default function MintButton({eventData, quantity, done}: EventMintProps &
         let result: OnchainMintResponse[] = []
         const mintData = {
             partitionId: eventData.partitionId as number,
-            contractAddress: eventData.contract.contractAddress,
+            contractAddress: eventData.contract?.contractAddress || "",
             quantity,
             totalAmount: quantity * eventData.price,
             receiverAddress: session?.user?.address as string,
@@ -87,7 +87,7 @@ export default function MintButton({eventData, quantity, done}: EventMintProps &
         }
     }
 
-    const mintedOut = ((nftEditionType.isLimitedSupply || nftEditionType.isOneOfOne) && eventData.supplyMinted >= eventData.supply)
+    const mintedOut = ((nftEditionType.isLimitedSupply || nftEditionType.isOneOfOne) && (eventData?.supplyMinted || 0) >= (eventData?.supply || 0))
     return (
         <div>
             {

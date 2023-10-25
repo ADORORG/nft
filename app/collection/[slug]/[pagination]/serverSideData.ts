@@ -15,7 +15,10 @@ export default async function getServerSideData({slug, pageNumber}: {slug: strin
     let collectionTokens, collectionTokensCount;
     if (collection && pageNumber) {
         [collectionTokens, collectionTokensCount] = await Promise.all([
-            getTokensByQuery({xcollection: collection._id}, {
+            getTokensByQuery({
+                xcollection: collection._id,
+                tokenId: { $exists: true, $ne: null },
+            }, {
                 limit: TOKEN_BATCH, 
                 sort: {createdAt: -1},
                 skip: TOKEN_BATCH * (pageNumber - 1)

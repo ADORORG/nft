@@ -20,7 +20,7 @@ export default function Stepper(props: StepperProps) {
                 steps.map((step, index) => (
                     <li className="mb-10 ml-6" key={index}>            
                         <span 
-                            className={`${step.done ? "bg-purple-200 dark:bg-purple-900" : "bg-gray-100 dark:bg-gray-700"} absolute flex items-center justify-center w-8 h-8 rounded-full -left-4 ring-1 ring-white dark:ring-gray-400`}>
+                            className={`${step.done ? "bg-secondary-200 dark:bg-secondary-900" : "bg-gray-100 dark:bg-gray-700"} ${step.active ? "ring-secondary-600 dark:ring-secondary-400" : "ring-gray-600 dark:ring-gray-400"} ring-1 absolute flex items-center justify-center w-8 h-8 rounded-full -left-4`}>
                                 {
                                     step.done 
                                     ?

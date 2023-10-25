@@ -1,7 +1,6 @@
 import type EventMintProps from "../types"
 import Link from "next/link"
 import { RocketTakeoff } from "react-bootstrap-icons"
-import { useRouter } from "next/navigation"
 import { replaceUrlParams } from "@/utils/main"
 import { useAuthStatus } from "@/hooks/account"
 import Button from "@/components/Button"
@@ -9,7 +8,6 @@ import ConfettiAnimation from "@/components/Confetti"
 import appRoutes from "@/config/app.route"
 
 export default function MintCompleted(props: EventMintProps) {
-    const router = useRouter()
     const { session } = useAuthStatus()
 
     return (

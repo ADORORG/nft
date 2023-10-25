@@ -41,7 +41,7 @@ async function setProfilePic(request: NextRequest, _: {}, { user }: {user: Accou
             throw new CustomRequestError('Token owner mismatch')
         }
 
-        profileMedia = token.media
+        profileMedia = token.media || ""
         profileMediaType = token.mediaType
 
     } else {

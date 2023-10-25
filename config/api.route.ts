@@ -47,6 +47,12 @@ const apiRoutes = {
     searchContract: "/api/search/contract",
     /** Search nft contract event */
     searchEvent: "/api/search/event",
+    /** Get draft token */
+    getDraftToken: "/api/draft/token",
+    /** Get draft contract */
+    getDraftContract: "/api/draft/contract",
+    /** Get draft event */
+    getDraftEvent: "/api/draft/event",
     /** Get a single collection */
     getCollectionBySlug: "/api/collection/slug/:slug",
     /** Get account collections by owners' address */
@@ -80,6 +86,18 @@ const apiRoutes = {
     addNewCurrency: "/api/currency/add",
     /** Update a currency. Substituting the currency _id for 'currencyDocId' in params  */
     updateCurrency: "/api/currency/update/:currencyDocId",
+
+    // V2 routes
+    /** Create a new token */
+    createTokenV2: "/api/v2/create/token",
+    /** Create nft minting event */
+    createEventV2: "/api/v2/create/event",
+    /** Upload file for a token */
+    uploadTokenMedia: "/api/v2/create/media/token/:docId",
+    /** Upload file for a collection */
+    uploadCollectionMedia: "/api/v2/create/media/collection/:docId",
+    /** Upload file for a event */
+    uploadEventMedia: "/api/v2/create/media/event/:docId",
 }
 
 export default apiRoutes

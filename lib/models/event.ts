@@ -20,7 +20,9 @@ const NftContractSaleEventSchema = new Schema<NftContractSaleEventType>({
     supplyMinted: {type: Number, default: 0},
     ethRaised: {type: Number, default: 0},
     owner: {type: String, ref: accounts, required: true, index: true},    
-    partitionId: {type: Number, min: 1, required: function() { return ['generative_series', 'limited_edition', 'one_of_one'].includes((this as any).nftEdition) }},
+    partitionId: {type: Number, min: 1, required: function() { return ['generative_series', 'limited_edition', 'one_of_one'].includes((this as any).nftEdition) && !(this as any).draft }},
+    draft: { type: Boolean },
+    
     // The following properties are passed to the contract when firstly deployed.
     // However, they are configurable by the contract owner.
     // When changed by the owner, these properties will be updated here but not in the contract.
@@ -35,10 +37,10 @@ const NftContractSaleEventSchema = new Schema<NftContractSaleEventType>({
     tokenDescription: {type: String, required: true},
     redeemableContent: String,
     transferrable: {type: Boolean, default: true},
-    media: {type: String, required: true},
-    mediaType: {type: String, required: true},
+    media: {type: String},
+    mediaType: {type: String},
     attributes: {type: Array, default: []},
-    xcollection: {type: Schema.Types.ObjectId, ref: xcollections, index: true}, // 'collection' is a reserved keyword in Mongoose
+    xcollection: {type: Schema.Types.ObjectId, ref: xcollections, index: true, required: true}, // 'collection' is a reserved keyword in Mongoose
     contract: {type: Schema.Types.ObjectId, ref: contracts, required: true, index: true},
     // The currency accepted for this sale event
     currency: {type: Schema.Types.ObjectId, ref: currencies, required: true},

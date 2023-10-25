@@ -3,13 +3,12 @@ import type { EthereumAddress } from '../types/common'
 import type ContractType from '../types/contract'
 import ContractModel from '../models/contract'
 
-
 export async function validateContract(document: any) {
     try {
         await ContractModel.validate(document)
         return true
     } catch(error) {
-        // console.log(error)
+        console.log(error)
         return false
     }
 }
@@ -122,7 +121,7 @@ export async function getOrCreateContractByQuery(query: Record<string, unknown>,
     ] satisfies PopulateOptions[]
 
     /**
-     * Mongoose only provide option to validate each field in an update
+     * Mongoose only provide option to validate each field in an update.
      * However, we need to validate the whole document that'll be inserted because of upsert:true
      * To validate, we merge the query and update then validate
      * If validation is passed, we can upsert otherwise, we'll attempt to perform only update

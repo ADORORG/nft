@@ -13,7 +13,11 @@ export default function FeaturedEvents(props: {events:PopulatedNftContractEventT
                 <div className="flex flex-wrap justify-center gap-6">
                     {
                         props.events.map((eventData) => (
-                            <EventMintCardSmall key={eventData._id?.toString()} eventData={eventData} />
+                            <div 
+                                className="my-4"
+                                key={eventData._id?.toString()}>
+                                <EventMintCardSmall eventData={eventData} />
+                            </div>
                         ))
                     }
                 </div>

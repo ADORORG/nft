@@ -1,6 +1,11 @@
 import { useCallback } from "react"
 import { usePublicClient, useWalletClient, useAccount } from "wagmi"
-import { getAddress, decodeEventLog } from "viem"
+import { getAddress, decodeEventLog, type Abi } from "viem"
+import { useAuthStatus } from "@/hooks/account"
+import { useContractChain } from "@/hooks/contract"
+import { getNftContractBaseURI } from "@/config/api.route"
+import { ERC1155_BYTECODE } from "@/solidity/erc1155.compiled"
+import { ERC721_BYTECODE } from "@/solidity/erc721.compiled"
 import erc721Abi from "@/abi/erc721"
 import erc1155Abi from "@/abi/erc1155"
 
@@ -196,5 +201,96 @@ export function useERC1155() {
         mint,
         safeTransferFrom,
         balanceOf
+    }
+}
+
+export function useNftDeployer({chainId}: {chainId: number}) {
+    const { address } = useAuthStatus()
+    const { ensureContractChainAsync } = useContractChain({chainId})
+    const { data: walletClicent } = useWalletClient()
+    const publicClient = usePublicClient()
+
+    const _deployNftContract = useCallback(async ({
+        nftBytecode, 
+        nftAbi, 
+        nftVersion,
+        label,
+        symbol,
+        royalty
+    }: {
+        nftBytecode: `0x${string}`, 
+        nftAbi: Abi, 
+        nftVersion: string,
+        label: string,
+        symbol: string,
+        royalty: number
+    }) => {
+        const deployTxhash = await walletClicent?.deployContract({
+            abi: nftAbi,
+            account: address,
+            bytecode: nftBytecode,
+            args: [
+                label,
+                symbol,
+                getNftContractBaseURI(chainId),
+                BigInt(royalty)
+            ]
+        })
+
+        const transactionReceipt = await publicClient.waitForTransactionReceipt({
+            hash: deployTxhash as any
+        })
+        
+        return {
+            version: nftVersion,
+            chainId: chainId,
+            owner: transactionReceipt.from.toLowerCase(),
+            contractAddress: transactionReceipt.contractAddress as string
+        }
+    }, [address, chainId, publicClient, walletClicent])
+
+    const deployNftContract = useCallback(async ({
+        contractSymbol,
+        contractLabel,
+        contractRoyalty,
+        contractSchema,
+        contractVersion
+    }: {
+        contractSymbol: string,
+        contractLabel: string,
+        contractRoyalty: number,
+        contractSchema: string,
+        contractVersion: string
+    }) => {
+        await ensureContractChainAsync()
+        const isErc721 = contractSchema.toLowerCase() === "erc721"
+
+        let result
+
+        if (isErc721) {
+            result = await _deployNftContract({ 
+                nftAbi: erc721Abi,
+                nftBytecode: ERC721_BYTECODE,
+                nftVersion: contractVersion,
+                label: contractLabel,
+                symbol: contractSymbol,
+                royalty: contractRoyalty
+            })
+        } else {
+            result = await _deployNftContract({
+                nftAbi: erc1155Abi,
+                nftBytecode: ERC1155_BYTECODE,
+                nftVersion: contractVersion,
+                label: contractLabel,
+                symbol: contractSymbol,
+                royalty: contractRoyalty
+            })
+        }
+
+        return result
+    }, [_deployNftContract, ensureContractChainAsync])
+
+    return {
+        deployNftContract
     }
 }

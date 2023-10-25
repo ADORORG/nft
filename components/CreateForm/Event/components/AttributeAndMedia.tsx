@@ -2,7 +2,7 @@ import type { EventDataFormProps } from "../types"
 import type { AttributeType } from "@/lib/types/common"
 import { toast } from "react-hot-toast"
 import { validateFile } from "@/utils/file"
-import { FileDropzone } from "@/components/Form"
+import { FileInput } from "@/components/Form"
 import AttributeForm from "@/components/AttributeForm"
 import Bordered from "@/components/Bordered"
 import MediaPreview from "@/components/MediaPreview"
@@ -56,7 +56,7 @@ export default function AttributeAndMedia(props: EventDataFormProps) {
                     />
                 }
                 <div className={!!props.tempMediaObjectUrl ? "hidden h-0" : ""}>
-                    <FileDropzone
+                    <FileInput
                         id="eventMedia"
                         label="Event Media"
                         fileExtensionText={allowMediaExtension.join(", ")}

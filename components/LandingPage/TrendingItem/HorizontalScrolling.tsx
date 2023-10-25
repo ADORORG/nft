@@ -37,6 +37,7 @@ const CardList = () => {
       token: {
           tokenId: 1,
           supply: 1,
+          draft: false,
           contract: {
             label: "some contract",
             symbol: "SOME",
@@ -45,7 +46,8 @@ const CardList = () => {
             chainId: 5,
             nftSchema: "erc721",
             royalty: 10,
-            version: "1"
+            version: "1",
+            draft: false,
           },
           name: "NFT Name",
           media: `http://localhost:3000/test-images/image${imgNumber}.png`,

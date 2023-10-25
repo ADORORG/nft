@@ -261,8 +261,8 @@ export function useAuctionOrder() {
                 functionName: "createBidETH",
                 value: bigOrderPrice,
                 args: [
-                    getAddress(token.contract.contractAddress),
-                    BigInt(token.tokenId),
+                    getAddress(token.contract?.contractAddress || ""),
+                    BigInt(token.tokenId as number),
                 ]
             })
         } else {
@@ -281,8 +281,8 @@ export function useAuctionOrder() {
                 abi: marketplaceAbi,
                 functionName: "createBidERC20",
                 args: [
-                    getAddress(token.contract.contractAddress),
-                    BigInt(token.tokenId),
+                    getAddress(token.contract.contractAddress || ""),
+                    BigInt(token.tokenId as number),
                     bigOrderPrice
                 ]
             })
@@ -319,8 +319,8 @@ export function useAuctionOrder() {
             abi: marketplaceAbi,
             functionName: "finaliseAuction",
             args: [
-                getAddress(token.contract.contractAddress),
-                BigInt(token.tokenId),
+                getAddress(token.contract?.contractAddress || ""),
+                BigInt(token.tokenId as number),
             ]
         })
 
@@ -374,8 +374,8 @@ export function useFixedPriceOrder(order: PopulatedMarketOrderType) {
                 functionName: "atomicBuyETH",
                 value: bigOrderPrice,
                 args: [
-                    getAddress(order.token.contract.contractAddress),
-                    BigInt(order.token.tokenId),
+                    getAddress(order.token.contract?.contractAddress || ""),
+                    BigInt(order.token.tokenId as number),
                     onchainOrderData,
                     order.orderSignature as any,
                     order.approvalSignature as any
@@ -400,8 +400,8 @@ export function useFixedPriceOrder(order: PopulatedMarketOrderType) {
                 abi: marketplaceAbi,
                 functionName: "atomicBuyERC20",
                 args: [
-                    getAddress(order.token.contract.contractAddress),
-                    BigInt(order.token.tokenId),
+                    getAddress(order.token.contract?.contractAddress || ""),
+                    BigInt(order.token.tokenId as number),
                     onchainOrderData,
                     order.orderSignature as any,
                     order.approvalSignature as any
@@ -439,8 +439,8 @@ export function useFixedPriceOrder(order: PopulatedMarketOrderType) {
                 abi: marketplaceAbi,
                 functionName: "buyWithERC20",
                 args: [
-                    getAddress(order.token.contract.contractAddress),
-                    BigInt(order.token.tokenId),
+                    getAddress(order.token.contract?.contractAddress || ""),
+                    BigInt(order.token.tokenId as number),
                 ]
             })
 
@@ -455,8 +455,8 @@ export function useFixedPriceOrder(order: PopulatedMarketOrderType) {
                 functionName: "buyWithETH",
                 value: bigOrderPrice,
                 args: [
-                    getAddress(order.token.contract.contractAddress),
-                    BigInt(order.token.tokenId),
+                    getAddress(order.token.contract?.contractAddress || ""),
+                    BigInt(order.token.tokenId as number),
                 ]
             })
 
@@ -500,8 +500,8 @@ export function useFixedPriceOrder(order: PopulatedMarketOrderType) {
                 abi: marketplaceAbi,
                 functionName: "executeOfferWithPermitERC20",
                 args: [
-                    getAddress(order.token.contract.contractAddress),
-                    BigInt(order.token.tokenId),
+                    getAddress(order.token.contract?.contractAddress || ""),
+                    BigInt(order.token.tokenId as number),
                     onchainOrderData,
                     order.orderSignature as any,
                     approvalSignature as any,
@@ -520,8 +520,8 @@ export function useFixedPriceOrder(order: PopulatedMarketOrderType) {
                 abi: marketplaceAbi,
                 functionName: "executeOfferERC20",
                 args: [
-                    getAddress(order.token.contract.contractAddress),
-                    BigInt(order.token.tokenId),
+                    getAddress(order.token.contract?.contractAddress || ""),
+                    BigInt(order.token.tokenId as number),
                     onchainOrderData,
                     order.orderSignature as any,
                 ]
@@ -562,8 +562,8 @@ export function useMarketOffer() {
             marketplaceContractName: marketplaceName,
             marketplaceContractVersion: marketplaceVersion,
             tokenContractChainId: order.token.contract.chainId,
-            tokenContractAddress: order.token.contract.contractAddress,
-            tokenId: order.token.tokenId,
+            tokenContractAddress: order.token.contract?.contractAddress as string,
+            tokenId: order.token.tokenId as number,
             paymentToken: order.currency.address,
             bigOrderPrice,
             signatureDeadline: order.orderDeadline as number

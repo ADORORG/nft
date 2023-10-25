@@ -24,6 +24,10 @@ const appRoutes = {
     search: "/search",
     /** View, update, and verify user profile */
     setProfile: "/profile/",
+    /** Explore account draft for tokens, contract and events */
+    viewDraft: "/drafts",
+    /** Edit or publish a draft document*/
+    editDraft: "/draft/:draftType/:draftDocId",
     // setProfile: "/account/setProfile",
     /** Explore account address */
     viewAccount: "/account/:address",

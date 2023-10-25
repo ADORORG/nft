@@ -1,7 +1,7 @@
 "use client"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { CodeSlash, FileEarmarkPlus, FolderPlus, UiRadiosGrid } from "react-bootstrap-icons"
+import { CodeSlash, FileEarmarkPlus, FolderPlus, UiRadiosGrid, Save } from "react-bootstrap-icons"
 import { useAccount } from "wagmi"
 import { useAccountContract } from "@/hooks/fetch"
 import { WithoutCheckbox } from "@/components/SelectCard"
@@ -49,6 +49,12 @@ export default function RenderCreateOption() {
             icon: <CodeSlash className="h-6 w-6 my-2" />,
             link: appRoute.createErc721,
         },
+        {
+            title: "My Draft",
+            subtitle: "View your draft items",
+            icon: <Save className="h-6 w-6 my-2" />,
+            link: appRoute.viewDraft,
+        },
     ]
 
     const gotoRoute = (link: string) => {
@@ -71,8 +77,8 @@ export default function RenderCreateOption() {
                             isConnected &&
                             accountContracts &&
                             accountContracts.length &&
-                            // Only show contracts that are private edition or not edition
-                            accountContracts.filter(contract => !contract.nftEdition || contract.nftEdition === "private")
+                            // Only show contracts that are private edition or not edition and has contract address (not draft)
+                            accountContracts.filter(contract => contract.contractAddress &&  (!contract.nftEdition || contract.nftEdition === "private"))
                             .map(contract => (
                                 <Select.Option 
                                     key={contract._id?.toString()}

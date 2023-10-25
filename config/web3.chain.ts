@@ -1,17 +1,17 @@
 import {
     mainnet,
-    polygon,
-    optimism,
-    // goerli,
+    // polygon,
+    // optimism,
     // bsc,
+    // goerli,
     // baseGoerli,
     type Chain
 } from "wagmi/chains"
 
 const supportedChains = [
     mainnet, 
-    polygon, 
-    optimism, 
+    // polygon, 
+    // optimism, 
     /** Add base mainnet */
     {
         id: 8453,

@@ -186,7 +186,7 @@ export function EventMintCollapsedSmall(props: EventMintProps) {
                                 nftEditionType.isOpenEdition ?
                                 100
                                 :
-                                ((eventData.supplyMinted || 0) / eventData.supply) * 100
+                                ((eventData.supplyMinted || 0) / (eventData.supply || 0)) * 100
                             }
                             variant="gradient"
                             size="sm"
@@ -203,7 +203,7 @@ export function EventMintCollapsedSmall(props: EventMintProps) {
                             {
                                 eventData.end < Date.now() ?
                                 "Ended" :
-                                nftEditionType.isLimitedSupply && eventData.supplyMinted >= eventData.supply ?
+                                nftEditionType.isLimitedSupply && (eventData.supplyMinted || 0) >= (eventData.supply || 0) ?
                                 "Minted out" :
                                 `Collect (${
                                     parseFloat(eventData.price.toString()) <= 0 ?
@@ -240,8 +240,8 @@ export function EventMintCardSmall(props: EventMintProps) {
     )
 
     return (
-        <div>
-            <div className="flex flex-col w-[280px] bg-gray-100 dark:bg-gray-900 p-2">
+        <div className="w-[280px] h-[340px]">
+            <div className="flex flex-col bg-gray-100 dark:bg-gray-900 p-2">
                 <div className="flex self-center w-[280px] h-[270px] rounded">
                     <MediaPreview
                         src={`${IPFS_GATEWAY}${eventData.media}`}

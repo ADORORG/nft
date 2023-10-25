@@ -6,14 +6,15 @@ import { NFT_CONTRACT_SCHEMA, NFT_CONTRACT_EDITION } from '../types/common'
 const { contracts, accounts } = dbCollections;
 
 const ContractSchema = new Schema<ContractType>({
-    contractAddress: {type: String, required: true, index: true, lowercase: true},
+    contractAddress: {type: String, index: true, lowercase: true, required: function() { return !(this as any).draft }},
+    draft: { type: Boolean, required: true},
     chainId: {type: Number, required: true, min: 0},
     royalty: {type: Number, default: 0},
     royaltyReceiver: {type: String},
     nftSchema: {type: String, required: true, enum: NFT_CONTRACT_SCHEMA, lowercase: true},
     nftEdition: {type: String, required: true, enum: NFT_CONTRACT_EDITION, default: 'private', lowercase: true}, 
     // Required if not an imported contract
-    version: {type: String, required: function() { return !(this as any).imported }},
+    version: {type: String, required: function() { return !((this as any).imported || (this as any).draft) }},
     imported: {type: Boolean, default: false},
     owner: {type: String, ref: accounts, required: true, index: true},
     label: String,

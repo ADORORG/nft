@@ -15,7 +15,7 @@ export function getSettledPromiseValue(settledPromised: any, altValue: any = [])
 }
 
 /**
- * Check that 
+ * Check that prop is in object
  * @param obj 
  * @param prop 
  * @returns 
@@ -29,7 +29,8 @@ export function typeGuarded<T>(obj: any, prop: string): obj is T {
 * @param address - '0x' prefixed Ethereum Address to validate
 * @returns
 */
-export function isEthereumAddress(address: string): boolean {
+export function isEthereumAddress(address?: string): boolean {
+	if (!address) return false;
     return (/^(0x){1}[0-9a-fA-F]{40}$/i.test(address));
 }
 
@@ -51,7 +52,8 @@ export function isEthereumTransactionHash(hash: string): boolean {
  * @param suffix - suffix length
  * @returns the shortened address
  */
-export function cutAddress(addr: string, prefix = 5, suffix = 4): string {
+export function cutAddress(addr?: string, prefix = 5, suffix = 4): string {
+	if (!addr) return '';
     const start = addr.substring(0, prefix);
     const end = addr.substring(addr.length - suffix);
     return `${start}...${end}`;
@@ -167,6 +169,10 @@ export function onlyAlphaNumeric(str: string) {
 	return str.replace(/[^a-zA-Z0-9]/g, '');
 }
 
+export function onlyAlphaNumericAndWhiteSpace(str: string) {
+	return str.replace(/[^a-zA-Z0-9\s]/g, '');
+}
+
 /**
  * Format a number to
  * @param value The number to format
@@ -200,6 +206,12 @@ export function formatNumber(value: number | bigint | string, options: Record<st
 export function splitAtWhiteSpaceOrComma(str: string): Array<string> {
 	if (!str || typeof str !== 'string') return [];
 	return str.trim().split(/[,\s]+/).filter(Boolean); // split at comma or space
+}
+
+export function camelCaseToSentence(camelCaseStr: string) {
+	return camelCaseStr
+		.replace(/([A-Z])/g, ' $1')
+		.replace(/^./, (str) => str.toUpperCase())
 }
 
 /**

@@ -6,7 +6,7 @@ export default interface NftContractType /* extends Partial<Document> */ {
     /** Contract document _id */
     _id?: Types.ObjectId;
     /** On-chain contract address */
-    contractAddress: EthereumAddress;
+    contractAddress?: EthereumAddress;
     /** Contract Chain id */
     chainId: number;
     /** Default contract royalty */
@@ -28,6 +28,8 @@ export default interface NftContractType /* extends Partial<Document> */ {
     /** An optional label for this contract */
     label?: string;
     symbol?: string;
+    /** The status of this contract. True if deployed on chain. Otherwise false */
+    draft: boolean;
     createdAt?: Date;
     updatedAt?: Date;
 }

@@ -6,6 +6,7 @@ interface NavigationButtonProps extends React.HTMLAttributes<HTMLButtonElement> 
     direction: "left" | "right",
     disabled?: boolean,
     variant?: "primary" | "secondary" | "tertiary" | "gradient",
+    loading?: boolean,
 }
 
 export default function NavigationButton(props: NavigationButtonProps) {

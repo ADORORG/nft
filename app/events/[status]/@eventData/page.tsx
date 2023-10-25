@@ -9,7 +9,7 @@ async function getServerSideData(status: EventStatusType) {
     await mongoooseConnectionPromise
 
     const now = Date.now()
-    const query: Record<string, unknown> = {}
+    const query: Record<string, unknown> = {draft: false}
 
     if (status === "minting_now") {
         query["start"] = {$lte: now}
@@ -22,7 +22,7 @@ async function getServerSideData(status: EventStatusType) {
         query["end"] = {$lte: now}
     }
 
-    return getEventsByQuery(query, {}) as Promise<PopulatedNftContractEventType[]>
+    return getEventsByQuery(query, {limit: 25}) as Promise<PopulatedNftContractEventType[]>
 }
 
 export default async function EventPage({params}: {params: {status: EventStatusType}}) {
@@ -30,7 +30,7 @@ export default async function EventPage({params}: {params: {status: EventStatusT
     const saleEvents = await getServerSideData(currentTab)
 
     return (
-        <div className="flex flex-col flex-wrap md:flex-row items-center gap-6">
+        <div className="flex flex-col justify-center items-center md:justify-start md:flex-wrap md:flex-row mx-8 gap-6">
             {   
                 saleEvents.length > 0 ?
                 saleEvents.map((eventData) => (

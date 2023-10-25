@@ -21,6 +21,6 @@ async function getCollections(_: NextRequest, { params }: {params: {address: str
     }, {status: 200})
 }
 
-const wrappedPost = withRequestError(getCollections)
+const wrappedGet = withRequestError(getCollections)
 
-export { wrappedPost as GET}
+export { wrappedGet as GET}

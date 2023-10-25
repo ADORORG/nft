@@ -17,6 +17,10 @@ import {
   getEventsByQuery
 } from "@/lib/handlers"
 
+// Revalidate every 30 seconds
+export const revalidate = 30000
+
+
 async function getServerSideData() {
   await mongoooseConnectionPromise
   /**
@@ -26,7 +30,8 @@ async function getServerSideData() {
   const marketOrdersPromise = getTrendingMarketOrders({status: "active"}, 10)
   const saleEventsPromise = getEventsByQuery({
     start: {$lte: Date.now()},
-    end: {$gte: Date.now()}
+    end: {$gte: Date.now()},
+    draft: false,
   }, {limit: 8}) as Promise<PopulatedNftContractEventType[]>
   // fetch top traders
   const topTradersPromise = getTopTradersAccountMarketValue({}, 8)

@@ -5,6 +5,8 @@
   "scripts": {
     "dev-custom": "NODE_OPTIONS='--max-old-space-size=4096' next dev",
     "dev": "next dev",
+    "create-prod-env": "node create.production.env.js",
+    "build-with-env": "yarn create-prod-env && yarn build",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -44,6 +46,8 @@
     "react-hot-toast": "^2.4.1",
     "react-modal": "^3.16.1",
     "react-use": "^17.4.0",
+    "readable-web-to-node-stream": "^3.0.2",
+    "sharp": "^0.32.6",
     "siwe": "^2",
     "swr": "^2.2.0",
     "tailwindcss": "^3.3.2",

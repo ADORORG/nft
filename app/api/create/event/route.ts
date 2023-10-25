@@ -83,7 +83,7 @@ async function createNewEvent(request: NextRequest, _: any, { user }: {user: Acc
     */
     // Convert dataURI to readable stream
     const mediaId = `${contract.contractAddress}#media`
-    const mediaStream = dataUrlToReadableStream(event.media, mediaId)
+    const mediaStream = dataUrlToReadableStream(event.media || "", mediaId)
     const mediaHash = await uploadMediaToIPFS(mediaStream, mediaId)
    
     // Create the contract

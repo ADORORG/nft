@@ -1,9 +1,16 @@
 
 onmessage = function (e) {
-    var file = e.data;
-    var reader = new FileReader();
+    let file = e.data.file;
+    let readAs = e.data.readAs; // "readAsDataURL" | "readAsArrayBuffer"
+    let reader = new FileReader();
+    
     reader.onload = function (e) {
         postMessage(e.target.result);
     };
-    reader.readAsDataURL(file);
+
+    if (readAs === "readAsArrayBuffer") {
+        reader.readAsArrayBuffer(file);
+    } else {
+        reader.readAsDataURL(file);
+    }
 }

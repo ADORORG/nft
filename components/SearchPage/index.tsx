@@ -10,27 +10,27 @@ import ContractSearch from "./Contract"
 export default function SearchPage() {
     const [searchType, setSearchType] = useState<SearchType>("collection")
     const searchParams = useSearchParams()
-    const searchQuery = searchParams.get("q") || ""
+    const searchQuery = searchParams?.get("q") || ""
 
     const searchTabs = [
         {
             label: "Collection",
             link: `#!collection`,
-            useLInk: false,
+            uselink: false,
             active: searchType === "collection",
             onClick: () => setSearchType("collection")
         },
         {
             label: "Event", 
             link: `#!event`,
-            useLInk: false,
+            uselink: false,
             active: searchType === "event",
             onClick: () => setSearchType("event")
         },
         {
             label: "Contract",
             link: `#!contract`,
-            useLInk: false,
+            uselink: false,
             active: searchType === "contract",
             onClick: () => setSearchType("contract")
         }

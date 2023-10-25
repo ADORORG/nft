@@ -195,7 +195,7 @@ export function getTokensByContract(contractId: Types.ObjectId | string, skip: n
  */
 export function getTokenByQuery(
     query: Record<string, unknown>, 
-    select: string = ''
+    select: string = ' -redeemableContent'
     ) {
     
     const leanOption = {lean: true}
@@ -224,7 +224,7 @@ export function getTokenByQuery(
         new: true,
         upsert: false
     })
-    .select(select + '-redeemableContent')
+    .select(select)
     .populate(populate)
     .lean()
     .exec()
@@ -248,7 +248,7 @@ export function getTokensByQuery(
         limit = 100,
         skip = 0,
         sort = {createdAt: -1},
-        select = ''
+        select = '-redeemableContent'
     } = options
     
     const leanOption = {lean: true}
@@ -274,11 +274,51 @@ export function getTokensByQuery(
     .sort(sort)
     .skip(skip)
     .limit(limit)
-    .select(select + '-redeemableContent')
+    .select(select)
     .populate(populate)
     .lean()
     .exec()
 }
+
+/**
+ * Get one token and update
+ * @param query 
+ * @param update 
+ * @param upsert 
+ * @returns 
+ */
+export function getAndUpdateTokenByQuery(
+    query: Record<string, unknown>, 
+    update: Record<string, unknown>, 
+    upsert?: false
+) {
+    
+    const leanOption = {lean: true}
+    const populate = [
+        {
+            path: 'contract',
+            options: leanOption
+        },
+        {
+            path: 'xcollection',
+            options: leanOption
+        },
+        {
+            path: 'owner',
+            select: '-email -roles -emailVerified -__v',
+            options: leanOption
+        }
+    ] satisfies PopulateOptions[]
+
+    return TokenModel.findOneAndUpdate(query, update, {
+        new: true,
+        upsert
+    })
+    .populate(populate)
+    .lean()
+    .exec()
+}
+
 
 /**
  * Transfer a token to a different account

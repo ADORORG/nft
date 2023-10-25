@@ -16,7 +16,12 @@ async function getServerSideData({address, pageNumber}: {address: string, pageNu
 
     const [ contracts, contractCount ] = await Promise.all([
         getContractsByQuery({
-            owner: address.toLowerCase()
+            owner: address.toLowerCase(),
+            // exclude contracts without address (draft contracts)
+            contractAddress: {
+                $exists: true,
+                $ne: ""
+            }
         }, {
             limit: DOCUMENT_BATCH, 
             skip: (pageNumber - 1) * DOCUMENT_BATCH

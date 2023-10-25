@@ -5,12 +5,12 @@
  * @param file - file blob
  * @param fileResultHandler a function that received the read result
  */
-export function readSingleFileAsDataURL (file: Blob, fileResultHandler: (update: ArrayBuffer | string | null) => void ) {
+export function readSingleFileAsDataURL (file: Blob, fileResultHandler: (update: string) => void ) {
         
     if (file && window.Worker) {
         const fileWorker = new Worker("/file.worker.js")
         
-        fileWorker.postMessage(file)
+        fileWorker.postMessage({file, readAs: "readAsDataURL"})
         fileWorker.onmessage = (e) => {
             fileResultHandler(e.data)
             fileWorker.terminate()
@@ -18,7 +18,7 @@ export function readSingleFileAsDataURL (file: Blob, fileResultHandler: (update:
     } else if (file) {
         const reader = new FileReader()
         reader.addEventListener("load", function() {
-            fileResultHandler(reader.result)
+            fileResultHandler(reader.result as string)
         }, false)
 
         reader.readAsDataURL(file)
@@ -28,6 +28,34 @@ export function readSingleFileAsDataURL (file: Blob, fileResultHandler: (update:
     
 }
 
+
+/**
+ * Read file data as ArrayBuffer
+ * @param file - file blob
+ * @param fileResultHandler a function that received the read result
+ */
+export function readSingleFileAsArrayBuffer (file: Blob, fileResultHandler: (update: ArrayBuffer) => void ) {
+        
+    if (file && window.Worker) {
+        const fileWorker = new Worker("/file.worker.js")
+        
+        fileWorker.postMessage({file, readAs: "readAsArrayBuffer"})
+        fileWorker.onmessage = (e) => {
+            fileResultHandler(e.data)
+            fileWorker.terminate()
+        }
+    } else if (file) {
+        const reader = new FileReader()
+        reader.addEventListener("load", function() {
+            fileResultHandler(reader.result as ArrayBuffer)
+        }, false)
+
+        reader.readAsArrayBuffer(file)
+    } else {
+        throw new Error("Invalid file")
+    }
+    
+}
 
 /**
  * Validate a file type and size

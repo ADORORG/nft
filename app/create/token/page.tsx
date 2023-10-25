@@ -1,7 +1,7 @@
-import CreateTokenForm from "@/components/CreateForm/Token/CreateTokenForm"
+import CreateToken from "@/components/CreateFormV2/Token"
 
 export default function Page() {
     return (
-        <CreateTokenForm />
+        <CreateToken />
     )
 }

@@ -1,36 +1,44 @@
-import { forwardRef } from "react"
-import type { InputExtendedProps } from "./types"
+import { useState } from "react";
 
-function FileDropzone(props: InputExtendedProps, ref: React.ForwardedRef<HTMLInputElement>) {
-    const {label, labelClassName, fileExtensionText, className, ...inputProps} = props
-
-    return (
-        <label 
-            className={`flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600 ${labelClassName}`}
-            htmlFor={props.id}
-        >
-
-            <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                <svg className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
-                </svg>
-
-                <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                    {label}
-                </p>
-                <p className="px-4 text-xs text-gray-500 dark:text-gray-400">
-                    {fileExtensionText}
-                </p>
-            </div>
-
-            <input 
-                ref={ref || null}
-                type="file" 
-                className={`hidden ${className}`} 
-                {...inputProps} 
-            />
-        </label>
-    )
+interface FileDropzoneProps {
+    mediaHandler: (files: FileList | null) => void,
+    className?: string,
+    children?: React.ReactNode
 }
 
-export default forwardRef(FileDropzone)
+export default function FileDropzone(props: FileDropzoneProps) {
+    const [dragging, setDragging] = useState(false)
+
+    const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault()
+        setDragging(true)
+    }
+
+    const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault()
+        setDragging(false)
+    }
+
+    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault()
+    }
+
+    const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault()
+        setDragging(false)
+
+        props.mediaHandler(e.dataTransfer.files)
+    }
+
+    return (
+        <div
+            onDragEnter={handleDragEnter}
+            onDragLeave={handleDragLeave}
+            onDragOver={handleDragOver}
+            onDrop={handleDrop}
+            className={`${dragging ? 'z-10 bg-gray-300 dark:bg-gray-600' : 'bg-gray-100 dark:bg-gray-900'} ${props.className}`}
+        >
+            {props.children}
+        </div>
+    )
+}
