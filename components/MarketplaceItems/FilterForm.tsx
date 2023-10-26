@@ -8,7 +8,7 @@ import { formatNumber } from "@/utils/main"
 import { collectionCategories } from "@/lib/app.config"
 
 interface MarketFilterFormProps {
-    marketValue: TotalMarketValueInDollarType
+    marketValue?: TotalMarketValueInDollarType
 }
 
 export default function MarketFilterForm(props: MarketFilterFormProps) {
@@ -17,7 +17,7 @@ export default function MarketFilterForm(props: MarketFilterFormProps) {
 
     useEffect(() => {
         // totalOrder is used by MarketplaceItems in "./index" to determine if there's next page 
-        setMarketFilter({...marketFilter, totalOrder: marketValue.orderCount})
+        setMarketFilter({...marketFilter, totalOrder: marketValue?.orderCount || 0})
         // eslint-disable-next-line
     }, [marketValue])
 
@@ -85,7 +85,7 @@ export default function MarketFilterForm(props: MarketFilterFormProps) {
             </div>
 
             <div>
-                <h5 className="text-2xl">{formatNumber(marketValue.dollarValue)}k+</h5>
+                <h5 className="text-2xl">{formatNumber(marketValue?.dollarValue || 0)}k+</h5>
             </div>
         </div>
     )
