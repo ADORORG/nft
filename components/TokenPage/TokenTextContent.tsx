@@ -7,7 +7,7 @@ export default function TokenTextContent(props: TokenPageProps) {
     return (
         <div className="flex flex-col gap-4 mb-1">
             <h1 className="leading-3 tracking-tight text-xl pt-4">
-                {props.token.name} #{props.token.tokenId}
+                {props.token.name}
             </h1>
             <div title={`Token viewed by ${props.token.views}`} className="flex gap-1 items-center">
                 <Eyeglasses />
