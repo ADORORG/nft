@@ -3,7 +3,7 @@ import { Types } from 'mongoose'
 import type { PopulatedNftTokenType } from '@/lib/types/token'
 import { type NextRequest, NextResponse } from 'next/server'
 import { CustomRequestError } from '@/lib/error/request'
-import { setTokenOwner, setAccountDetails, getTokenByQuery } from '@/lib/handlers'
+import { setTokenOwner, setAccountDetails, getTokenByQuery, getMarketOrderByQuery } from '@/lib/handlers'
 import { withRequestError, withSession } from '@/wrapper'
 import { isEthereumAddress } from '@/lib/utils/main'
 import mongooseConnectPromise from '@/wrapper/mongoose_connect'
@@ -17,6 +17,14 @@ async function transferToken(request: NextRequest, _: {}, { user }: {user: Accou
     }
 
     await mongooseConnectPromise
+
+    // Ensure that the token is not listed for sale
+    const marketOrder = await getMarketOrderByQuery({token: tokenDocId, status: 'active'})
+
+    if (marketOrder) {
+        throw new CustomRequestError('Please remove the token from sale before transferring it')
+    }
+    
     const token = await getTokenByQuery({_id: tokenDocId}) as PopulatedNftTokenType
 
     if (!token) {

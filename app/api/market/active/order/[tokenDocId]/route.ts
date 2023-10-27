@@ -28,6 +28,6 @@ async function getTokenActiveOrder(_: NextRequest, { params }: {params: {tokenDo
     }, {status: 200})
 }
 
-const wrappedPost = withRequestError(getTokenActiveOrder)
+const wrappedGet = withRequestError(getTokenActiveOrder)
 
-export { wrappedPost as GET}
+export { wrappedGet as GET}
