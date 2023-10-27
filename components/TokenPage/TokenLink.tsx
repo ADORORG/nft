@@ -43,7 +43,7 @@ export default function TokenLink(props: TokenPageProps) {
                 <div className="py-1 flex gap-1 items-center">
                     <span>External link:&nbsp;</span>
                     <span>
-                        <a href={props.token.externalUrl} target="_blank" rel="no-referrer">
+                        <a className="flex gap-2" href={props.token.externalUrl} target="_blank" rel="no-referrer">
                             {props.token.externalUrl} <BoxArrowUpRight />
                         </a>
                     </span>

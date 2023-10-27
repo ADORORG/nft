@@ -1,3 +1,4 @@
+"use client"
 import { Twitter, Discord, Telegram, Facebook, Instagram } from "react-bootstrap-icons";
 
 type SocialProps = {
