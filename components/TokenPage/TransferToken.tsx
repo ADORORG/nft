@@ -2,15 +2,39 @@ import type TokenPageProps from "./types"
 import { useState } from "react"
 import { toast } from "react-hot-toast"
 import { InputField } from "@/components/Form"
+import LoadingSpinner from "@/components/LoadingSpinner"
 import Button from "@/components/Button"
 import { useContractChain } from "@/hooks/contract"
 import { useERC1155, useERC721 } from "@/hooks/contract/nft"
+import { useTokenActiveMarketOrder } from "@/hooks/fetch/market"
 import { useAuthStatus } from "@/hooks/account"
 import { isEthereumAddress } from "@/utils/main"
 import { getFetcherErrorMessage, fetcher } from "@/utils/network"
 import apiRoutes from "@/config/api.route"
 
-export default function TransferToken(props: TokenPageProps & { done?: () => void }) {
+export default function InitTransferToken(props: TokenPageProps & { done?: () => void }) {
+    const { activeOrder, isLoading: checkingActiveOrder } = useTokenActiveMarketOrder(props.token._id?.toString())
+
+    return (
+        <div className="flex flex-col gap-4 max-w-md">
+            {
+                checkingActiveOrder ? 
+                <LoadingSpinner />
+                :
+                activeOrder ?
+                <div className="flex flex-col gap-4">
+                    <p>
+                        This token is currently on sale. You must cancel the sale order before you can transfer this token.
+                    </p>
+                </div>
+                :
+                <TransferToken {...props} />
+            }
+        </div>
+    )
+}
+
+function TransferToken(props: TokenPageProps & { done?: () => void }) {
     const { token } = props
     const { contractAddress: tokenContractAddress =  "" } = token.contract
     const [tokenAmount, setTokenAmount] = useState(1) // default to 1 erc721 token
@@ -150,7 +174,6 @@ export default function TransferToken(props: TokenPageProps & { done?: () => voi
     return (
         <div className="flex flex-col gap-4 max-w-md">
             <h2> Transfer <strong>{token.name}#{token.tokenId}</strong></h2>
-
             <div>
                 <InputField
                     label="Token Amount"

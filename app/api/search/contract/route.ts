@@ -3,6 +3,8 @@ import { getContractsByQuery } from '@/lib/handlers'
 import { withRequestError } from '@/wrapper'
 import mongooseConnectPromise from '@/wrapper/mongoose_connect'
 
+export const dynamic = 'force-dynamic'
+
 async function searchContract(request: NextRequest) {
     const query = request.nextUrl.searchParams
     const searchQuery = query.get('q') || ''

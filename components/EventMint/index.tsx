@@ -18,6 +18,11 @@ import { nftEditionChecker } from "@/utils/contract"
 import { IPFS_GATEWAY } from "@/lib/app.config"
 import appRoutes from "@/config/app.route"
 
+/**
+ * Event Display component used on /event/[eventDocId] page.
+ * @param props 
+ * @returns 
+ */
 export function EventMintExpanded(props: EventMintProps) {
     /**
      * @todo - Get the contract configuration from the blockchain.
@@ -129,6 +134,11 @@ export function EventMintCollapsed(props: EventMintProps) {
     )
 }
 
+/**
+ * Event Display component used on /events/[status] page.
+ * @param props 
+ * @returns 
+ */
 export function EventMintCollapsedSmall(props: EventMintProps) {
     const [showModal, setShowModal] = useState(false)
     const { eventData } = props
@@ -144,8 +154,8 @@ export function EventMintCollapsedSmall(props: EventMintProps) {
 
     return (
         <div>
-            <div className="flex flex-col md:flex-row gap-4 bg-gray-100 dark:bg-gray-900 p-4 rounded drop-shadow-xl">
-                <div className="flex items-center p-2 w-[200px] h-[210px] bg-gray-200 dark:bg-gray-900 rounded">
+            <div className="flex flex-col md:flex-row gap-4 bg-gray-100 dark:bg-gray-900 p-4 pb-5 rounded drop-shadow-xl">
+                <div className="flex items-center p-2 w-[200px] h-[220px] bg-gray-200 dark:bg-gray-900 rounded">
                     <MediaPreview
                         src={`${IPFS_GATEWAY}${eventData.media}`}
                         type={eventData.mediaType}
@@ -154,9 +164,9 @@ export function EventMintCollapsedSmall(props: EventMintProps) {
                         className="max-w-[200px] max-h-[210px]"
                     />
                 </div>
-                <div className="flex flex-col gap-3 w-[200px] h-[210px] justify-between">
-                    <div className="">
-                        <h1 className="text-xl font-semibold break-all mb-2" title={eventData.tokenName || eventData.contract.label}>
+                <div className="flex flex-col gap-3 w-[200px] h-[220px] justify-between">
+                    <div className="flex flex-col h-40 gap-2">
+                        <h1 className="text-xl font-semibold break-all h-16" title={eventData.tokenName || eventData.contract.label}>
                             <Link
                                 className=""
                                 href={
@@ -166,20 +176,22 @@ export function EventMintCollapsedSmall(props: EventMintProps) {
                                 }
                             >
                                 <ChainIcon className="w-5 h-5 text-gray-100 mr-1 inline-block" />
-                                {cutString(eventData.tokenName || eventData.contract.label, 24)}
+                                {cutString(eventData.tokenName || eventData.contract.label, 32)}
                             </Link>
                             
                         </h1>
                         <UserAccountAvatarWithLink 
                             account={eventData.owner}
-                            className="w-4 h-4 text-sm"
+                            className="w-3 h-3 text-sm my-4"
                             width={28}
                             height={28}
                         />
+
+                        <p className="break-word">
+                            {cutString(eventData.tokenDescription, 32)}
+                        </p>
                     </div>
-                    <p className="break-all">
-                        {cutString(eventData.tokenDescription, 40)}
-                    </p>
+                    
                     <div>
                         <ProgressBar
                             progress={
@@ -192,11 +204,11 @@ export function EventMintCollapsedSmall(props: EventMintProps) {
                             size="sm"
                         />
                     </div>
-                    <div className="w-full my-2">
+                    <div className="w-full">
                         <Button
                             disabled={eventData.end < Date.now()}
                             variant="gradient"
-                            className="w-full font-semibold"
+                            className="w-full text-sm font-semibold"
                             onClick={() => setShowModal(true)}
                             rounded
                         >
@@ -227,6 +239,11 @@ export function EventMintCollapsedSmall(props: EventMintProps) {
     )
 }
 
+/**
+ * Event Display component used on / page.
+ * @param props 
+ * @returns 
+ */
 export function EventMintCardSmall(props: EventMintProps) {
     const [showModal, setShowModal] = useState(false)
     const { eventData } = props

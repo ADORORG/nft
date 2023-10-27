@@ -1,9 +1,10 @@
+"use client"
 import type { PageProps } from "../types"
 import TabNavigation from "@/components/TabNav"
 import appRoutes from "@/config/app.route"
 import { replaceUrlParams } from "@/utils/main"
 
-export default async function Page({params}: {params: PageProps}) {
+export default function Page({params}: {params: PageProps}) {
     const { accountData, address } = params
 
     const accountPathname = replaceUrlParams(appRoutes.viewAccount, {
