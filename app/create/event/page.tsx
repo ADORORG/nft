@@ -1,3 +1,4 @@
+"use client"
 import { Icon1Square, UiChecks, UiChecksGrid } from "react-bootstrap-icons"
 import Link from "next/link"
 import Button from "@/components/Button"

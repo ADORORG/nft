@@ -32,16 +32,16 @@ export default function EventDraft({ address }: { address?: string }) {
                 draftEvents.map((event) => (
                     <div
                         key={event._id?.toString()}
-                        className="w-[400px] h-[240px] relative"
+                        className="w-[400px] h-[250px] relative"
                     >
-                        <div className="w-[400px] h-[240px] absolute rounded z-10 bg-opacity-50 top-0 left-0 bg-gray-600 flex items-center justify-center">
+                        <div className="w-[400px] h-[250px] absolute rounded z-10 bg-opacity-50 top-0 left-0 bg-gray-600 flex items-center justify-center">
                             <Link href={
                                 replaceUrlParams(appRoutes.editDraft, {
                                     draftType: "event",
                                     draftDocId: event._id?.toString() as string
                                 })
                             }>
-                                <Button variant="gradient" className="rounded px-6">Edit</Button>
+                                <Button variant="gradient" className="rounded px-6 py-1">Edit</Button>
                             </Link>
                         </div>
                         <EventMintCollapsedSmall
