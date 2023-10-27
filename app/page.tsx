@@ -17,9 +17,10 @@ import {
   getEventsByQuery
 } from "@/lib/handlers"
 
+// Don't cache this page
+export const dynamic = "force-dynamic"
 // Revalidate every 30 seconds
-export const revalidate = 30000
-
+export const revalidate = 30
 
 async function getServerSideData() {
   await mongoooseConnectionPromise

@@ -6,6 +6,13 @@ import { BoxArrowUpRight } from "react-bootstrap-icons"
 
 export default function TokenLink(props: TokenPageProps) {
 
+    const visitExternalLink = () => {
+        const extLink = props.token.externalUrl
+        if (extLink) {
+            window.open(extLink, "_blank", "noopener noreferrer")
+        }
+    }
+
     return (
         <div className="flex flex-col gap-4 py-4">
             {/* Token contract info */}
@@ -42,10 +49,13 @@ export default function TokenLink(props: TokenPageProps) {
                 props.token.externalUrl ?
                 <div className="py-1 flex gap-1 items-center">
                     <span>External link:&nbsp;</span>
-                    <span>
-                        <a className="flex gap-2" href={props.token.externalUrl} target="_blank" rel="no-referrer">
-                            {props.token.externalUrl} <BoxArrowUpRight />
-                        </a>
+                    <span 
+                        onClick={visitExternalLink}
+                        className="flex gap-2 cursor-pointer">
+                        <span>
+                            {props.token.externalUrl}
+                        </span>
+                        <BoxArrowUpRight />
                     </span>
                 </div>
                 :
