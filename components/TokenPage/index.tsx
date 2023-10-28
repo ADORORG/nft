@@ -20,13 +20,15 @@ export default function SingleTokenPage(props: TokenPageProps) {
     const [selectedDropdownOption, setSelectedDropdownOption] = useState<DropdownOptions>("")
     const { session } = useAuthStatus()
     const accountIsTokenOwner = session?.user.address === props.token.owner.address
+    const tokenIsTransferable = props.token.transferrable === undefined || props.token.transferrable === true
     const ChainIcon = getChainIcon(props.token.contract.chainId)
+
 
     const screens = [
         {
             name: "Transfer",
             onClick: () => setSelectedDropdownOption("transfer"),
-            enabled: accountIsTokenOwner,        
+            enabled: accountIsTokenOwner && tokenIsTransferable,        
         },
         {
             name: "Use as Profile Pic",

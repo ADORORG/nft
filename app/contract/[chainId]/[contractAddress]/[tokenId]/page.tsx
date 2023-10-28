@@ -1,5 +1,6 @@
 import SingleTokenPage from "@/components/TokenPage"
 import MarketOrderPage from "@/components/MarketOrderPage"
+import MetaBoundTokenNonTransferrable from "@/components/MarketOrderPage/MetaboundToken"
 import type { PopulatedMarketBidType } from "@/lib/types/bid"
 /**
  * @todo Use parallel routing for token and marketOrder sections 
@@ -60,12 +61,17 @@ export default async function Page({params}: {params: PageProps}) {
             <div className="border-2 border-gray-100 dark:border-gray-800 rounded shadow-xl">
                 <SingleTokenPage token={token as any} />
             </div>
-            <div className="border border-gray-50 dark:border-gray-900 rounded px-6 shadow-2xl">
-                <MarketOrderPage 
-                    orders={marketOrders as any} 
-                    token={token as any} 
-                    bids={activeAuctionBids}    
-                />
+            <div className="relative w-[320px] md:w-[420px] border border-gray-50 dark:border-gray-900 rounded shadow-2xl">
+                {
+                    token?.transferrable === false ?
+                    <MetaBoundTokenNonTransferrable />
+                    :
+                    <MarketOrderPage 
+                        orders={marketOrders as any} 
+                        token={token as any} 
+                        bids={activeAuctionBids}    
+                    />
+                }
             </div>
         </div>
     )

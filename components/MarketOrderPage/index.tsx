@@ -17,7 +17,7 @@ export default function MarketOrderPage(props: MarketOrdersProp & TokenPageProps
     // const { marketOrderBids } = useTokenMarketOrderBids(isAuction ? activeOrder._id?.toString() : undefined)
   
     return (
-        <div className="w-[320px] md:w-[420px] text-gray-900 dark:text-white">
+        <div className="w-full text-gray-900 dark:text-gray-100 px-6">
             <div className="flex flex-col h-max">
                     {
                         activeOrder ?

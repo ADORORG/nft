@@ -21,6 +21,7 @@ export default function NftTokenCard(props: NftTokenProps) {
     const { token } = props
     const { session } = useAuthStatus()
     const accountIsTokenOwner = session?.user.address === props.token.owner.address
+    const tokenIsTransferable = props.token.transferrable === undefined || props.token.transferrable === true
     const { tokenId, name, image = "", media, mediaType, owner, contract, xcollection } = token
     const ChainIcon = getChainIcon(contract.chainId)
    
@@ -28,17 +29,17 @@ export default function NftTokenCard(props: NftTokenProps) {
         {
             name: "Transfer",
             onClick: () => setSelectedDropdownOption("transfer"),
-            enabled: accountIsTokenOwner,        
+            enabled: accountIsTokenOwner && tokenIsTransferable,        
         },
         {
             name: "Sell",
             onClick: () => setSelectedDropdownOption("sell"),
-            enabled: accountIsTokenOwner,          
+            enabled: accountIsTokenOwner && tokenIsTransferable,          
         },
         {
             name: "Make offer",
             onClick: () => setSelectedDropdownOption("makeOffer"),
-            enabled: !accountIsTokenOwner,          
+            enabled: !accountIsTokenOwner && tokenIsTransferable,          
         },
         {
             name: "Use as Profile Pic",
