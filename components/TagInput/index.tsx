@@ -12,7 +12,7 @@ interface TagInputProps {
 export default function TagInput(props: TagInputProps) {
 
     const cleanTag = (tag: string) => {
-        return onlyAlphaNumericAndWhiteSpace(tag.substring(0, 36)).split(" ").slice(0, props.maxTags).join(" ")
+        return onlyAlphaNumericAndWhiteSpace(tag.substring(0, 72)).split(" ").slice(0, props.maxTags).join(" ")
     }
 
     return (
