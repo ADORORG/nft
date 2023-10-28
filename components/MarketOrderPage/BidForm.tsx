@@ -2,7 +2,7 @@ import type { MarketOrderProp } from "./types"
 import type { default as MarketBidType, PopulatedMarketBidType } from "@/lib/types/bid"
 import type { FinaliseMarketOrderType } from "@/lib/types/common"
 import { useState, useCallback } from "react"
-import { PatchCheck, Tag as TagIcon, Trophy, Cart } from "react-bootstrap-icons"
+import { PatchCheck, Trophy, Cart } from "react-bootstrap-icons"
 import { toast } from "react-hot-toast"
 import { useRouter } from "next/navigation"
 // import { useTokenMarketOrderBids } from "@/hooks/fetch"
@@ -290,7 +290,16 @@ function ShowBidForm(props: MarketOrderProp & {highestBid?: PopulatedMarketBidTy
     return (
         <div className="flex flex-col gap-4">
             <InputField
-                label="Bid price"
+                label={
+                    <span className="flex">
+                        <span>Bid price</span>
+                        <CryptoToFiat
+                            currency={props.order.currency}
+                            amount={bidData.price}
+                            withIcon
+                        />
+                    </span>
+                }
                 type="number"
                 min={minBidPrice}
                 value={bidData.price}

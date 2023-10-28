@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation"
 import { toast } from "react-hot-toast"
 import { InputField, Radio, SwitchCheckbox } from "@/components/Form"
 import { Select } from "@/components/Select"
+import { CryptoToFiat } from "@/components/Currency"
 import DateAndTime from "@/components/DateAndTime"
 import Button from "@/components/Button"
 import InfoText from "@/components/InfoText"
@@ -376,6 +377,18 @@ export default function AddTokenToMarket(props: TokenPageProps) {
         }
     }
 
+    const PriceToFiat = ({price}: {price?: string}) => (
+        orderData.currency ?
+        <CryptoToFiat
+            amount={price}
+            currency={currencies?.find(c => c._id?.toString() === orderData.currency) as CryptocurrencyType}
+            showZeroValue={true}
+            withIcon={true}
+        />
+        :
+        null
+    )
+
     return (
         <div className="flex flex-col justify-center my-3">
             <h1 className="text-2xl py-6">
@@ -424,7 +437,12 @@ export default function AddTokenToMarket(props: TokenPageProps) {
 
             <div className="my-2">
                 <InputField 
-                    label={orderData.saleType === "auction" ? "Starting Price" : "Price"}
+                    label={
+                        <span className="flex">
+                            {orderData.saleType === "auction" ? "Starting Price" : "Price"}
+                            <PriceToFiat price={orderData.price} />
+                        </span>
+                    }
                     className="rounded"
                     name="price"
                     type="number"
@@ -441,7 +459,12 @@ export default function AddTokenToMarket(props: TokenPageProps) {
                 <>
                     <div className="my-2">
                         <InputField 
-                            label="Instant buy price"
+                            label={
+                                <span className="flex">
+                                    Instant buy price
+                                    <PriceToFiat price={orderData.buyNowPrice} />
+                                </span>
+                            }
                             className="rounded"
                             name="buyNowPrice"
                             type="number"
