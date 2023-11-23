@@ -33,7 +33,7 @@ export function EventMintExpanded(props: EventMintProps) {
     return (
         <div className="max-w-4xl mx-auto flex flex-col gap-8 py-6">
             <div className="flex flex-col self-center gap-4 w-[250px] md:w-[350px]">
-                <h1 className="text-2xl self-center font-semibold break-all">
+                <h1 className="text-2xl self-center font-semibold break-all" title={eventData.tokenName}>
                     <ChainIcon className="w-6 h-6 mr-2 inline-block" />
                     {eventData.tokenName || eventData.contract.label}
                 </h1>
@@ -269,7 +269,7 @@ export function EventMintCardSmall(props: EventMintProps) {
                     />
                 </div>
                 <div className="flex flex-col py-2">
-                    <h1 className="text-xl font-semibold break-all">
+                    <h1 className="text-xl font-semibold break-all" title={eventData.tokenName}>
                         <ChainIcon className="w-5 h-5 text-gray-100 mr-1 inline-block" />
                         {cutString(eventData.tokenName || eventData.contract?.label, 20)}
                     </h1>

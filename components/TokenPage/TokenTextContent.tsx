@@ -13,7 +13,7 @@ export default function TokenTextContent(props: TokenPageProps) {
                 <Eyeglasses />
                 <span>{props.token.views}</span>
             </div>
-            <p className="py-2">
+            <p className="py-2 break-word">
                 {props.token.description}
             </p>
             <div className="flex flex-row flex-wrap">
