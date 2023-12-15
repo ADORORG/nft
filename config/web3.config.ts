@@ -56,7 +56,6 @@ const walletConnectConnector = new WalletConnectConnector({
 const supportedWalletConnectors = {
     Coinbase: coinbaseConnector, 
     Metamask: metaMaskConnector, 
-    // Ledger: ledgerConnector, 
     Safe: safeConnector,
     Injected: injectedConnector,
     WalletConnect: walletConnectConnector
