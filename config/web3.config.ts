@@ -2,7 +2,7 @@
 import { configureChains, createConfig } from "wagmi"
 import { InjectedConnector } from "wagmi/connectors/injected"
 import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet"
-import { LedgerConnector } from "wagmi/connectors/ledger"
+// import { LedgerConnector } from "wagmi/connectors/ledger"
 import { MetaMaskConnector } from "wagmi/connectors/metaMask"
 import { SafeConnector } from "wagmi/connectors/safe"
 import { WalletConnectConnector } from "wagmi/connectors/walletConnect"
@@ -31,12 +31,12 @@ const coinbaseConnector = new CoinbaseWalletConnector({
     }
 })
 
-const ledgerConnector = new LedgerConnector({
+/* const ledgerConnector = new LedgerConnector({
     chains,
     options: {
             projectId: ""
     }
-})
+}) */
 
 const metaMaskConnector = new MetaMaskConnector({
     chains
@@ -56,7 +56,7 @@ const walletConnectConnector = new WalletConnectConnector({
 const supportedWalletConnectors = {
     Coinbase: coinbaseConnector, 
     Metamask: metaMaskConnector, 
-    Ledger: ledgerConnector, 
+    // Ledger: ledgerConnector, 
     Safe: safeConnector,
     Injected: injectedConnector,
     WalletConnect: walletConnectConnector
