@@ -30,7 +30,6 @@ export default function TabNavigation(props: TabNavigationProps) {
                                 <span className={active ? activeClassName : inactiveClassName}>
                                     {label}                                    
                                 </span>
-
                             }
                         </li>
                     ))
