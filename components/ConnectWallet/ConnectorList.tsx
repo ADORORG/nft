@@ -36,11 +36,11 @@ export default function WalletConnectorList(props: ConnectWalletProps) {
             Icon: TrustWalletIcon,
             connector: connectors?.Injected
         },
-        {
+        /* {
             name: "Ledger",
             Icon: LedgerIcon,
             connector: connectors?.Ledger
-        },
+        }, */
         {
             name: "Safe",
             Icon: SafeIcon,

@@ -19,6 +19,9 @@ const nextConfig = {
         ]
     },
     reactStrictMode: true,
+    experimental: {
+        serverComponentsExternalPackages: ['react-bootstrap-icons'],
+    },
     webpack: config => {
         config.resolve.fallback = { fs: false, net: false, tls: false };
         config.externals.push('pino-pretty', 'lokijs', 'encoding');
@@ -76,6 +79,27 @@ const nextConfig = {
             },
         ]
     },
+    env: {
+        DB_HOST: process.env.DB_HOST,
+        
+        NEXTAUTH_URL: process.env.NEXTAUTH_URL,
+        NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
+        
+        PINATA_API_KEY: process.env.PINATA_API_KEY,
+        PINATA_API_SECRET: process.env.PINATA_API_SECRET,
+        PINATA_JWT: process.env.PINATA_JWT,
+        
+        EMAIL_SERVER_PASSWORD: process.env.EMAIL_SERVER_PASSWORD,
+        EMAIL_SERVER_USER: process.env.EMAIL_SERVER_USER,
+        EMAIL_SERVER_HOST: process.env.EMAIL_SERVER_HOST,
+        EMAIL_SERVER_PORT: process.env.EMAIL_SERVER_PORT,
+        EMAIL_FROM: process.env.EMAIL_FROM,
+        
+        NEXT_PUBLIC_PINATA_GATEWAY: process.env.NEXT_PUBLIC_PINATA_GATEWAY,
+        NEXT_PUBLIC_CONTRACT_BASE_URI: process.env.NEXT_PUBLIC_CONTRACT_BASE_URI,
+        NEXT_PUBLIC_ALCHEMY_ID: process.env.NEXT_PUBLIC_ALCHEMY_ID,
+        NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID,
+    }
 }
 
 module.exports = nextConfig

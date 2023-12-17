@@ -12,8 +12,7 @@ const AccountSchema = new Schema<AccountType>({
         type: String, 
         required: true, 
         lowercase: true, 
-        index: true, 
-        unique: true, 
+        index: true,
         validate: function(v: string) { return isEthereumAddress(v)}
     }, // eth address, same as _id
     name: String,
