@@ -55,15 +55,14 @@ export const nextAuthOptions = (req?: NextApiRequest): NextAuthOptions => {
     },
     secret: process.env.NEXTAUTH_SECRET,
     callbacks: {
-      async jwt({token}) {
-        await mongoooseConnectionPromise
-        // get user account using the signed ethereum address
-        const userAccount = await setAccountDetails(token.sub as string, {address: token.sub})      
-        token.user = userAccount
+      jwt({token}) {
         return token
       },
+      async session({ session, token }: { session: any; token: any }) {
+        await mongoooseConnectionPromise
+        // get user account using the signed ethereum address
+        const userAccount = await setAccountDetails((token?.sub as string)?.toLowerCase(), {address: token.sub})   
 
-      session({ session, token }: { session: any; token: any }) {
         const { 
           email, 
           emailVerified, 
@@ -73,7 +72,8 @@ export const nextAuthOptions = (req?: NextApiRequest): NextAuthOptions => {
           twitter,
           profileMediaType, 
           profileMedia, 
-          _id } = token.user
+          _id } = userAccount
+
         const user: Record<string, unknown> = {
           email,
           emailVerified,
