@@ -7,7 +7,7 @@ import { replaceUrlParams } from "@/utils/main"
 
 // Server
 import mongoooseConnectionPromise from '@/wrapper/mongoose_connect'
-import { getContractsByQuery, countContractByQuery } from "@/lib/handlers"
+import { getContractsByQuery, countContractByQuery } from '@/lib/handlers'
 
 const DOCUMENT_BATCH = 25
 

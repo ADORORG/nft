@@ -46,7 +46,7 @@ const appRoutes = {
     /** Marketplace page */
     marketplace: "/marketplace",
     /** Import token page */
-    import: "#",
+    import: "/import",
     /** Transfer token page */
     transfer: "#",
     /** Create page that shows options to create token, event, collection & contract */

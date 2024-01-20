@@ -18,4 +18,4 @@ export function copyToClipboard(textToCopy: string, done?: () => void) {
         },
     )
       
-  }
+}
