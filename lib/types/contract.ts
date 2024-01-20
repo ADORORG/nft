@@ -25,7 +25,7 @@ export default interface NftContractType /* extends Partial<Document> */ {
     version: string;
     /** The account that deployed this contract */
     owner?: EthereumAddress | AccountType;
-    /** An optional label for this contract */
+    /** An optional label or name for this contract */
     label?: string;
     symbol?: string;
     /** The status of this contract. True if deployed on chain. Otherwise false */
