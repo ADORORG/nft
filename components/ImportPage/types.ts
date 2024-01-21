@@ -13,3 +13,7 @@ export interface TokenListProps {
     tokens: Partial<NftTokenType>[];
     nextHandler: () => Promise<void>;
 }
+
+export interface TokenPreviewProps {
+    token: Partial<NftTokenType>;
+}

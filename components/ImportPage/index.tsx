@@ -111,17 +111,15 @@ export default function ImportPage() {
             ...transferBatchLogs.map(log => log.args.ids.flat()).flat()
         ]))
 
-        const accountTokens: Partial<NftTokenType>[] = []
-
-        for (const tokenId of tokenIds) {
-            const balance = await erc1155Helper.balanceOf({
-                contractAddress: contractMetadata?.contractAddress as string,
-                tokenId: Number(tokenId),
-                accountAddress: address
-            })
-
-            if (balance > 0) {
-                try {
+        const fetchTokenMetaData = async ({tokenId}: {tokenId: string}) => {
+            try {
+                const balance = await erc1155Helper.balanceOf({
+                    contractAddress: contractMetadata?.contractAddress as string,
+                    tokenId: Number(tokenId),
+                    accountAddress: address
+                })
+    
+                if (balance > 0) {
                     const tokenURI = await erc1155Helper.tokenURI({
                         contractAddress: contractMetadata?.contractAddress as any,
                         tokenId: Number(tokenId)
@@ -130,20 +128,21 @@ export default function ImportPage() {
                         method: "GET"
                     })
 
-                    accountTokens.push({
+                    return {
                         name: metadata.name,
                         description: metadata.description,
                         media: metadata.image,
                         quantity: balance,
                         tokenId: Number(tokenId),
-                    })
-                } catch (error) {
-                    console.error(error)
+                    }
                 }
+            } catch (error) {
+                console.error(error)
             }
         }
 
-        return accountTokens
+        const accountTokens = await Promise.all(tokenIds.map(tokenId => fetchTokenMetaData({tokenId: tokenId.toString()})))
+        return accountTokens.filter(Boolean) as Partial<NftTokenType>[]
     }
 
     const fetchAccountERC721Token = async () => {
@@ -160,32 +159,37 @@ export default function ImportPage() {
         const transferLogs = await publicClient.getFilterLogs({filter: TransferFilter})
         const tokenIds = Array.from(new Set(transferLogs.map(log => log.args.tokenId.toString())))
 
-        const accountTokens: Partial<NftTokenType>[] = []
-        
-        for (let tokenId of tokenIds) {
-            const owner = await erc721Helper.ownerOf({
-                contractAddress: contractMetadata?.contractAddress as string,
-                tokenId: Number(tokenId),
-            })
-
-            if (owner.toLowerCase() === address?.toLowerCase()) {
-                const tokenURI = await erc721Helper.tokenURI({
-                    contractAddress: contractMetadata?.contractAddress as any,
-                    tokenId: Number(tokenId)
-                })
-                const metadata = await fetcher<Partial<NftTokenType>>(tokenURI, {
-                    method: "GET"
-                })
-
-                accountTokens.push({
-                    name: metadata.name,
-                    description: metadata.description,
-                    media: metadata.image,
+        const fetchTokenMetaData = async ({tokenId}: {tokenId: string}) => {
+            try {
+                const owner = await erc721Helper.ownerOf({
+                    contractAddress: contractMetadata?.contractAddress as string,
                     tokenId: Number(tokenId),
                 })
+    
+                if (owner.toLowerCase() === address?.toLowerCase()) {
+                    const tokenURI = await erc721Helper.tokenURI({
+                        contractAddress: contractMetadata?.contractAddress as any,
+                        tokenId: Number(tokenId)
+                    })
+                    const metadata = await fetcher<Partial<NftTokenType>>(tokenURI, {
+                        method: "GET"
+                    })
+    
+                    return {
+                        name: metadata.name,
+                        description: metadata.description,
+                        media: metadata.image,
+                        tokenId: Number(tokenId),
+                    }
+                }
+
+            } catch (error) {
+                console.error(error)
             }
         }
-        return accountTokens
+
+        const accountTokens = await Promise.all(tokenIds.map(tokenId => fetchTokenMetaData({tokenId})))
+        return accountTokens.filter(Boolean) as Partial<NftTokenType>[]
     }
 
     const fetchContractToken = async () => {
