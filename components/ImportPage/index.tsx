@@ -2,16 +2,17 @@
 import NftTokenType from "@/lib/types/token"
 import type { ContractMetadataType } from "./types"
 import { useState } from "react"
+import { useChainId } from "wagmi"
 import { useERC1155, useERC721 } from "@/hooks/contract/nft"
 import { useAuthStatus } from "@/hooks/account"
 import { ERC1155Interface, ERC721Interface } from "@/config/contract.interfaceId"
 import { isEthereumAddress } from "@/utils/main"
-import { fetcher } from "@/utils/network"
+import { fetcher, getFetcherErrorMessage } from "@/utils/network"
 import { ConnectWalletButton } from "@/components/ConnectWallet"
 import ImportForm from "./Form"
 import ShowMetadata from "./ShowMetadata"
 import ShowAccountTokens from "./ShowTokens"
-
+import apiRoutes from "@/config/api.route"
 // For event log filter
 import { usePublicClient } from "wagmi"
 import erc721Abi from "@/abi/erc721"
@@ -23,11 +24,11 @@ export default function ImportPage() {
     const [tokenUri, setTokenUri] = useState<string>("")
     const [accountTokens, setAccountTokens] = useState<Partial<NftTokenType>[]>([])
     const { address, isConnected } = useAuthStatus()
+    const chainId = useChainId()
     const publicClient = usePublicClient()
     const erc1155Helper = useERC1155()
     const erc721Helper = useERC721()
     
-
     const handleMetadataFetch = async (contractAddress: string) => {
         setScreen("metadata")
         if (!isEthereumAddress(contractAddress)) {
@@ -47,6 +48,7 @@ export default function ImportPage() {
                 symbol: tokenSymbol,
                 owner: ownerAddress,
                 contractAddress,
+                chainId,
                 nftSchema: schema
             })
             setTokenUri(tokenURI)
@@ -157,8 +159,9 @@ export default function ImportPage() {
         })
 
         const transferLogs = await publicClient.getFilterLogs({filter: TransferFilter})
-        const tokenIds = Array.from(new Set(transferLogs.map(log => log.args.tokenId.toString())))
-
+        console.log("transferLogs", transferLogs)
+        const tokenIds = Array.from(new Set(transferLogs.map(log => log.args?.tokenId?.toString())))
+        console.log('tokenIds', tokenIds)
         const fetchTokenMetaData = async ({tokenId}: {tokenId: string}) => {
             try {
                 const owner = await erc721Helper.ownerOf({
@@ -207,7 +210,19 @@ export default function ImportPage() {
     }
 
     const uploadAccountTokens = async () => {
-        
+        const response = await fetcher(apiRoutes.import, {
+            method: "POST",
+            body: JSON.stringify({
+                contract: contractMetadata,
+                tokens: accountTokens
+            })
+        })
+
+        console.log("response", response)
+
+        if (response.success) {
+            // navigate to contract page
+        }
     }
  
     return (

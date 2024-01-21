@@ -86,7 +86,8 @@ const apiRoutes = {
     addNewCurrency: "/api/currency/add",
     /** Update a currency. Substituting the currency _id for 'currencyDocId' in params  */
     updateCurrency: "/api/currency/update/:currencyDocId",
-
+    /** Import a contract and its tokens */
+    import: "/api/import",
     // V2 routes
     /** Create a new token */
     createTokenV2: "/api/v2/create/token",

@@ -16,9 +16,9 @@ export default function ShowAccountTokens(props: TokenListProps) {
             setLoading(true)
             await nextHandler()
             toast.success("Imported completed")
-        } catch (error) {
+        } catch (error: any) {
             console.log(error)
-            toast.error("Error occurred")
+            toast.error(error.message)
         } finally {
             setLoading(false)
         }
@@ -30,19 +30,23 @@ export default function ShowAccountTokens(props: TokenListProps) {
                 className="px-4"
                 variant="gradient"
                 loading={loading}
-                disabled={loading}
+                disabled={loading || tokens.length === 0}
                 onClick={() => importAllTokens()}
+                rounded
             >
                 Continue
             </Button>
             
             <div className="flex flex-row flex-wrap gap-3">
             {
+                tokens.length > 0 ?
                 tokens.map(token => (
                     <Bordered key={token.tokenId}>
                         <TokenPreviewCard token={token} />
                     </Bordered>
                 ))
+                :
+                <p>No token found</p>
             }
             </div>
         </div>
