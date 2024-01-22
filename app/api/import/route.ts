@@ -17,9 +17,10 @@ interface ReqBodyType {
 async function importContractToken(req: NextRequest, _: {}, { user }: {user: AccountType}) {
     const { contract, tokens, xcollection } = await req.json() as ReqBodyType
 
-    if (!contract || tokens.length || !xcollection) {
+    if (!contract || !tokens.length || !xcollection) {
         throw new CustomRequestError('Invalid request data')
     }
+
     await mongooseConnectPromise
     const collection = await getCollectionsByQuery({
         _id: xcollection,

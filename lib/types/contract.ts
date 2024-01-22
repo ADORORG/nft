@@ -1,6 +1,6 @@
 import type { Types, /* Document */ } from 'mongoose'
 import type { EthereumAddress, NftContractSchemaType, NftContractEditionType } from './common'
-import type AccountType from './account';
+import type AccountType from './account'
 
 export default interface NftContractType /* extends Partial<Document> */ {
     /** Contract document _id */

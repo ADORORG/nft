@@ -2,21 +2,21 @@
 import NftTokenType from "@/lib/types/token"
 import type { ContractMetadataType } from "./types"
 import { useState } from "react"
-import { useChainId } from "wagmi"
+import { parseAbiItem } from "viem"
+import { useChainId, usePublicClient } from "wagmi"
+import { useRouter } from "next/navigation"
 import { useERC1155, useERC721 } from "@/hooks/contract/nft"
 import { useAuthStatus } from "@/hooks/account"
 import { ERC1155Interface, ERC721Interface } from "@/config/contract.interfaceId"
-import { isEthereumAddress } from "@/utils/main"
+import { isEthereumAddress, replaceUrlParams } from "@/utils/main"
 import { fetcher, getFetcherErrorMessage } from "@/utils/network"
 import { ConnectWalletButton } from "@/components/ConnectWallet"
 import ImportForm from "./Form"
 import ShowMetadata from "./ShowMetadata"
 import ShowAccountTokens from "./ShowTokens"
 import apiRoutes from "@/config/api.route"
+import appRoutes from "@/config/app.route"
 // For event log filter
-import { usePublicClient } from "wagmi"
-import erc721Abi from "@/abi/erc721"
-import erc1155Abi from "@/abi/erc1155"
 
 export default function ImportPage() {
     const [screen, setScreen] = useState<"metadata" | "token_balance">("metadata")
@@ -24,6 +24,7 @@ export default function ImportPage() {
     const [tokenUri, setTokenUri] = useState<string>("")
     const [accountTokens, setAccountTokens] = useState<Partial<NftTokenType>[]>([])
     const { address, isConnected } = useAuthStatus()
+    const router = useRouter()
     const chainId = useChainId()
     const publicClient = usePublicClient()
     const erc1155Helper = useERC1155()
@@ -36,7 +37,7 @@ export default function ImportPage() {
         }
 
         const getContractMetadata = async (helper: typeof erc1155Helper | typeof erc721Helper, schema: ContractMetadataType['nftSchema']) => {
-            const [tokenName, tokenSymbol, tokenURI, ownerAddress] = await Promise.all([
+            const [tokenName, tokenSymbol, tokenURI, ownerAddress] = await Promise.allSettled([
                 helper.tokenName({contractAddress}),
                 helper.tokenSymbol({contractAddress}),
                 helper.tokenURI({contractAddress, tokenId: 1}),
@@ -44,14 +45,14 @@ export default function ImportPage() {
             ])
             
             setContractMetadata({
-                label: tokenName,
-                symbol: tokenSymbol,
-                owner: ownerAddress,
+                label: tokenName.status === "fulfilled" ? tokenName.value : "",
+                symbol: tokenSymbol.status === "fulfilled" ? tokenSymbol.value : "",
+                owner: ownerAddress.status === "fulfilled" ? ownerAddress.value : "",
                 contractAddress,
                 chainId,
                 nftSchema: schema
             })
-            setTokenUri(tokenURI)
+            setTokenUri(tokenURI.status === "fulfilled" ? tokenURI.value : "")
 
             return {
                 tokenName,
@@ -62,7 +63,7 @@ export default function ImportPage() {
         }
 
         // Determine contract schema (ERC1155 or ERC721)
-        const [isErc1155, isErc721] = await Promise.all([
+        const [isErc1155, isErc721] = await Promise.allSettled<boolean>([
             erc1155Helper.supportInterface({
                 contractAddress,
                 interfaceId: ERC1155Interface
@@ -74,40 +75,41 @@ export default function ImportPage() {
         ])
 
         try {
-            if (isErc1155) {
+            if (isErc1155.status === "fulfilled" && isErc1155.value) {
                 await getContractMetadata(erc1155Helper, "erc1155")
-            } else if (isErc721) {
+            } else if (isErc721.status === "fulfilled" && isErc721.value) {
                 await getContractMetadata(erc721Helper, "erc721")
+            } else {
+                throw new Error("Contract schema could not be determined. Try switching network")
             }
-        } catch (error) {
-            throw new Error("Contract schema could not be determined. Try switching network")
+        } catch (error: any) {
+            throw new Error(error.message)
         }
     }
 
     const fetchAccountERC1155Token = async () => {
-        const TransferSinglefilter = await publicClient.createContractEventFilter({
-            abi: erc1155Abi,
+        const transferSingleLogs = await publicClient.getLogs({
             address: contractMetadata?.contractAddress as any,
-            eventName: "TransferSingle",
+            event: parseAbiItem("event TransferSingle(address indexed operator, address indexed from, address indexed to, uint256 id, uint256 value)"),
             strict: true,
+            fromBlock: BigInt(0),
+            toBlock: "latest",
             args: {
                 to: address
             }
         })
 
-        const TransferBatchfilter = await publicClient.createContractEventFilter({
-            abi: erc1155Abi,
+        const transferBatchLogs = await publicClient.getLogs({
             address: contractMetadata?.contractAddress as any,
-            eventName: "TransferBatch",
+            event: parseAbiItem("event TransferBatch( address indexed operator, address indexed from, address indexed to, uint256[] ids, uint256[] values)"),
             strict: true,
+            fromBlock: BigInt(0),
+            toBlock: "latest",
             args: {
                 to: address
             }
         })
 
-        const transferSingleLogs = await publicClient.getFilterLogs({filter: TransferSinglefilter})
-        const transferBatchLogs = await publicClient.getFilterLogs({filter: TransferBatchfilter})
-        
         const tokenIds = Array.from(new Set([
             ...transferSingleLogs.map(log => log.args.id),
             ...transferBatchLogs.map(log => log.args.ids.flat()).flat()
@@ -148,20 +150,18 @@ export default function ImportPage() {
     }
 
     const fetchAccountERC721Token = async () => {
-        const TransferFilter = await publicClient.createContractEventFilter({
-            abi: erc721Abi,
+        const transferLogs = await publicClient.getLogs({
             address: contractMetadata?.contractAddress as any,
-            eventName: "Transfer",
+            event: parseAbiItem("event Transfer(address indexed from, address indexed to, uint256 indexed tokenId)"),
             strict: true,
+            fromBlock: BigInt(0),
+            toBlock: "latest",
             args: {
                 to: address
             }
         })
 
-        const transferLogs = await publicClient.getFilterLogs({filter: TransferFilter})
-        console.log("transferLogs", transferLogs)
         const tokenIds = Array.from(new Set(transferLogs.map(log => log.args?.tokenId?.toString())))
-        console.log('tokenIds', tokenIds)
         const fetchTokenMetaData = async ({tokenId}: {tokenId: string}) => {
             try {
                 const owner = await erc721Helper.ownerOf({
@@ -191,7 +191,7 @@ export default function ImportPage() {
             }
         }
 
-        const accountTokens = await Promise.all(tokenIds.map(tokenId => fetchTokenMetaData({tokenId})))
+        const accountTokens = await Promise.all(tokenIds.map(tokenId => fetchTokenMetaData({tokenId: tokenId as string})))
         return accountTokens.filter(Boolean) as Partial<NftTokenType>[]
     }
 
@@ -205,28 +205,36 @@ export default function ImportPage() {
         } else {
             throw new Error("Contract schema is invalid")
         }
+
+        if (accountTokens.length === 0) {
+            throw new Error("We couldn't find any tokens for this contract in your wallet")
+        }
+
         setAccountTokens(accountTokens)
         setScreen("token_balance")
     }
 
-    const uploadAccountTokens = async () => {
+    const uploadAccountTokens = async (collection: string) => {
         const response = await fetcher(apiRoutes.import, {
             method: "POST",
             body: JSON.stringify({
                 contract: contractMetadata,
-                tokens: accountTokens
+                tokens: accountTokens,
+                xcollection: collection
             })
         })
 
-        console.log("response", response)
-
         if (response.success) {
             // navigate to contract page
+            router.push(replaceUrlParams(appRoutes.viewContract, {
+                chainId: contractMetadata?.chainId?.toString() as string,
+                contractAddress: contractMetadata?.contractAddress as string
+            }))
         }
     }
  
     return (
-        <div className="max-w-md mx-auto flex flex-col items-center gap-4">
+        <div className="mx-auto">
             <h1 className="text-xl py-6">Import NFT Contract token</h1>
             {
                 isConnected ? 
@@ -240,7 +248,7 @@ export default function ImportPage() {
                             />
                         </div>
                         :
-                        <div>
+                        <div className="max-w-md">
                             <ImportForm 
                                 importHandler={handleMetadataFetch}
                             />

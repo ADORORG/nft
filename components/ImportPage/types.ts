@@ -11,7 +11,7 @@ export interface ContractImportFormProps {
 
 export interface TokenListProps {
     tokens: Partial<NftTokenType>[];
-    nextHandler: () => Promise<void>;
+    nextHandler: (collection: string) => Promise<void>;
 }
 
 export interface TokenPreviewProps {

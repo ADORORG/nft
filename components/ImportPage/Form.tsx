@@ -2,6 +2,7 @@
 import type { ContractImportFormProps } from "./types"
 import { useState } from "react"
 import { toast } from "react-hot-toast"
+import { getFetcherErrorMessage } from "@/utils/network"
 import { InputField } from "@/components/Form"
 import Button from "@/components/Button"
 
@@ -15,14 +16,14 @@ export default function ImportContractAddressForm(props: ContractImportFormProps
             setLoading(true)
             await importHandler(contractAddress)
         } catch (error: any) {
-            toast.error(error.message)
+            toast.error(getFetcherErrorMessage(error))
         } finally {
             setLoading(false)
         }
     }
 
     return (
-        <div className="flex flex-col md:flex-row items-center gap-3 my-6">
+        <div className="flex flex-col gap-3 my-2">
             <InputField
                 className="rounded"
                 label="Contract Address"
