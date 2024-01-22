@@ -48,7 +48,7 @@ async function importContractToken(req: NextRequest, _: {}, { user }: {user: Acc
             chainId: contract.chainId,
             nftSchema: contract.nftSchema,
             nftEdition: 'private',
-            version: '',
+            version: '1', // must be valid version, we stick with 1 for because its imported
             imported: true,
             draft: false,
             royalty: 0,
@@ -77,8 +77,7 @@ async function importContractToken(req: NextRequest, _: {}, { user }: {user: Acc
         const queriedTokens = await getTokensByQuery({
             contract: existingContract._id,
             tokenId: {$in: tokens.map(token => token.tokenId)}
-        }, {select: '_id'})
-        
+        }, {select: '_id tokenId -contract -owner -xcollection'})
         /* 
         * Find tokens in queriedTokens.
         * We'll create tokens that are not found
