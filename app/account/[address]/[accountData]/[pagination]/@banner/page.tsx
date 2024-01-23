@@ -2,6 +2,7 @@ import type { PageProps } from "../types"
 import Banner from "@/components/Banner"
 import SocialIcon from "@/components/SocialIcon"
 import AccountAvatar from "@/components/UserAccountAvatar"
+import AccountVerifyBadge from "@/components/UserAccountAvatar/VerifyBadge"
 import { FiatCurrencyDisplay } from "@/components/Currency"
 // Server
 import mongoooseConnectionPromise from "@/wrapper/mongoose_connect"
@@ -48,8 +49,9 @@ export default async function Page({params: {address}}: {params: PageProps}) {
                     Account {name} 
                 </Banner.Heading>
 
-                <Banner.Text>
+                <Banner.Text className="flex gap-2 items-center">
                     <span className="select-all break-words">{address}</span>
+                    <AccountVerifyBadge account={account} />
                 </Banner.Text>
                 <h5 className="pb-4 text-lg">
                     Value:&nbsp; 

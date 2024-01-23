@@ -1,6 +1,7 @@
 import type AccountType from "@/lib/types/account"
 import Link from "next/link"
 import UserAccountAvatar from "./AccountAvatar"
+import AccountVerifyBadge from "./VerifyBadge"
 import appRoutes from "@/config/app.route"
 import { cutAddress } from "@/utils/main";
 
@@ -31,6 +32,7 @@ const UserAccountAvatarWithLink: React.FC<AccountAvatarWithLinkProps> = ({accoun
             <span>
                 {cutAddress(address, prefix, suffix)}
             </span>
+            <AccountVerifyBadge account={account} />
         </Link>
     )
 }
