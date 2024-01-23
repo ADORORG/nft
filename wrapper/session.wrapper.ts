@@ -12,7 +12,7 @@ import { CustomRequestError } from '@/lib/error/request'
 export default function withSession<T extends Function>(func: T, adminOnly: boolean = false) {
     return async function withSession(request: NextRequest, ...restParams: any[]) {
         const session = await getAccountSession(request as any)
-        if (!session) {
+        if (!session ||  session?.user?.banned) {
             return Promise.reject(new CustomRequestError('Unauthorized', 401))
         }
         if (adminOnly && (!session?.user?.roles || !session?.user?.roles.includes('admin'))) {
