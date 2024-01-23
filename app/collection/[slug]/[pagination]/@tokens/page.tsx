@@ -12,7 +12,7 @@ export default async function Page({params: {slug, pagination: pageNumber}}: {pa
     return (
         <div>
             {/* Collection tokens */}
-            <div className="flex flex-row flex-wrap gap-4 my-4 pt-8">
+            <div className="flex flex-row flex-wrap items-center justify-center lg:justify-start gap-4 my-4 px-4 pt-8">
                 {   
                     collectionTokens &&
                     collectionTokens.length ?

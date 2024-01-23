@@ -63,7 +63,7 @@ export default async function Page({params}: {params: PageProps}) {
                         </Banner.Heading>
 
                         <Banner.Text>
-                            <span className="select-all">{contractAddress}</span>
+                            <span className="select-all break-all">{contractAddress}</span>
                         </Banner.Text>
                         <div className="flex flex-col gap-4 pb-4">
                             <div className="flex flex-row items-center">
@@ -93,7 +93,7 @@ export default async function Page({params}: {params: PageProps}) {
 
                 {/* Contract token */}
 
-                <div className="flex flex-row flex-wrap gap-4 my-4 pt-8">
+                <div className="flex flex-row flex-wrap items-center justify-center lg:justify-start gap-4 my-4 px-4 pt-8">
                     {   
                         tokens &&
                         tokens.length ?

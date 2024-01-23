@@ -90,13 +90,13 @@ function TokenPreviewCard(props: TokenPreviewProps) {
 
     return (
         <div className="flex flex-col gap-3 w-[290px] h-[320px] rounded p-4 bg-gray-100 dark:bg-gray-900 hover:bg-opacity-60 transition drop-shadow-xl">
-            <div className="py-2">
+            <div className="py-2 w-[220px] h-[220px]">
                 <MediaPreview
                     src={token.media}
                     type={"image/*"}
                     loadingComponent={<MediaSkeleton className="w-full h-full" />}
                     previewClassName="flex justify-center items-center w-full h-full"
-                    className="max-w-[220px] max-h-[220]"
+                    className="max-w-[220px] max-h-[220px]"
                 />
             </div>
             <h4 

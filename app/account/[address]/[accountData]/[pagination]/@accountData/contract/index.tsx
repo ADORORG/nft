@@ -42,7 +42,7 @@ export default async function Page({address, pagination: pageNumber}: PageProps)
     return (
         <div>
             {/* Account contract */}
-            <div className="flex flex-row justify-center md:justify-start flex-wrap gap-4 mb-10 pt-6 pb-12">
+            <div className="flex flex-row flex-wrap items-center justify-center lg:justify-start flex-wrap gap-4 mb-10 px-4 pt-6 pb-12">
                 {   
                     contracts &&
                     contracts.length ?

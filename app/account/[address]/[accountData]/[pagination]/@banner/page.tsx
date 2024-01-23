@@ -50,7 +50,7 @@ export default async function Page({params: {address}}: {params: PageProps}) {
                 </Banner.Heading>
 
                 <Banner.Text className="flex gap-2 items-center">
-                    <span className="select-all break-words">{address}</span>
+                    <span className="select-all break-all">{address}</span>
                     <AccountVerifyBadge account={account} />
                 </Banner.Text>
                 <h5 className="pb-4 text-lg">

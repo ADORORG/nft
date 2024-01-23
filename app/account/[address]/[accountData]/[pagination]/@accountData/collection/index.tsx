@@ -37,7 +37,7 @@ export default async function Page({address, pagination: pageNumber}: PageProps)
     return (
         <div>
             {/* Collection tokens */}
-            <div className="flex flex-row justify-center md:justify-start flex-wrap gap-4 mb-10 pt-6 pb-12">
+            <div className="flex flex-row flex-wrap items-center justify-center lg:justify-start gap-4 mb-10 px-4 pt-6 pb-12">
                 {   
                     collections &&
                     collections.length ?
@@ -45,7 +45,7 @@ export default async function Page({address, pagination: pageNumber}: PageProps)
                         <CollectionCard
                             key={collection?._id?.toString()}
                             collection={collection}     
-                        />                        
+                        />        
                     ))
                     :
                     <p className="text-center">Nothing&apos;s here</p>
