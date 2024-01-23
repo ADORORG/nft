@@ -47,6 +47,8 @@ const apiRoutes = {
     searchContract: "/api/search/contract",
     /** Search nft contract event */
     searchEvent: "/api/search/event",
+    /** Search user account */
+    searchAccount: "/api/search/account",
     /** Get draft token */
     getDraftToken: "/api/draft/token",
     /** Get draft contract */
@@ -82,10 +84,6 @@ const apiRoutes = {
     getAllCurrency: "/api/currency/getAll",
     /** Get currency by chain Id */
     getCurrenciesByChain: "/api/currency/chain/:chainId",
-    /** Add new currency. Callable by admin */
-    addNewCurrency: "/api/currency/add",
-    /** Update a currency. Substituting the currency _id for 'currencyDocId' in params  */
-    updateCurrency: "/api/currency/update/:currencyDocId",
     /** Import a contract and its tokens */
     import: "/api/import",
     // V2 routes
@@ -99,6 +97,16 @@ const apiRoutes = {
     uploadCollectionMedia: "/api/v2/create/media/collection/:docId",
     /** Upload file for a event */
     uploadEventMedia: "/api/v2/create/media/event/:docId",
+
+    // Admin routes
+    /** Add new currency. Callable by admin */
+    addNewCurrency: "/api/currency/add",
+    /** Update a currency. Substituting the currency _id for 'currencyDocId' in params  */
+    updateCurrency: "/api/currency/update/:currencyDocId",
+    /** Ban/unban an account */
+    banAccount: "/api/admin/account/ban",
+    /** Verify/unverify an account */
+    verifyAccount: "/api/admin/account/verify",
 }
 
 export default apiRoutes

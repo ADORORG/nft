@@ -12,6 +12,10 @@ export default interface AccountType {
     email?: string;
     /** User email verification status */
     emailVerified?: boolean;
+    /** Platform Verification status */
+    verified?: boolean;
+    /** Banned status */
+    banned?: boolean;
     /** 
      * @deprecated - We are using `profileMedia` instead.
      * Ipfs hash for this account image */

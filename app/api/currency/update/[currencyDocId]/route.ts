@@ -1,18 +1,11 @@
-import type AccountType from '@/lib/types/account'
 import mongooseConnectPromise from '@/wrapper/mongoose_connect'
 import { CustomRequestError } from '@/lib/error/request'
-import { validateCurrency, setCurrencyData, setAccountDetails } from '@/lib/handlers'
+import { validateCurrency, setCurrencyData } from '@/lib/handlers'
 import { withRequestError, withSession } from '@/wrapper'
 import { type NextRequest, NextResponse } from 'next/server'
 
-async function updateCurrency(request: NextRequest, { params }: { params: {currencyDocId: string} }, { user }: {user: AccountType}) {
+async function updateCurrency(request: NextRequest, { params }: { params: {currencyDocId: string} }) {
     await mongooseConnectPromise
-
-    const userAccount = await setAccountDetails(user.address, {})
-
-    if (!userAccount || !userAccount.roles || !userAccount.roles.includes('admin')) {
-        throw new CustomRequestError('Unauthorized', 401)
-    }
 
     const formData = await request.json()
     // validate the Currency data
@@ -43,6 +36,6 @@ async function updateCurrency(request: NextRequest, { params }: { params: {curre
 }
 
 // wrap error and session handler
-const wrappedPost = withRequestError(withSession(updateCurrency))
+const wrappedPost = withRequestError(withSession(updateCurrency, true))
 
 export { wrappedPost as POST}

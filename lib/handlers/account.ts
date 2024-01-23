@@ -61,11 +61,26 @@ export function getAccountsByEmail(email: string | string[]): Promise<AccountTyp
  * @param skip - Accounts to skip in find query
  * @returns a maximum of 100 accounts
  */
-export function getAccountsByQuery(query: Record<string, any>, skip: number = 0) {
-    return AccountModel.find({...query})
+export function getAccountsByQuery(
+    query: Record<string, any>, 
+    options: {
+        limit?: number,
+        skip?: number,
+        sort?: Record<string, any>,
+        select?: string
+}) {
+    const {
+        limit = 20,
+        skip = 0,
+        sort = {createdAt: -1},
+        select = ''
+    } = options
+
+    return AccountModel.find(query)
     .skip(skip)
-    .limit(100)
-    .sort({createdAt: -1})
+    .limit(limit)
+    .sort(sort)
+    .select(select)
     .lean()
     .exec()
 }

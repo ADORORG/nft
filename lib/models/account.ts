@@ -18,6 +18,8 @@ const AccountSchema = new Schema<AccountType>({
     name: String,
     email: {type: String, lowercase: true},
     emailVerified: {type: Boolean, default: false},
+    verified: {type: Boolean, default: false},
+    banned: {type: Boolean, default: false},
     image: String,
     profileMedia: String,
     profileMediaType: String,
