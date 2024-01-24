@@ -51,8 +51,12 @@ const nextConfig = {
                 destination: '/account/:address/collection/1',
             },
             {
-                source: '/account/:address/marketplace',
-                destination: '/account/:address/marketplace/1',
+                source: '/account/:address/offer_received',
+                destination: '/account/:address/offer_received/1',
+            },
+            {
+                source: '/account/:address/offer_sent',
+                destination: '/account/:address/offer_sent/1',
             },
             {
                 source: '/account/:address/contract',

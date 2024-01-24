@@ -1,6 +1,6 @@
 import type { PageProps } from "../../types"
 import type { PopulatedMarketOrderType } from "@/lib/types/market"
-import { MarketListingCard } from "@/components/Card"
+import MarketplaceTable from "@/components/Table/Marketplace"
 import Pagination from "@/components/Pagination"
 import appRoute from "@/config/app.route"
 import { replaceUrlParams } from "@/utils/main"
@@ -15,7 +15,8 @@ async function getServerSideData({address, pageNumber}: {address: string, pageNu
     await mongoooseConnectionPromise
     
     const query = {
-        $or: [{seller: address.toLowerCase()}, {buyer: address.toLowerCase()}]
+        seller: address.toLowerCase(),
+        saleType: "offer"
     }
 
     const [ marketOrders, marketOrdersCount ] = await Promise.all([
@@ -23,7 +24,7 @@ async function getServerSideData({address, pageNumber}: {address: string, pageNu
             limit: DOCUMENT_BATCH, 
             skip: (pageNumber - 1) * DOCUMENT_BATCH
         }),
-        countMarketOrderByQuery(query)
+        countMarketOrderByQuery(query) 
     ])
     return {
         marketOrders: marketOrders as PopulatedMarketOrderType[],
@@ -36,26 +37,17 @@ export default async function Page({address, pagination: pageNumber}: PageProps)
 
     return (
         <div>
-            <div className="flex flex-row flex-wrap items-center justify-center lg:justify-start gap-4 mb-10 px-4 pt-6 pb-12">
-                {   
-                    marketOrders &&
-                    marketOrders.length ?
-                    marketOrders.map(marketOrder => (
-                        <MarketListingCard
-                            key={marketOrder?._id?.toString()}
-                            marketOrder={marketOrder}
-                        />
-                    ))
-                    :
-                    <p className="text-center">Nothing&apos;s here</p>
-                }
+            <div className="flex px-4 py-6">
+                <MarketplaceTable
+                    marketOrder={marketOrders}
+                />
             </div>
 
             <Pagination
                 totalDocument={marketOrdersCount || 0}
                 limitPerPage={DOCUMENT_BATCH}
                 currentPage={Number(pageNumber)}
-                linkPrefix={`${replaceUrlParams(appRoute.viewAccount, {address: address.toLowerCase()})}/marketplace`}
+                linkPrefix={`${replaceUrlParams(appRoute.viewAccount, {address: address.toLowerCase()})}/offer_received`}
             />
         </div>
     )
