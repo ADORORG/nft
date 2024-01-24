@@ -5,9 +5,10 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "react-hot-toast"
 import { Tag as TagIcon } from "react-bootstrap-icons"
-import { useNetwork } from "wagmi"
+import { useNetwork, useBalance } from "wagmi"
 import { useAuthStatus } from "@/hooks/account"
 import { useAllCurrencies } from "@/hooks/fetch"
+import { useContractChain } from "@/hooks/contract"
 import { useMarketOffer } from "@/hooks/contract/marketplace"
 import { InputField } from "@/components/Form"
 import { Select } from "@/components/Select"
@@ -29,6 +30,7 @@ export default function ShowOfferForm(props: MarketOrdersProp & TokenPageProps) 
     const { session, isConnected } = useAuthStatus()
     const { chain } = useNetwork()
     const { currencies } = useAllCurrencies()
+    const contractChain = useContractChain(props.token.contract)
     const marketOffer = useMarketOffer()
     /** Check for active offer from this session account for this token */
     const activeOfferFromAccount = session && props?.orders?.find(order => order.status === "active" && order.saleType === "offer" && order.buyer?.address.toLowerCase() === session.user.address)
@@ -52,6 +54,8 @@ export default function ShowOfferForm(props: MarketOrdersProp & TokenPageProps) 
                 /** This should not happen */
                 throw new Error("Please select a payment currency")
             }
+            // Must be connect to network where the contract was deployed
+            await contractChain.ensureContractChainAsync()
 
             /** Create market order for this offer*/
             const marketOfferData = {

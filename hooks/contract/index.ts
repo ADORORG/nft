@@ -87,6 +87,32 @@ export function useERC20Approval() {
     }
 }
 
+export function useERC20Balance() {
+    const publicClient = usePublicClient()
+
+    const getERC20BalanceAsync = useCallback(async ({
+        contractAddress,
+        owner,
+    }: {
+        contractAddress: string,
+        owner: string,
+    }) => {
+        const balance = await publicClient.readContract({
+            address: getAddress(contractAddress),
+            abi: erc20Abi,
+            functionName: "balanceOf",
+            args: [owner]
+        }) as bigint
+
+        return balance
+    }, [publicClient])
+
+    return {
+        getERC20BalanceAsync
+    }
+
+}
+
 export function useChainById(id: number) {
     return supportedChains.find(chain => chain.id === id)
 }

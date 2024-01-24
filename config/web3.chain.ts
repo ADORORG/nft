@@ -4,7 +4,7 @@ import {
     // optimism,
     // bsc,
     goerli,
-    // baseGoerli,
+    baseGoerli,
     type Chain
 } from "wagmi/chains"
 
@@ -40,7 +40,7 @@ const supportedChains = [
     // bsc,
     // testnet
     goerli,
-    // baseGoerli
+    baseGoerli
 ]
 
 
