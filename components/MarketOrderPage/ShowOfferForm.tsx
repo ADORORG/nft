@@ -5,7 +5,6 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "react-hot-toast"
 import { Tag as TagIcon } from "react-bootstrap-icons"
-import { useNetwork, useBalance } from "wagmi"
 import { useAuthStatus } from "@/hooks/account"
 import { useAllCurrencies } from "@/hooks/fetch"
 import { useContractChain } from "@/hooks/contract"
@@ -28,7 +27,6 @@ export default function ShowOfferForm(props: MarketOrdersProp & TokenPageProps) 
     const [offerCurrency, setOfferCurrency] = useState("")
     const [offerDeadline, setOfferDeadline] = useState(0)
     const { session, isConnected } = useAuthStatus()
-    const { chain } = useNetwork()
     const { currencies } = useAllCurrencies()
     const contractChain = useContractChain(props.token.contract)
     const marketOffer = useMarketOffer()
@@ -135,8 +133,8 @@ export default function ShowOfferForm(props: MarketOrdersProp & TokenPageProps) 
                         {
                             currencies && 
                             currencies.length &&
-                            /** If not chain (i.e wallet is not connected) show all currencies */
-                            currencies.filter(c => !chain || c.chainId === chain.id)
+                            /** Show currencies that available on the token's contract network/chain */
+                            currencies.filter(c => c.chainId === props.token.contract.chainId)
                             /** Remove chain coin like ETH, BNB. 
                              * Only tokens are accepted for offer */
                             .filter(c => !!Number(c.address))

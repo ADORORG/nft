@@ -2,7 +2,7 @@ import type { PopulatedMarketOrderType } from "@/lib/types/market"
 import { useCallback } from "react"
 import { usePublicClient, useWalletClient, useBalance } from "wagmi"
 import { parseUnits, getAddress } from "viem"
-import { useERC20Approval, useERC20Balance } from "@/hooks/contract"
+import { useERC20Approval } from "@/hooks/contract"
 import { useAuthStatus } from "@/hooks/account"
 import { isAddressZero } from "@/utils/main"
 // ABI
@@ -228,7 +228,6 @@ export function useAuctionOrder() {
     const publicClient = usePublicClient()
     const { session } = useAuthStatus()
     const erc20Approval = useERC20Approval()
-    const erc20Balance = useERC20Balance()
     const nativeTokenBalance = useBalance({
         address: session?.user.address as any, 
         formatUnits: 'wei'
@@ -276,14 +275,6 @@ export function useAuctionOrder() {
                 ]
             })
         } else {
-            const tokenBalance = await erc20Balance.getERC20BalanceAsync({
-                contractAddress: order.currency.address,
-                owner: session?.user.address as string,
-            })
-
-            if (tokenBalance < bigOrderPrice) {
-                throw new Error("Not enough token balance")
-            }
             // Request token approval
             await erc20Approval.requestERC20ApprovalAsync({
                 requireEnoughBalance: true,
@@ -314,7 +305,7 @@ export function useAuctionOrder() {
             buyerId: session?.user.address,
         }
 
-    }, [publicClient, session, walletClient, erc20Approval, erc20Balance, nativeTokenBalance])
+    }, [publicClient, session, walletClient, erc20Approval, nativeTokenBalance])
 
     /**
      * Claim auction when it has ended
@@ -362,7 +353,6 @@ export function useFixedPriceOrder(order: PopulatedMarketOrderType) {
     const publicClient = usePublicClient()
     const { session } = useAuthStatus()
     const erc20Approval = useERC20Approval()
-    const erc20Balance = useERC20Balance()
     const nativeTokenBalance = useBalance({
         address: session?.user.address as any, 
         chainId: order.token.contract.chainId,
@@ -416,15 +406,6 @@ export function useFixedPriceOrder(order: PopulatedMarketOrderType) {
         }
 
         const buyWithERC20Token = async () => {
-            const tokenBalance = await erc20Balance.getERC20BalanceAsync({
-                contractAddress: order.currency.address,
-                owner: session?.user.address as string,
-            })
-
-            if (tokenBalance < bigOrderPrice) {
-                throw new Error("Not enough token balance")
-            }
-
             // Request token approval
             await erc20Approval.requestERC20ApprovalAsync({
                 contractAddress: order.currency.address,
@@ -455,7 +436,7 @@ export function useFixedPriceOrder(order: PopulatedMarketOrderType) {
             buyWithERC20Token
         }
 
-    }, [walletClient, publicClient, session, erc20Approval, erc20Balance, nativeTokenBalance, order, marketplaceAbi, marketplaceContractAddress])
+    }, [walletClient, publicClient, session, erc20Approval, nativeTokenBalance, order, marketplaceAbi, marketplaceContractAddress])
 
 
     const nonAtomicBuy = useCallback(() => {
@@ -463,15 +444,6 @@ export function useFixedPriceOrder(order: PopulatedMarketOrderType) {
         const bigOrderPrice = parseUnits(order.price, order.currency.decimals)
 
         const buyWithERC20Token = async () => {
-            const tokenBalance = await erc20Balance.getERC20BalanceAsync({
-                contractAddress: order.currency.address,
-                owner: session?.user.address as string,
-            })
-
-            if (tokenBalance < bigOrderPrice) {
-                throw new Error("Not enough token balance")
-            }
-
             // Request token approval
             await erc20Approval.requestERC20ApprovalAsync({
                 contractAddress: order.currency.address,
@@ -521,7 +493,7 @@ export function useFixedPriceOrder(order: PopulatedMarketOrderType) {
             buyWithERC20Token
         }
         
-    }, [walletClient, publicClient, erc20Approval, erc20Balance, nativeTokenBalance, session, order, marketplaceAbi, marketplaceContractAddress])
+    }, [walletClient, publicClient, erc20Approval, nativeTokenBalance, session, order, marketplaceAbi, marketplaceContractAddress])
 
     const sellForERC20 = useCallback(() => {
         /** Big order price */
@@ -600,21 +572,11 @@ export function useFixedPriceOrder(order: PopulatedMarketOrderType) {
 export function useMarketOffer() {
     const erc20Approval = useERC20Approval()
     const { session } = useAuthStatus()
-    const erc20Balance = useERC20Balance()
     const signatures = useSignatures()
     
     const requestOfferData = useCallback(async (order: PopulatedMarketOrderType) => {
         /** Big number of offer price */
         const bigOrderPrice = parseUnits(order.price, order.currency.decimals)
-        const tokenBalance = await erc20Balance.getERC20BalanceAsync({
-            contractAddress: order.currency.address,
-            owner: session?.user.address as string,
-        })
-
-        if (tokenBalance < bigOrderPrice) {
-            throw new Error("Not enough token balance")
-        }
-
         /** Get the default marketplace contract address */
         const marketplaceContractAddress = getMarketplaceContract(order.token.contract.chainId, defaultMarketplaceVersion)
 
@@ -642,7 +604,7 @@ export function useMarketOffer() {
 
         return orderSignature
 
-    }, [erc20Approval, session, erc20Balance, signatures])
+    }, [erc20Approval, session, signatures])
 
     return {
         requestOfferData
