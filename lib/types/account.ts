@@ -39,7 +39,7 @@ export default interface AccountType {
 }
 
 export interface AccountNotificationType {
-    newMintEvent: boolean;
+    newMintOnEvent: boolean;
     eventMintedOut: boolean;
     marketOrderCreated: boolean;
     marketOrderCancelled: boolean;

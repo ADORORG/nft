@@ -1,17 +1,23 @@
-import type { PopulatedNftContractEventType } from '@/lib/types/event'
 import { AppInfo } from '@/lib/app.config'
-import { replaceUrlParams } from '@/utils/main'
 import socialLink from '@/config/social.link'
-import appRoutes from '@/config/app.route'
 
-export default function newMintEventEmailTemplate(mintEvent: PopulatedNftContractEventType) {
+interface ActivityNotificationEmailTemplateType {
+    buttonLink: string;
+    buttonLabel: string;
+    title: string;
+    mainContent: string;
+} 
+
+export default function activityNotificationEmailTemplate(data: ActivityNotificationEmailTemplateType) {
 	const { name, description, website } = AppInfo
 	const assetUrl = website + '/email/images'
-	const tld = process.env.NEXTAUTH_URL
-	const rawLink = replaceUrlParams(`${tld}/${appRoutes.viewEvent}`, 
-	{ 
-		eventDocId: mintEvent._id?.toString() as string, 
-	})
+    const {
+        buttonLink,
+        buttonLabel,
+        title,
+        mainContent
+    } = data
+
 	
 	return `
 		<!DOCTYPE html>
@@ -138,7 +144,7 @@ export default function newMintEventEmailTemplate(mintEvent: PopulatedNftContrac
 		<td class="pad" style="padding-bottom:15px;padding-left:25px;padding-right:25px;padding-top:15px;">
 		<div style="color:#ffffff;font-family:'Cabin', Arial, 'Helvetica Neue', Helvetica, sans-serif;font-size:42px;line-height:120%;text-align:center;mso-line-height-alt:50.4px;">
 		<p style="margin: 0; word-break: break-word;"><span>
-			New mint on ${mintEvent.tokenName} event
+			${title}
 		</span></p>
 		</div>
 		</td>
@@ -149,7 +155,7 @@ export default function newMintEventEmailTemplate(mintEvent: PopulatedNftContrac
 		<td class="pad" style="padding-bottom:5px;padding-left:30px;padding-right:30px;padding-top:5px;">
 		<div style="color:#dcdcdc;font-family:'Cabin', Arial, 'Helvetica Neue', Helvetica, sans-serif;font-size:16px;line-height:180%;text-align:center;mso-line-height-alt:28.8px;">
 		<p style="margin: 0; word-break: break-word;"><span>
-			Congratutions! There's new mint on ${mintEvent.tokenName} event. You can view it on ${name} marketplace.
+			${mainContent}
 		</span></p>
 		</div>
 		</td>
@@ -163,8 +169,8 @@ export default function newMintEventEmailTemplate(mintEvent: PopulatedNftContrac
 		<w:anchorlock/>
 		<v:textbox inset="0px,0px,0px,0px">
 		<center style="color:#ffffff; font-family:Arial, sans-serif; font-size:16px">
-		<![endif]--><a href="${rawLink}" style="text-decoration:none;display:inline-block;color:#ffffff;background-color:#ab084f;border-radius:40px;width:auto;border-top:0px solid transparent;font-weight:undefined;border-right:0px solid transparent;border-bottom:0px solid transparent;border-left:0px solid transparent;padding-top:5px;padding-bottom:5px;font-family:'Cabin', Arial, 'Helvetica Neue', Helvetica, sans-serif;font-size:16px;text-align:center;mso-border-alt:none;word-break:keep-all;" target="_blank"><span style="padding-left:30px;padding-right:30px;font-size:16px;display:inline-block;letter-spacing:normal;"><span style="word-break: break-word; line-height: 32px;">
-				VIEW EVENT
+		<![endif]--><a href="${buttonLink}" style="text-decoration:none;display:inline-block;color:#ffffff;background-color:#ab084f;border-radius:40px;width:auto;border-top:0px solid transparent;font-weight:undefined;border-right:0px solid transparent;border-bottom:0px solid transparent;border-left:0px solid transparent;padding-top:5px;padding-bottom:5px;font-family:'Cabin', Arial, 'Helvetica Neue', Helvetica, sans-serif;font-size:16px;text-align:center;mso-border-alt:none;word-break:keep-all;" target="_blank"><span style="padding-left:30px;padding-right:30px;font-size:16px;display:inline-block;letter-spacing:normal;"><span style="word-break: break-word; line-height: 32px;">
+			${buttonLabel}
 		</span></span></a><!--[if mso]></center></v:textbox></v:roundrect><![endif]--></div>
 		</td>
 		</tr>
@@ -173,7 +179,7 @@ export default function newMintEventEmailTemplate(mintEvent: PopulatedNftContrac
 		<tr>
 		<td class="pad" style="padding-bottom:10px;padding-left:30px;padding-right:30px;padding-top:10px;">
 		<div style="color:#dcdcdc;font-family:'Cabin', Arial, 'Helvetica Neue', Helvetica, sans-serif;font-size:14px;line-height:180%;text-align:center;mso-line-height-alt:25.2px;">
-		<p style="margin: 0; word-break: break-word;"><span style="color: #0cc1d5;"><a href="${rawLink}" rel="noopener" style="text-decoration: none; color: #8a3b8f;" target="_blank">${rawLink}</a></span></p>
+		<p style="margin: 0; word-break: break-word;"><span style="color: #0cc1d5;"><a href="${buttonLink}" rel="noopener" style="text-decoration: none; color: #8a3b8f;" target="_blank">${buttonLink}</a></span></p>
 		</div>
 		</td>
 		</tr>

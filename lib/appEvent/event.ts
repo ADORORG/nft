@@ -2,15 +2,29 @@ import type { PopulatedNftContractEventType } from '@/lib/types/event'
 import EventEmitter from 'events'
 import striptags from 'striptags'
 import sendEmail from '@/lib/handlers/mailer'
-import newMintEventEmailTemplate from '@/lib/mail_template/new_mint_event'
-import eventMintedOutEmailTemplate from '@/lib/mail_template/event_minted_out'
+import activityNotificationEmailTemplate from '@/lib/mail_template/activity_notification'
+import appRoutes from '@/config/app.route'
+import { AppInfo } from '@/lib/app.config'
 import { setAccountDetails } from '@/lib/handlers/account'
+import { replaceUrlParams } from '@/utils/main'
+
 
 const mintingEvent = new EventEmitter()
 
 mintingEvent
 .on('newMintOnEvent', newMintOnEvent)
 .on('eventMintedOut', eventMintedOut)
+
+
+function getMintEventUrl(mintEventData: PopulatedNftContractEventType) {
+    const tld = process.env.NEXTAUTH_URL
+    const rawLink = replaceUrlParams(`${tld}/${appRoutes.viewEvent}`, 
+    { 
+        eventDocId: mintEventData._id?.toString() as string, 
+    })
+
+    return rawLink
+}
 
 async function newMintOnEvent({mintEventData}: {mintEventData: PopulatedNftContractEventType}) {
     try {
@@ -19,16 +33,23 @@ async function newMintOnEvent({mintEventData}: {mintEventData: PopulatedNftContr
         if (
             eventOwner.emailVerified && (
                 !eventOwner?.notification || 
-                eventOwner?.notification.newMintEvent
+                eventOwner?.notification.newMintOnEvent
             )
         ) {
             // newMintEvent is enabled or not set by user. The default is true
             // Send email
+            const templateConfig = {
+                buttonLink: getMintEventUrl(mintEventData),
+                buttonLabel: 'View Event',
+                title: 'New mint on your event',
+                mainContent: `Congratutions! There is a new mint on ${mintEventData.tokenName} event. You can view it on ${AppInfo.name} marketplace.`
+            }
+
             await sendEmail({
                 to: eventOwner.email as string,
                 subject: 'New mint on your event',
-                text: striptags(newMintEventEmailTemplate(mintEventData)),
-                html: newMintEventEmailTemplate(mintEventData)
+                text: striptags(activityNotificationEmailTemplate(templateConfig)),
+                html: activityNotificationEmailTemplate(templateConfig)
             })
         }
     
@@ -49,11 +70,18 @@ async function eventMintedOut({mintEventData}: {mintEventData: PopulatedNftContr
         ) {
             // eventMintedOut is enabled or not set by user. The default is true
             // Send email
+            const templateConfig = {
+                buttonLink: getMintEventUrl(mintEventData),
+                buttonLabel: 'View Event',
+                title: `${mintEventData.tokenName} minted out!`,
+                mainContent: `Congratutions! ${mintEventData.tokenName} minted out. You can view it on ${AppInfo.name} marketplace.`
+            }
+
             await sendEmail({
                 to: eventOwner.email as string,
                 subject: 'Your event is minted out!',
-                text: striptags(eventMintedOutEmailTemplate(mintEventData)),
-                html: eventMintedOutEmailTemplate(mintEventData)
+                text: striptags(activityNotificationEmailTemplate(templateConfig)),
+                html: activityNotificationEmailTemplate(templateConfig)
             })
         }
     
