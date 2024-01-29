@@ -6,6 +6,18 @@ import type AccountType from '../types/account';
 
 const { accounts } = dbCollections;
 
+const NotificationSchema = new Schema({
+    newMintEvent: {type: Boolean, default: true},
+    eventMintedOut: {type: Boolean, default: true},
+    marketOrderCreated: {type: Boolean, default: true},
+    marketOrderCancelled: {type: Boolean, default: true},
+    marketOrderSold: {type: Boolean, default: true},
+    offerReceivedOnToken: {type: Boolean, default: true},
+    offerAcceptedOnToken: {type: Boolean, default: true},
+    marketAuctionEnded: {type: Boolean, default: true},
+    newMarketBid: {type: Boolean, default: true}
+}, {_id: false})
+
 const AccountSchema = new Schema<AccountType>({
     _id: {type: String, lowercase: true}, // same as address
 	address: {
@@ -26,6 +38,7 @@ const AccountSchema = new Schema<AccountType>({
     twitter: String,
     discord: String,
     roles: [String], // a quick hack added to allow admin add currencies
+    notification: NotificationSchema,
     createdAt: {type: Date},
     updatedAt: {type: Date}
 }, {

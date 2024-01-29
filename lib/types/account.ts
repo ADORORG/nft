@@ -32,7 +32,20 @@ export default interface AccountType {
     twitter?: string;
     /** An optional Discord invite absolute url */
     discord?: string;
-    /** An optional Telegram group/channel url */
+    /** Account Email Notification setting */
+    notification?: AccountNotificationType;
     createdAt?: Date;
     updatedAt?: Date;
+}
+
+export interface AccountNotificationType {
+    newMintEvent: boolean;
+    eventMintedOut: boolean;
+    marketOrderCreated: boolean;
+    marketOrderCancelled: boolean;
+    marketOrderSold: boolean;
+    offerReceivedOnToken: boolean;
+    offerAcceptedOnToken: boolean;
+    marketAuctionEnded: boolean;
+    newMarketBid: boolean;
 }
