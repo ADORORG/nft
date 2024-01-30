@@ -9,9 +9,9 @@ import { setAccountDetails } from '@/lib/handlers/account'
 import { replaceUrlParams } from '@/utils/main'
 
 
-const mintingEvent = new EventEmitter()
+const mintingEventEmitter = new EventEmitter()
 
-mintingEvent
+mintingEventEmitter
 .on('newMintOnEvent', newMintOnEvent)
 .on('eventMintedOut', eventMintedOut)
 
@@ -90,4 +90,4 @@ async function eventMintedOut({mintEventData}: {mintEventData: PopulatedNftContr
     }
 }
 
-export default mintingEvent
+export default mintingEventEmitter

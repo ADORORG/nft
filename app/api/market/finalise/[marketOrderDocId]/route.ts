@@ -1,11 +1,13 @@
-import mongooseConnectPromise from '@/wrapper/mongoose_connect'
+import { type FinaliseMarketOrderType } from '@/lib/types/common'
+import { type NextRequest, NextResponse } from 'next/server'
+import type { Types } from 'mongoose'
 import { CustomRequestError } from '@/lib/error/request'
 import { setMarketOrderStatusToSold, setTokenOwner } from '@/lib/handlers'
 import { withRequestError, withSession } from '@/wrapper'
 import { isEthereumTransactionHash, isEthereumAddress } from '@/utils/main'
-import { type FinaliseMarketOrderType } from '@/lib/types/common'
-import { type NextRequest, NextResponse } from 'next/server'
-import type { Types } from 'mongoose'
+import mongooseConnectPromise from '@/wrapper/mongoose_connect'
+import MarketplaceEventEmitter from '@/lib/appEvent/marketplace'
+
 /**
  * Finalise market order by marking the order as as sold
  */
@@ -40,6 +42,8 @@ async function finaliseMarketOrder(request: NextRequest, { params }: {params: {m
     
     // Transfer ownership
     await setTokenOwner(soldMarketOrder.token._id as Types.ObjectId, buyerId)
+
+    MarketplaceEventEmitter.emit('marketOrderSold', {marketOrder: soldMarketOrder})
 
     return NextResponse.json({
         success: true,

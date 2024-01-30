@@ -1,12 +1,11 @@
-import mongooseConnectPromise from '@/wrapper/mongoose_connect'
+import { type NextRequest, NextResponse } from 'next/server'
+import type AccountType from '@/lib/types/account'
 import { CustomRequestError } from '@/lib/error/request'
 import { setMarketOrderStatusToCancelled } from '@/lib/handlers'
 import { withRequestError, withSession } from '@/wrapper'
-import { type NextRequest, NextResponse } from 'next/server'
-import type AccountType from '@/lib/types/account'
-/**
- * Finalise market order by marking the order as as sold
- */
+import mongooseConnectPromise from '@/wrapper/mongoose_connect'
+import MarketplaceEventEmitter from '@/lib/appEvent/marketplace'
+
 async function cancelMarketOrder(_: NextRequest, { params }: {params: {marketOrderDocId: string}}, { user }: { user: AccountType}) {
     await mongooseConnectPromise
     
@@ -23,6 +22,8 @@ async function cancelMarketOrder(_: NextRequest, { params }: {params: {marketOrd
     if (!cancelledMarketOrder) {
         throw new CustomRequestError('Market order not found')
     }
+
+    MarketplaceEventEmitter.emit('marketOrderCancelled', {marketOrder: cancelledMarketOrder})
 
     return NextResponse.json({
         success: true,

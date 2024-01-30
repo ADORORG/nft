@@ -46,6 +46,7 @@ export interface AccountNotificationType {
     marketOrderSold: boolean;
     offerReceivedOnToken: boolean;
     offerAcceptedOnToken: boolean;
+    offerRejectedOnToken: boolean;
     marketAuctionEnded: boolean;
     newMarketBid: boolean;
 }

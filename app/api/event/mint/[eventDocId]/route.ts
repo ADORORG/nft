@@ -1,14 +1,15 @@
-import mongooseConnectPromise from '@/wrapper/mongoose_connect'
-import { CustomRequestError } from '@/lib/error/request'
-import { getEventById, setEventData, setAccountDetails, createManyTokens, createManyOrders} from '@/lib/handlers'
-import { withRequestError, withSession } from '@/wrapper'
 import { type NextRequest, NextResponse } from 'next/server'
-import { Types } from 'mongoose'
 import type { OnchainMintResponse } from "@/lib/types/common"
 import type { PopulatedNftContractEventType } from '@/lib/types/event'
 import type AccountType from '@/lib/types/account'
 import type NftTokenType from '@/lib/types/token'
 import type MarketOrderType from '@/lib/types/market'
+import type { Types } from 'mongoose'
+import { CustomRequestError } from '@/lib/error/request'
+import { getEventById, setEventData, setAccountDetails, createManyTokens, createManyOrders} from '@/lib/handlers'
+import { withRequestError, withSession } from '@/wrapper'
+import mongooseConnectPromise from '@/wrapper/mongoose_connect'
+import mintingEventEmitter from '@/lib/appEvent/event'
 
 async function mintOnSaleEvent(request: NextRequest, { params }: {params: {eventDocId: string}}, { user }: {user: AccountType}) {
     const mintData = await request.json() as OnchainMintResponse[]
@@ -43,7 +44,7 @@ async function mintOnSaleEvent(request: NextRequest, { params }: {params: {event
             redeemableContent: mintEventData.redeemableContent,
             // Use event tokenName as token name
             name: mintEventData.tokenName,
-            // Use xcollection to which this event belong as the description
+            // Use event tokenDescription as token description
             description: mintEventData.tokenDescription || "",
             image: mintEventData.media,
             media: mintEventData.media,
@@ -94,6 +95,20 @@ async function mintOnSaleEvent(request: NextRequest, { params }: {params: {event
             ethRaised: mintEventData.price * mintData.length
         }
     })
+
+    mintingEventEmitter.emit('newMintOnEvent', {mintEventData: updatedEvent})
+    if (
+        (
+            updatedEvent?.nftEdition === 'limited_edition' 
+            ||
+            updatedEvent?.nftEdition === 'one_of_one' 
+        )
+        &&
+        Number(updatedEvent?.supplyMinted) >= Number(updatedEvent?.supply)
+    ) {
+
+        mintingEventEmitter.emit('eventMintedOut', {mintEventData: updatedEvent})
+    }
 
     return NextResponse.json({
         success: true,
