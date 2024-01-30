@@ -228,7 +228,7 @@ export default function activityNotificationEmailTemplate(data: ActivityNotifica
 		<table border="0" cellpadding="0" cellspacing="0" class="social-table" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; display: inline-block;" width="72px">
 		<tr>
 		<td style="padding:0 0 0 4px;"><a href="${socialLink.twitter}" target="_blank"><img alt="Twitter" height="32" src="${assetUrl}/twitter2x.png" style="display: block; height: auto; border: 0;" title="twitter" width="32"/></a></td>
-		<td style="padding:0 0 0 4px;"><a href="${socialLink.discord}" target="_blank"><img alt="discord" height="32" src="${assetUrl}/discord-svgrepo-com.svg" style="display: block; height: auto; border: 0;" title="Discord" width="32"/></a></td>
+		<td style="padding:0 0 0 4px;"><a href="${socialLink.discord}" target="_blank"><img alt="discord" height="32" src="${assetUrl}/discord.png" style="display: block; height: auto; border: 0;" title="Discord" width="32"/></a></td>
 		</tr>
 		</table>
 		</div>

@@ -1,5 +1,6 @@
 import { createTransport } from 'nodemailer'
 import { CustomRequestError } from '../error/request'
+import { AppInfo } from '@/lib/app.config'
 
 interface SendEmailType {
     subject: string;
@@ -23,7 +24,7 @@ export default async function sendEmail(mailProp: SendEmailType) {
 	const transporter = createTransport(options as any)
 
 	const result = await transporter.sendMail({
-		from:  `Activity <${process.env.EMAIL_FROM}>`,
+		from:  `${AppInfo.name} <${process.env.EMAIL_FROM}>`,
         subject, 
         to, 
         html, 

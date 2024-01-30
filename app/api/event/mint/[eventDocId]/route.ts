@@ -97,6 +97,7 @@ async function mintOnSaleEvent(request: NextRequest, { params }: {params: {event
     })
 
     mintingEventEmitter.emit('newMintOnEvent', {mintEventData: updatedEvent})
+    
     if (
         (
             updatedEvent?.nftEdition === 'limited_edition' 
