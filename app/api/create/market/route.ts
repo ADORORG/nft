@@ -1,8 +1,9 @@
-import mongooseConnectPromise from '@/wrapper/mongoose_connect'
+import { type NextRequest, NextResponse } from 'next/server'
 import { CustomRequestError } from '@/lib/error/request'
 import { validateMarket, createMarketOrder, /* setAccountDetails */ } from '@/lib/handlers'
 import { withRequestError, withSession } from '@/wrapper'
-import { type NextRequest, NextResponse } from 'next/server'
+import mongooseConnectPromise from '@/wrapper/mongoose_connect'
+import MarketplaceEventEmitter from '@/lib/appEvent/marketplace'
 
 /**
  * Create market order.
@@ -24,6 +25,9 @@ async function createNewMarketOrder(request: NextRequest, _: any) {
 
     const newMarketOrder = await createMarketOrder(body)
     // console.log('newMarketOrder', newMarketOrder)
+
+    MarketplaceEventEmitter.emit('marketOrderCreated', {marketOrder: newMarketOrder})
+
     return NextResponse.json({
         success: true,
         message: 'Operation completed successfully',

@@ -66,7 +66,9 @@ export const nextAuthOptions = (req?: NextApiRequest): NextAuthOptions => {
         const { 
           email, 
           emailVerified, 
-          roles, 
+          roles,
+          verified,
+          banned,
           address,
           discord,
           twitter,
@@ -77,6 +79,8 @@ export const nextAuthOptions = (req?: NextApiRequest): NextAuthOptions => {
         const user: Record<string, unknown> = {
           email,
           emailVerified,
+          verified,
+          banned,
           address,
           discord,
           twitter,

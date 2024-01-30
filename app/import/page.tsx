@@ -1,9 +1,10 @@
+import ImportPage from "@/components/ImportPage"
 
 export default function Page() {
 
     return (
         <div>
-            <h1>Import</h1>
+            <ImportPage />
         </div>
     )
 }

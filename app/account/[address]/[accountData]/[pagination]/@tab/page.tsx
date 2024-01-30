@@ -33,9 +33,14 @@ export default function Page({params}: {params: PageProps}) {
             active: accountData === "contract"
         },
         {
-            label: "Marketplace",
-            link: `${accountPathname}/marketplace`,
-            active: accountData === "marketplace"
+            label: "Offer Received",
+            link: `${accountPathname}/offer_received`,
+            active: accountData === "offer_received"
+        },
+        {
+            label: "Offer Sent",
+            link: `${accountPathname}/offer_sent`,
+            active: accountData === "offer_sent"
         }
     ]
 

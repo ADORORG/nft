@@ -1,4 +1,4 @@
-const erc721ABI = [
+export const erc721ABI = [
 	{
 		"inputs": [
 			{

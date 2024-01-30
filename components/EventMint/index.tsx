@@ -8,6 +8,7 @@ import MintCard from "./component/MintCard"
 import Button from "@/components/Button"
 import QuickModal from "@/components/QuickModal"
 import ProgressBar from "@/components/ProgressBar"
+import AccountVerifyBadge from "@/components/UserAccountAvatar/VerifyBadge"
 import { MediaSkeleton } from "@/components/Skeleton"
 import { MediaPreview } from "@/components/MediaPreview"
 import { UserAccountAvatarWithLink } from "@/components/UserAccountAvatar"
@@ -269,10 +270,13 @@ export function EventMintCardSmall(props: EventMintProps) {
                     />
                 </div>
                 <div className="flex flex-col py-2">
-                    <h1 className="text-xl font-semibold break-all" title={eventData.tokenName}>
-                        <ChainIcon className="w-5 h-5 text-gray-100 mr-1 inline-block" />
-                        {cutString(eventData.tokenName || eventData.contract?.label, 20)}
-                    </h1>
+                    <div className="flex items-center gap-1">
+                        <h1 className="text-xl font-semibold break-all" title={eventData.tokenName}>
+                            <ChainIcon className="w-5 h-5 text-gray-100 mr-1 inline-block" />
+                            {cutString(eventData.tokenName || eventData.contract?.label, 20)}
+                        </h1>
+                        <AccountVerifyBadge account={eventData.owner} />
+                    </div>
                 </div>
             
                 <div className="w-full my-2">

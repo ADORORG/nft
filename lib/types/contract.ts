@@ -1,6 +1,6 @@
 import type { Types, /* Document */ } from 'mongoose'
 import type { EthereumAddress, NftContractSchemaType, NftContractEditionType } from './common'
-import type AccountType from './account';
+import type AccountType from './account'
 
 export default interface NftContractType /* extends Partial<Document> */ {
     /** Contract document _id */
@@ -25,7 +25,7 @@ export default interface NftContractType /* extends Partial<Document> */ {
     version: string;
     /** The account that deployed this contract */
     owner?: EthereumAddress | AccountType;
-    /** An optional label for this contract */
+    /** An optional label or name for this contract */
     label?: string;
     symbol?: string;
     /** The status of this contract. True if deployed on chain. Otherwise false */

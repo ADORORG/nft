@@ -2,6 +2,7 @@
 import { Check2Circle } from "react-bootstrap-icons"
 import { useAuthStatus } from "@/hooks/account"
 import AccountAvatar from "@/components/UserAccountAvatar"
+import AccountVerifyBadge from "@/components/UserAccountAvatar/VerifyBadge"
 
 export default function ViewProfile() {
     const { session } = useAuthStatus()
@@ -9,6 +10,7 @@ export default function ViewProfile() {
         address,
         name,
         email,
+        verified,
         emailVerified,
         twitter,
         discord
@@ -30,7 +32,10 @@ export default function ViewProfile() {
             
             <p className={fieldClassName}>
                 <span>Address</span>
-                <span className="break-all text-sm select-all">{address || notSet}</span>
+                <span className="flex gap-1 items-center">
+                    <span className="break-all text-sm select-all">{address || notSet}</span>
+                    <AccountVerifyBadge account={session?.user} />
+                </span>
             </p>
             <p className={fieldClassName}>
                 <span>Name</span>

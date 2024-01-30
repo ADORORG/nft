@@ -12,6 +12,10 @@ export default interface AccountType {
     email?: string;
     /** User email verification status */
     emailVerified?: boolean;
+    /** Platform Verification status */
+    verified?: boolean;
+    /** Banned status */
+    banned?: boolean;
     /** 
      * @deprecated - We are using `profileMedia` instead.
      * Ipfs hash for this account image */
@@ -28,7 +32,21 @@ export default interface AccountType {
     twitter?: string;
     /** An optional Discord invite absolute url */
     discord?: string;
-    /** An optional Telegram group/channel url */
+    /** Account Email Notification setting */
+    notification?: AccountNotificationType;
     createdAt?: Date;
     updatedAt?: Date;
+}
+
+export interface AccountNotificationType {
+    newMintOnEvent: boolean;
+    eventMintedOut: boolean;
+    marketOrderCreated: boolean;
+    marketOrderCancelled: boolean;
+    marketOrderSold: boolean;
+    offerReceivedOnToken: boolean;
+    offerAcceptedOnToken: boolean;
+    offerRejectedOnToken: boolean;
+    marketAuctionEnded: boolean;
+    newMarketBid: boolean;
 }

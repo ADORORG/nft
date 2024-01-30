@@ -88,10 +88,97 @@ export function useERC721() {
         return owner
     }, [publicClient, address])
 
+    const tokenName = useCallback(async ({
+        contractAddress
+    }: {
+        contractAddress: string
+    }) => {
+        const name = await publicClient?.readContract({
+            account: address,
+            abi: erc721Abi,
+            address: getAddress(contractAddress),
+            functionName: "name",
+        })
+
+        return name
+    }, [address, publicClient])
+
+    const tokenSymbol = useCallback(async ({
+        contractAddress
+    }: {
+        contractAddress: string
+    }) => {
+        const symbol = await publicClient?.readContract({
+            account: address,
+            abi: erc721Abi,
+            address: getAddress(contractAddress),
+            functionName: "symbol",
+        })
+
+        return symbol
+    }, [address, publicClient])
+
+    const ownerAddress = useCallback(async ({
+        contractAddress
+    }: {
+        contractAddress: string
+    }) => {
+        const owner = await publicClient?.readContract({
+            account: address,
+            abi: erc721Abi,
+            address: getAddress(contractAddress),
+            functionName: "owner",
+        })
+
+        return owner
+    }, [address, publicClient])
+
+    const tokenURI = useCallback(async ({
+        contractAddress,
+        tokenId
+    }: {
+        contractAddress: string,
+        tokenId: number
+    }) => {
+        const uri = await publicClient?.readContract({
+            account: address,
+            abi: erc721Abi,
+            address: getAddress(contractAddress),
+            functionName: "tokenURI",
+            args: [BigInt(tokenId)]
+        })
+
+        return uri
+    }, [address, publicClient])
+
+    const supportInterface = useCallback(async ({
+        contractAddress,
+        interfaceId
+    }: {
+        contractAddress: string,
+        interfaceId: `0x${string}`
+    }) => {
+        const supported = await publicClient?.readContract({
+            account: address,
+            abi: erc721Abi,
+            address: getAddress(contractAddress),
+            functionName: "supportsInterface",
+            args: [interfaceId]
+        })
+
+        return supported
+    }, [address, publicClient])
+
+
     return {
         mint,
         ownerOf,
-        transferFrom
+        transferFrom,
+        tokenName,
+        tokenSymbol,
+        ownerAddress,
+        tokenURI,
+        supportInterface
     }
 }
 
@@ -194,13 +281,99 @@ export function useERC1155() {
 
     }, [publicClient, address])
 
+    const tokenName = useCallback(async ({
+        contractAddress
+    }: {
+        contractAddress: string
+    }) => {
+        const name = await publicClient?.readContract({
+            account: address,
+            abi: erc1155Abi,
+            address: getAddress(contractAddress),
+            functionName: "name",
+        })
+
+        return name
+    }, [address, publicClient])
+
+    const tokenSymbol = useCallback(async ({
+        contractAddress
+    }: {
+        contractAddress: string
+    }) => {
+        const symbol = await publicClient?.readContract({
+            account: address,
+            abi: erc1155Abi,
+            address: getAddress(contractAddress),
+            functionName: "symbol",
+        })
+
+        return symbol
+    }, [address, publicClient])
+
+    const ownerAddress = useCallback(async ({
+        contractAddress
+    }: {
+        contractAddress: string
+    }) => {
+        const owner = await publicClient?.readContract({
+            account: address,
+            abi: erc1155Abi,
+            address: getAddress(contractAddress),
+            functionName: "owner",
+        })
+
+        return owner
+    }, [address, publicClient])
+
+    const tokenURI = useCallback(async ({
+        contractAddress,
+        tokenId
+    }: {
+        contractAddress: string,
+        tokenId: number
+    }) => {
+        const uri = await publicClient?.readContract({
+            account: address,
+            abi: erc1155Abi,
+            address: getAddress(contractAddress),
+            functionName: "uri",
+            args: [BigInt(tokenId)]
+        })
+
+        return uri
+    }, [address, publicClient])
+
+    const supportInterface = useCallback(async ({
+        contractAddress,
+        interfaceId
+    }: {
+        contractAddress: string,
+        interfaceId: `0x${string}`
+    }) => {
+        const supported = await publicClient?.readContract({
+            account: address,
+            abi: erc1155Abi,
+            address: getAddress(contractAddress),
+            functionName: "supportsInterface",
+            args: [interfaceId]
+        })
+
+        return supported
+    }, [address, publicClient])
+
     const mint = useCallback(async () => {}, [])
 
     return {
         create,
         mint,
         safeTransferFrom,
-        balanceOf
+        balanceOf,
+        tokenName,
+        tokenSymbol,
+        ownerAddress,
+        tokenURI,
+        supportInterface
     }
 }
 

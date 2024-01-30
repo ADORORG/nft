@@ -94,7 +94,7 @@ export default function NftTokenCard(props: NftTokenProps) {
                     <div className={`bg-transparent flex justify-center items-center h-2/3`}>
                         {/* Check if there's a media, show the media, otherwise display the image */}
                         <MediaPreview
-                            src={`${IPFS_GATEWAY}${media || image}`}
+                            src={contract.imported ? (media || image) : `${IPFS_GATEWAY}${media || image}`}
                             type={mediaType || "image/*"}
                             loadingComponent={<MediaSkeleton className="w-full h-full" />}
                             previewClassName="flex justify-center items-center w-full h-full"

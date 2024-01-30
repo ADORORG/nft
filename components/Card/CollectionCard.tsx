@@ -15,17 +15,17 @@ export default function CollectionCard(props: CollectionCardProps) {
     const {name, slug, owner, media, mediaType, image} = props.collection
 
     return (
-        <div className="flex flex-col h-[260px] w-[260px]">
-            <Bordered className="my-3 w-full h-full flex justify-center items-center">
+        <Bordered className="flex flex-col gap-3 w-[290px] h-[320px] rounded">
+            <div className="mx-auto w-[220px] h-[220px]">
                 <MediaPreview
                     type={mediaType || "image/*"}
                     src={`${IPFS_GATEWAY}${media || image}`}
-                    previewClassName="h-[250px] w-[250px] flex justify-center items-center"
-                    className="max-h-[250px]"
+                    previewClassName="flex flex-col justify-center items-center"
+                    className="max-w-[220px] max-h-[220px]"
                 />
-            </Bordered>
+            </div>
             <div className="flex flex-row justify-between items-center px-2">
-                <h5 className="opacity-70">
+                <h5 className="text-xl py-2 text-gray-950 dark:text-gray-100 tracking-wide subpixel-antialiased opacity-70">
                     <Link href={replaceUrlParams(appRoutes.viewCollection, {slug})}>
                         {cutString(name, 20)}
                     </Link>
@@ -39,6 +39,6 @@ export default function CollectionCard(props: CollectionCardProps) {
                     />
                 </div>
             </div>
-        </div>
+        </Bordered>
     )
 }

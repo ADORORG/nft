@@ -3,8 +3,8 @@ import {
     // polygon,
     // optimism,
     // bsc,
-    // goerli,
-    // baseGoerli,
+    goerli,
+    baseGoerli,
     type Chain
 } from "wagmi/chains"
 
@@ -39,8 +39,8 @@ const supportedChains = [
     } satisfies Chain,
     // bsc,
     // testnet
-    // goerli,
-    // baseGoerli
+    goerli,
+    baseGoerli
 ]
 
 

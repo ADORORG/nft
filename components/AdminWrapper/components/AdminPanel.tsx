@@ -4,11 +4,13 @@ import Button from "@/components/Button"
 import QuickModal from "@/components/QuickModal"
 import AddCurrency from "./AddCurrency"
 import ViewCurrencies from "./ViewCurrencies"
+import BanVerifyAccount from "./BanVerifyAccount"
 
 export default function AdminPanel() {
     const [showPanelAction, setShowPanelAction] = useState(false)
     const [showAddCurrencyModal, setShowAddCurrencyModal] = useState(false)
     const [showViewCurrencyModal, setShowViewCurrencyModal] = useState(false)
+    const [showBanVerifyModal, setShowBanVerifyModal] = useState(false)
     const panelActionRef = useRef<HTMLDivElement>(null)
 
     const handleClickOutsidePanel = (event: MouseEvent) => {
@@ -30,6 +32,10 @@ export default function AdminPanel() {
             <div className="relative">
                 <div ref={panelActionRef} className={`${!showPanelAction && 'invisible'} fixed bottom-16 right-4 flex flex-col gap-1 transition my-2`}>
                     <Button 
+                        onClick={() => setShowBanVerifyModal(!showBanVerifyModal)}
+                        className="cursor-pointer"
+                        variant="secondary">Ban/Verify</Button>
+                    <Button 
                         onClick={() => setShowAddCurrencyModal(!showAddCurrencyModal)}
                         className="cursor-pointer"
                         variant="secondary">Add currency</Button>
@@ -46,6 +52,12 @@ export default function AdminPanel() {
                     </div>
                 </div>
             </div>
+            <QuickModal
+                show={showBanVerifyModal}
+                onHide={setShowBanVerifyModal}
+                modalTitle="Ban/Verify"
+                modalBody={BanVerifyAccount}
+            />
 
             <QuickModal
                 show={showAddCurrencyModal}

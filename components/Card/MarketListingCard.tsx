@@ -18,7 +18,7 @@ type MarketListingCardProps = {
 
 export default function MarketListingCard({marketOrder, size = "md"}: MarketListingCardProps) {
     const { token, price, endsAt, currency, saleType } = marketOrder
-    const { image, media, mediaType } = token
+    const { image, media, mediaType, contract } = token
 
     const sizes: Record<string, any> = {
         // medium card
@@ -44,7 +44,7 @@ export default function MarketListingCard({marketOrder, size = "md"}: MarketList
         <div className={`w-72 h-96 rounded p-3 bg-gray-100 dark:bg-gray-900 hover:opacity-80 transition flex flex-col justify-between gap-2 drop-shadow-xl`}>
             <div className={`bg-transparent flex justify-center items-center h-64`}>
                 <MediaPreview
-                    src={`${IPFS_GATEWAY}${media || image}`}
+                    src={contract.imported ? (media || image) : `${IPFS_GATEWAY}${media || image}`}
                     type={mediaType || "image/*"}
                     loadingComponent={<MediaSkeleton className="w-72 h-64" />}
                     previewClassName="flex justify-center items-center w-full h-full"

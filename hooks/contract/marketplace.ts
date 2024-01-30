@@ -1,6 +1,6 @@
 import type { PopulatedMarketOrderType } from "@/lib/types/market"
 import { useCallback } from "react"
-import { usePublicClient, useWalletClient } from "wagmi"
+import { usePublicClient, useWalletClient, useBalance } from "wagmi"
 import { parseUnits, getAddress } from "viem"
 import { useERC20Approval } from "@/hooks/contract"
 import { useAuthStatus } from "@/hooks/account"
@@ -226,8 +226,12 @@ export function useSignatures() {
 export function useAuctionOrder() {
     const {data: walletClient} = useWalletClient()
     const publicClient = usePublicClient()
-    const erc20Approval = useERC20Approval()
     const { session } = useAuthStatus()
+    const erc20Approval = useERC20Approval()
+    const nativeTokenBalance = useBalance({
+        address: session?.user.address as any, 
+        formatUnits: 'wei'
+    })
 
     /**
      * Create a bid onchain
@@ -254,6 +258,11 @@ export function useAuctionOrder() {
         let writeContractRequest: any
 
         if (isETHPayment) {
+            // Check native token balance
+            if (nativeTokenBalance?.data?.value || 0 < bigOrderPrice) {
+                throw new Error("Not enough balance")
+            }
+
             writeContractRequest = await publicClient.simulateContract({
                 account: getAddress(session?.user.address as string),
                 address: marketplaceContractAddress,
@@ -296,7 +305,7 @@ export function useAuctionOrder() {
             buyerId: session?.user.address,
         }
 
-    }, [publicClient, session, walletClient, erc20Approval])
+    }, [publicClient, session, walletClient, erc20Approval, nativeTokenBalance])
 
     /**
      * Claim auction when it has ended
@@ -342,8 +351,13 @@ export function useAuctionOrder() {
 export function useFixedPriceOrder(order: PopulatedMarketOrderType) {
     const {data: walletClient} = useWalletClient()
     const publicClient = usePublicClient()
-    const erc20Approval = useERC20Approval()
     const { session } = useAuthStatus()
+    const erc20Approval = useERC20Approval()
+    const nativeTokenBalance = useBalance({
+        address: session?.user.address as any, 
+        chainId: order.token.contract.chainId,
+        formatUnits: 'wei'
+    })
 
     /** The marketplace contract address in which this order was listed */
     const marketplaceContractAddress = getMarketplaceContract(order.token.contract.chainId, order.version)
@@ -354,6 +368,7 @@ export function useFixedPriceOrder(order: PopulatedMarketOrderType) {
     const atomicBuy = useCallback(() => {
         /** Big order price */
         const bigOrderPrice = parseUnits(order.price, order.currency.decimals)
+
         /** Order data to send onchain */
         const onchainOrderData = {
             side: 0, // 0 for buy, 1 for sell
@@ -367,6 +382,11 @@ export function useFixedPriceOrder(order: PopulatedMarketOrderType) {
         }
 
         const buyWithETH = async () => {
+            // Check native token balance
+            if (nativeTokenBalance?.data?.value || 0 < bigOrderPrice) {
+                throw new Error("Not enough balance")
+            }
+
             const {request} = await publicClient.simulateContract({
                 account: getAddress(session?.user.address as string),
                 address: marketplaceContractAddress,
@@ -416,7 +436,7 @@ export function useFixedPriceOrder(order: PopulatedMarketOrderType) {
             buyWithERC20Token
         }
 
-    }, [walletClient, publicClient, session, erc20Approval, order, marketplaceAbi, marketplaceContractAddress])
+    }, [walletClient, publicClient, session, erc20Approval, nativeTokenBalance, order, marketplaceAbi, marketplaceContractAddress])
 
 
     const nonAtomicBuy = useCallback(() => {
@@ -448,6 +468,11 @@ export function useFixedPriceOrder(order: PopulatedMarketOrderType) {
         }
 
         const buyWithETH = async () => {
+
+            if (nativeTokenBalance?.data?.value || 0 < bigOrderPrice) {
+                throw new Error("Not enough balance")
+            }
+
             const {request} = await publicClient.simulateContract({
                 account: getAddress(session?.user.address as string),
                 address: marketplaceContractAddress,
@@ -468,7 +493,7 @@ export function useFixedPriceOrder(order: PopulatedMarketOrderType) {
             buyWithERC20Token
         }
         
-    }, [walletClient, publicClient, erc20Approval, session, order, marketplaceAbi, marketplaceContractAddress])
+    }, [walletClient, publicClient, erc20Approval, nativeTokenBalance, session, order, marketplaceAbi, marketplaceContractAddress])
 
     const sellForERC20 = useCallback(() => {
         /** Big order price */

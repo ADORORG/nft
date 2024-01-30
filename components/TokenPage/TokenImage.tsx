@@ -5,12 +5,12 @@ import { MediaSkeleton } from "@/components/Skeleton"
 import { IPFS_GATEWAY } from "@/lib/app.config"
 
 export default function TokenImage(props: TokenPageProps) {
-    const { media, mediaType, image } = props.token
+    const { media, mediaType, image, contract } = props.token
     return (
         <div className="flex justify-center p-4 drop-shadow-lg">
             {/* Check if there's a media, show the media, otherwise display the image */}
             <MediaPreview
-                src={`${IPFS_GATEWAY}${media || image}`}
+                src={contract.imported ? (media || image) : `${IPFS_GATEWAY}${media || image}`}
                 type={mediaType || "image/*"}
                 loadingComponent={<MediaSkeleton className="h-[250px] w-[250px]" />}
                 previewClassName="flex flex-col items-center w-full h-full"
