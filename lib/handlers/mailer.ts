@@ -23,7 +23,7 @@ export default async function sendEmail(mailProp: SendEmailType) {
 	const transporter = createTransport(options as any)
 
 	const result = await transporter.sendMail({
-		from:  process.env.EMAIL_FROM,
+		from:  `Activity <${process.env.EMAIL_FROM}>`,
         subject, 
         to, 
         html, 
