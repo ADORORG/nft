@@ -142,9 +142,32 @@ export async function getEventsByQuery(
  * @returns 
  */
 export function setEventData(_id: Types.ObjectId | string, updateData: Record<string, unknown>) {
+    const leanOption = {lean: true}
+
+    const populate = [
+        {
+            path: 'xcollection',
+            options: leanOption
+        },
+        {
+            path: 'contract',
+            options: leanOption
+        },
+        {
+            path: 'currency',
+            options: leanOption
+        },
+        {
+            path: 'owner',
+            select: '-email -roles -emailVerified -__v',
+            options: leanOption
+        }
+    ] satisfies PopulateOptions[]
+
     return NftContractEventModel.findByIdAndUpdate(_id, updateData, {
         new: true
     })
+    .populate(populate)
     .lean()
     .exec()
 }

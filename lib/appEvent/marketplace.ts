@@ -18,7 +18,7 @@ MarketplaceEventEmitter
 .on('marketOrderSold', marketOrderSold)
 // .on('offerReceivedOnToken', offerReceivedOnToken)
 // .on('offerAcceptedOnToken', offerAcceptedOnToken)
-.on('marketAuctionEnded', marketAuctionEnded)
+// .on('marketAuctionEnded', marketAuctionEnded)
 .on('newMarketBid', newMarketBid)
 
 
@@ -348,13 +348,13 @@ async function marketOrderSold({marketOrder}: {marketOrder: PopulatedMarketOrder
     }
 }
 
-async function marketAuctionEnded({marketOrder}: {marketOrder: PopulatedMarketOrderType}) {
+/* async function marketAuctionEnded({marketOrder}: {marketOrder: PopulatedMarketOrderType}) {
     try {
 
     } catch (error) {
         console.log(error)
     }
-}
+} */
 
 async function newMarketBid({marketOrder, marketBid}: {marketOrder: PopulatedMarketOrderType, marketBid: PopulatedMarketBidType}) {
     try {
