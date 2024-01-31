@@ -10,7 +10,6 @@ export default function ViewProfile() {
         address,
         name,
         email,
-        verified,
         emailVerified,
         twitter,
         discord

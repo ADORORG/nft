@@ -26,7 +26,12 @@ export default async function Page({params}: {params: {profileData: profileData}
             label: <span className="flex"><span>Verify Email</span> <Check2Circle className="h-3 w-3 text-gray-500" /></span>,
             link: `${appRoutes.setProfile}/verifyEmail`,
             active: profileData === "verifyEmail"
-        }
+        },
+        {
+            label: "Notification",
+            link: `${appRoutes.setProfile}/notification`,
+            active: profileData === "notification"
+        },
     ]
 
  

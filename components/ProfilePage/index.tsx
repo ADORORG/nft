@@ -7,6 +7,7 @@ import UpdateAvatar from "./UpdateAvatar"
 import UpdateProfile from "./UpdateProfile"
 import ViewProfile from "./ViewProfile"
 import VerifyEmail from "./VerifyEmail"
+import Notification from "./Notification"
 
 export default function ProfilePage(props: {profileData: profileData}) {
     const { isConnected, session } = useAuthStatus()
@@ -42,4 +43,10 @@ export default function ProfilePage(props: {profileData: profileData}) {
     if (props.profileData === "verifyEmail") {
         return <VerifyEmail />
     }
+
+    if (props.profileData === "notification") {
+        return <Notification />
+    }
+
+    return null
 }
