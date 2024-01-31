@@ -23,6 +23,8 @@ const apiRoutes = {
     updateProfile: "/api/account/updateProfile",
     /** Update account profile pic using token media */
     setProfilePic: "/api/account/setProfilePic",
+    /** Update email notification */
+    setEmailNotification: "/api/account/setEmailNotification",
     /** Verify account email */
     verifyAccountEmail: "/api/account/verifyEmail",
     /** Request email Otp */

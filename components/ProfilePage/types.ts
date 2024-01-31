@@ -1,2 +1,2 @@
 
-export type profileData = "view" | "updateProfile" | "updateAvatar" | "verifyEmail"
+export type profileData = "view" | "updateProfile" | "updateAvatar" | "verifyEmail" | "notification"

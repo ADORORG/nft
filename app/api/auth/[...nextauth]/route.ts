@@ -73,8 +73,10 @@ export const nextAuthOptions = (req?: NextApiRequest): NextAuthOptions => {
           discord,
           twitter,
           profileMediaType, 
-          profileMedia, 
-          _id } = userAccount
+          profileMedia,
+          notification,
+          _id 
+        } = userAccount
 
         const user: Record<string, unknown> = {
           email,
@@ -86,6 +88,7 @@ export const nextAuthOptions = (req?: NextApiRequest): NextAuthOptions => {
           twitter,
           profileMediaType,
           profileMedia,
+          notification,
           _id
         }
         // if there's role, add it to user

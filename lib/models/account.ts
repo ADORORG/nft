@@ -2,12 +2,12 @@ import { Schema, model, models, type Model } from 'mongoose';
 import { dbCollections } from '../app.config';
 import { isEthereumAddress } from '../utils/main';
 import { invalidAccountAddress } from '../error/message';
-import type AccountType from '../types/account';
+import type {default as AccountType, AccountNotificationType} from '../types/account';
 
 const { accounts } = dbCollections;
 
-const NotificationSchema = new Schema({
-    newMintEvent: {type: Boolean, default: true},
+const NotificationSchema = new Schema<AccountNotificationType>({
+    newMintOnEvent: {type: Boolean, default: true},
     eventMintedOut: {type: Boolean, default: true},
     marketOrderCreated: {type: Boolean, default: true},
     marketOrderCancelled: {type: Boolean, default: true},
