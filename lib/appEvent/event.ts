@@ -30,6 +30,7 @@ async function newMintOnEvent({mintEventData}: {mintEventData: PopulatedNftContr
     try {
         // send mail to event creator/owner
         const eventOwner = await setAccountDetails(mintEventData.owner._id?.toString() as string, {})
+        
         if (
             eventOwner.emailVerified && (
                 !eventOwner?.notification || 
@@ -42,7 +43,7 @@ async function newMintOnEvent({mintEventData}: {mintEventData: PopulatedNftContr
                 buttonLink: getMintEventUrl(mintEventData),
                 buttonLabel: 'View Event',
                 title: 'New mint on your event',
-                mainContent: `Congratutions! There is a new mint on ${mintEventData.tokenName} event. You can view it on ${AppInfo.name} marketplace.`
+                mainContent: `There is a new mint on ${mintEventData.tokenName} event. You can view it on ${AppInfo.name} marketplace.`
             }
 
             await sendEmail({
